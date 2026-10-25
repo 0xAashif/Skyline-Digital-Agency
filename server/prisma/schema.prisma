@@ -1,0 +1,108 @@
+// SkyLine Digital Agency — Production Prisma Schema (PostgreSQL / Supabase / Neon)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+}
+
+model Lead {
+  id              String   @id @default(cuid())
+  nameOrCompany   String
+  contact         String
+  contactType     String   @default("whatsapp") // "whatsapp" | "email"
+  inquiryType     String   @default("inquiry")  // "inquiry" | "meeting"
+  budget          String?
+  meetingDate     String?
+  meetingSlot     String?
+  selectedPillars String[]
+  projectScope    String
+  status          String   @default("new")      // "new" | "contacted" | "qualified" | "proposal-sent" | "closed-won"
+  notes           String?
+  source          String   @default("website")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Referral {
+  id                 String   @id @default(cuid())
+  referrerName       String
+  referrerContact    String
+  referredBusiness   String
+  estimatedDealValue Int      @default(120000)
+  commissionAmount   Int      @default(18000)
+  status             String   @default("pending") // "pending" | "in-discussion" | "closed-won" | "paid"
+  createdAt          DateTime @default(now())
+}
+
+model Project {
+  id                  String   @id @default(cuid())
+  statusBadge         String   @default("LIVE PRODUCTION")
+  accentColor         String   @default("indigo")
+  category            String
+  title               String
+  locationTag         String
+  tags                String
+  metricsHeadline     String
+  metricsSub          String
+  architectureNodes   String[]
+  accentMetric        String
+  imageUrl            String
+  fallbackSvgUrl      String   @default("/assets/hero-system-preview.svg")
+  problemStatement    String
+  architectureSummary String
+  impactMetricsJson   String   // JSON string of { label, before, after, delta }[]
+  stackPills          String[]
+  featured            Boolean  @default(true)
+  createdAt           DateTime @default(now())
+}
+
+model Service {
+  id                    String   @id @default(cuid())
+  categoryLabel         String
+  shortTab              String
+  badgeTag              String
+  accentColor           String   @default("indigo")
+  title                 String
+  leadSentence          String
+  subtitle              String
+  outcomeMetric         String
+  timeline              String
+  deliverables          String[]
+  architectureSpecsJson String   // JSON string of { key, val }[]
+  previewMode           String   @default("web-vitals")
+  createdAt             DateTime @default(now())
+}
+
+model Testimonial {
+  id               String   @id @default(cuid())
+  initials         String
+  quote            String
+  author           String
+  role             String
+  engagementScope  String
+  verifiedOutcome  String
+  relatedProjectId String
+  rating           Int      @default(5)
+  createdAt        DateTime @default(now())
+}
+
+model Faq {
+  id          String   @id @default(cuid())
+  category    String
+  accentColor String   @default("indigo")
+  question    String
+  answer      String
+  createdAt   DateTime @default(now())
+}

@@ -1,467 +1,679 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  AlertCircle,
-  ArrowRight,
-  ArrowUp,
-  Calendar,
-  Check,
-  Clock,
-  Cloud,
-  Copy,
-  Cpu,
-  Globe,
-  Home,
-  Info,
-  Layers,
-  Layout,
-  Mail,
+  ArrowUpRight,
+  CheckCircle2,
   MapPin,
+  Copy,
+  Check,
   Phone,
-  Send,
   ShieldCheck,
-  Star,
-  Zap,
+  Sparkles,
+  Calendar,
+  Clock,
 } from 'lucide-react';
 import {
-  ALLOWLISTED_SERVICE_PILLARS,
-  ProposalFormInput,
-  ProposalValidationResult,
-  SKYLINE_EMAIL,
-  SKYLINE_INSTAGRAM_URL,
-  SKYLINE_SECONDARY_PHONE,
   SKYLINE_WHATSAPP_NUMBER,
-  buildProposalMailtoUrl,
-  buildProposalWhatsAppUrl,
-  checkAndLockIdempotency,
-  formatProposalMessage,
-  recordTelemetryEvent,
-  validateProposalForm,
-} from '../utils/architectEngine';
+  SKYLINE_EMAIL,
+  SKYLINE_LOCATION,
+} from '../data/agencyData';
 import {
-  GitHubLogoIcon,
-  InstagramLogoIcon,
-  LinkedInLogoIcon,
   SkyLineLogo,
-  WhatsAppLogoIcon,
+  WhatsAppBrandBadge,
+  GmailBrandIcon,
+  SocialIconBar,
 } from './BrandIcons';
 
-const TIME_SLOTS = [
-  '10:00 AM - 10:30 AM IST',
+export interface PublicLeadSubmissionPayload {
+  nameOrCompany: string;
+  contact: string;
+  contactType?: 'whatsapp' | 'email';
+  inquiryType: 'inquiry' | 'meeting';
+  budget?: string;
+  meetingDate?: string;
+  meetingSlot?: string;
+  selectedPillars: string[];
+  projectScope: string;
+  source?: string;
+}
+
+interface ContactDispatchFooterProps {
+  prefilledScope: string;
+  prefilledPillars: string[];
+  onSubmitLead?: (payload: PublicLeadSubmissionPayload) => Promise<void>;
+  onOpenAdmin?: () => void;
+}
+
+const PILLAR_CHOICES = [
+  'Website / Web App / SaaS',
+  'Local Business Growth (Google Maps & Reviews)',
+  'WhatsApp Bot & AI Automation',
+  'Meta & Google Performance Ads',
+  'Technical SEO & Search Ranking',
+  'E-Commerce & Digital Catalog',
+];
+
+const BUDGET_OPTIONS = [
+  '₹25,000 – ₹60,000 (Local Business / Starter)',
+  '₹60,000 – ₹1,50,000 (Growth Website + Automation)',
+  '₹1,50,000 – ₹3,50,000 (Full-Stack SaaS / Ad Engine)',
+  '₹3,50,000+ (Enterprise / Custom Architecture)',
+];
+
+const MEETING_SLOTS = [
   '11:00 AM - 11:30 AM IST',
   '02:00 PM - 02:30 PM IST',
   '04:30 PM - 05:00 PM IST',
   '07:00 PM - 07:30 PM IST',
 ];
 
-interface ContactDispatchFooterProps {
-  preselectedPillar?: string | null;
-  prefilledScope?: string | null;
-}
-
-export const ContactDispatchFooter: React.FC<ContactDispatchFooterProps> = ({
-  preselectedPillar,
-  prefilledScope,
-}) => {
-  const [contactTab, setContactTab] = useState<'inquiry' | 'meeting'>('inquiry');
-  const [nameOrCompany, setNameOrCompany] = useState<string>('');
-  const [contact, setContact] = useState<string>('');
-  const [selectedPillars, setSelectedPillars] = useState<string[]>([
-    'Local Business Growth & Digitization',
-  ]);
-  const [meetingDate, setMeetingDate] = useState<string>('2026-10-26');
-  const [meetingSlot, setMeetingSlot] = useState<string>(TIME_SLOTS[1]);
-  const [projectScope, setProjectScope] = useState<string>('');
-  const [validation, setValidation] = useState<ProposalValidationResult | null>(null);
-  const [dispatchedChannel, setDispatchedChannel] = useState<'whatsapp' | 'email' | null>(null);
-  const [idempotencyNotice, setIdempotencyNotice] = useState<string | null>(null);
-  const [clipboardFallbackNotice, setClipboardFallbackNotice] = useState<string | null>(null);
-  const [copiedBrief, setCopiedBrief] = useState<boolean>(false);
+/**
+ * Unpredictable Autonomous Flight Trajectory Engine for the Footer Paper-Plane Rocket.
+ * Continuously generates randomized smooth cubic Bezier splines across the entire width and height
+ * of the monumental SKYLINE footer canvas, dynamically orienting the rocket's nose angle
+ * (`Math.atan2(vy, vx)`) and drawing a 3.5-second fading glowing dotted contrail wake.
+ */
+const AutonomousRocketCanvas: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    if (preselectedPillar) {
-      setSelectedPillars((prev) =>
-        prev.includes(preselectedPillar) ? prev : [...prev, preselectedPillar]
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let width = (canvas.width = canvas.parentElement?.clientWidth || 1200);
+    let height = (canvas.height = canvas.parentElement?.clientHeight || 260);
+
+    const handleResize = () => {
+      if (!canvas.parentElement) return;
+      width = canvas.width = canvas.parentElement.clientWidth;
+      height = canvas.height = canvas.parentElement.clientHeight;
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Cubic Bezier helper
+    const cubicPoint = (
+      t: number,
+      p0: number,
+      p1: number,
+      p2: number,
+      p3: number
+    ) => {
+      const u = 1 - t;
+      return (
+        u * u * u * p0 +
+        3 * u * u * t * p1 +
+        3 * u * t * t * p2 +
+        t * t * t * p3
       );
+    };
+
+    const cubicTangent = (
+      t: number,
+      p0: number,
+      p1: number,
+      p2: number,
+      p3: number
+    ) => {
+      const u = 1 - t;
+      return (
+        3 * u * u * (p1 - p0) +
+        6 * u * t * (p2 - p1) +
+        3 * t * t * (p3 - p2)
+      );
+    };
+
+    const randomTarget = () => ({
+      x: width * (0.08 + Math.random() * 0.84),
+      y: height * (0.14 + Math.random() * 0.72),
+    });
+
+    let p0 = { x: width * 0.15, y: height * 0.65 };
+    let v0 = { x: 140, y: -80 };
+    let p3 = randomTarget();
+    let v3 = {
+      x: (Math.random() - 0.5) * width * 0.65,
+      y: (Math.random() - 0.5) * height * 1.1,
+    };
+    let p1 = { x: p0.x + v0.x, y: p0.y + v0.y };
+    let p2 = { x: p3.x - v3.x * 0.4, y: p3.y - v3.y * 0.4 };
+
+    let segmentStartTime = performance.now();
+    let segmentDuration = 3400 + Math.random() * 1800;
+
+    interface TrailPoint {
+      x: number;
+      y: number;
+      time: number;
     }
-  }, [preselectedPillar]);
+    const trail: TrailPoint[] = [];
+    const TRAIL_LIFETIME_MS = 3500;
+
+    const spawnNextSegment = (now: number) => {
+      p0 = { ...p3 };
+      // Preserve velocity continuity across spline joints
+      const endVx = 3 * (p3.x - p2.x);
+      const endVy = 3 * (p3.y - p2.y);
+      const speedScale = 0.35;
+      p1 = {
+        x: Math.max(40, Math.min(width - 40, p0.x + endVx * speedScale)),
+        y: Math.max(25, Math.min(height - 25, p0.y + endVy * speedScale)),
+      };
+
+      // Pick a new unpredictable destination across the canvas
+      let next = randomTarget();
+      let attempts = 0;
+      while (
+        Math.hypot(next.x - p0.x, next.y - p0.y) < width * 0.24 &&
+        attempts < 6
+      ) {
+        next = randomTarget();
+        attempts++;
+      }
+      p3 = next;
+
+      // Randomize arrival curvature for sweeping loops and weaves
+      p2 = {
+        x: p3.x + (Math.random() - 0.5) * width * 0.45,
+        y: p3.y + (Math.random() - 0.5) * height * 0.85,
+      };
+
+      segmentStartTime = now;
+      segmentDuration = 3200 + Math.random() * 2100;
+    };
+
+    const render = (now: number) => {
+      let t = (now - segmentStartTime) / segmentDuration;
+      if (t >= 1) {
+        spawnNextSegment(now);
+        t = 0;
+      }
+
+      const x = cubicPoint(t, p0.x, p1.x, p2.x, p3.x);
+      const y = cubicPoint(t, p0.y, p1.y, p2.y, p3.y);
+      const vx = cubicTangent(t, p0.x, p1.x, p2.x, p3.x);
+      const vy = cubicTangent(t, p0.y, p1.y, p2.y, p3.y);
+      const angle = Math.atan2(vy, vx);
+
+      // Record contrail wake behind tail
+      const tailX = x - Math.cos(angle) * 14;
+      const tailY = y - Math.sin(angle) * 14;
+      if (
+        trail.length === 0 ||
+        Math.hypot(
+          tailX - trail[trail.length - 1].x,
+          tailY - trail[trail.length - 1].y
+        ) > 5
+      ) {
+        trail.push({ x: tailX, y: tailY, time: now });
+      }
+
+      // Prune contrail older than 3.5 seconds
+      while (trail.length > 0 && now - trail[0].time > TRAIL_LIFETIME_MS) {
+        trail.shift();
+      }
+
+      ctx.clearRect(0, 0, width, height);
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const strokeBase = isDark ? '244, 244, 246' : '24, 24, 27';
+
+      // Draw glowing dotted contrail with smooth 3.5-second alpha fade
+      if (trail.length > 2) {
+        ctx.save();
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.setLineDash([4, 6]);
+
+        for (let i = 1; i < trail.length; i++) {
+          const prev = trail[i - 1];
+          const curr = trail[i];
+          const age = now - curr.time;
+          const lifeRatio = Math.max(0, 1 - age / TRAIL_LIFETIME_MS);
+          ctx.beginPath();
+          ctx.moveTo(prev.x, prev.y);
+          ctx.lineTo(curr.x, curr.y);
+          ctx.strokeStyle = `rgba(${strokeBase}, ${lifeRatio * 0.65})`;
+          ctx.lineWidth = 1.2 + lifeRatio * 1.4;
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // Draw Paper-Plane Rocket oriented along instantaneous velocity vector
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+
+      // Subtle thruster glow at tail
+      const grad = ctx.createRadialGradient(-14, 0, 1, -14, 0, 12);
+      grad.addColorStop(
+        0,
+        isDark ? 'rgba(255,255,255,0.65)' : 'rgba(24,24,27,0.45)'
+      );
+      grad.addColorStop(1, 'rgba(113,113,122,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(-14, 0, 12, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Main Upper Wing
+      ctx.beginPath();
+      ctx.moveTo(16, 0);
+      ctx.lineTo(-12, -10);
+      ctx.lineTo(-6, -1);
+      ctx.closePath();
+      ctx.fillStyle = isDark ? '#F4F4F6' : '#18181B';
+      ctx.fill();
+
+      // Center Fold Shadow
+      ctx.beginPath();
+      ctx.moveTo(16, 0);
+      ctx.lineTo(-6, -1);
+      ctx.lineTo(-9, 5);
+      ctx.lineTo(-4, 2);
+      ctx.closePath();
+      ctx.fillStyle = isDark ? '#71717A' : '#52525B';
+      ctx.fill();
+
+      // Lower Wing
+      ctx.beginPath();
+      ctx.moveTo(16, 0);
+      ctx.lineTo(-4, 2);
+      ctx.lineTo(-11, 10);
+      ctx.closePath();
+      ctx.fillStyle = isDark ? '#D4D4D8' : '#3F3F46';
+      ctx.fill();
+
+      ctx.restore();
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    animationFrameId = requestAnimationFrame(render);
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="w-full h-full block pointer-events-none"
+    />
+  );
+};
+
+export const ContactDispatchFooter: React.FC<ContactDispatchFooterProps> = ({
+  prefilledScope,
+  prefilledPillars,
+  onSubmitLead,
+  onOpenAdmin,
+}) => {
+  const [nameOrCompany, setNameOrCompany] = useState('');
+  const [contactValue, setContactValue] = useState('');
+  const [contactChannel, setContactChannel] = useState<'WhatsApp' | 'Email'>('WhatsApp');
+  const [inquiryMode, setInquiryMode] = useState<'inquiry' | 'meeting'>('inquiry');
+  const [meetingDate, setMeetingDate] = useState('');
+  const [meetingSlot, setMeetingSlot] = useState(MEETING_SLOTS[0]);
+  const [selectedPillars, setSelectedPillars] = useState<string[]>([
+    'Website / Web App / SaaS',
+    'WhatsApp Bot & AI Automation',
+  ]);
+  const [budgetRange, setBudgetRange] = useState(BUDGET_OPTIONS[1]);
+  const [projectBrief, setProjectBrief] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submittedSuccess, setSubmittedSuccess] = useState(false);
 
   useEffect(() => {
     if (prefilledScope) {
-      setProjectScope(prefilledScope);
+      setProjectBrief(prefilledScope);
     }
   }, [prefilledScope]);
 
+  useEffect(() => {
+    if (prefilledPillars && prefilledPillars.length > 0) {
+      setSelectedPillars(prefilledPillars);
+    }
+  }, [prefilledPillars]);
+
   const togglePillar = (pillar: string) => {
     setSelectedPillars((prev) =>
-      prev.includes(pillar) ? prev.filter((p) => p !== pillar) : [...prev, pillar]
+      prev.includes(pillar)
+        ? prev.length > 1
+          ? prev.filter((p) => p !== pillar)
+          : prev
+        : [...prev, pillar]
     );
-    if (validation) {
-      setValidation(null);
+  };
+
+  const handleCopyEmail = () => {
+    navigator.clipboard?.writeText(SKYLINE_EMAIL);
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 2000);
+  };
+
+  const handleDispatch = async (mode: 'whatsapp' | 'email' | 'portal') => {
+    const cleanName = nameOrCompany.trim();
+    const cleanContact = contactValue.trim();
+    const cleanBrief = projectBrief.trim();
+
+    if (cleanName.length < 2) {
+      setErrorMessage('Please enter your name or business name (at least 2 characters).');
+      return;
     }
-    setIdempotencyNotice(null);
-  };
-
-  const composedScope =
-    contactTab === 'meeting'
-      ? `[Strategy Meeting: ${meetingDate} at ${meetingSlot}] ${projectScope.trim()}`
-      : projectScope;
-
-  const currentFormPayload: ProposalFormInput = {
-    nameOrCompany,
-    contact,
-    selectedPillars,
-    projectScope: composedScope,
-  };
-
-  const handleDispatch = async (channel: 'whatsapp' | 'email') => {
-    setIdempotencyNotice(null);
-    setClipboardFallbackNotice(null);
-
-    const result = validateProposalForm(
-      {
-        nameOrCompany,
-        contact,
-        selectedPillars,
-        projectScope: composedScope,
-      },
-      { enforceIdempotency: true }
-    );
-    setValidation(result);
-
-    if (!result.valid) {
-      if (result.statusCode === 429 && result.errors.idempotency) {
-        setIdempotencyNotice(result.errors.idempotency);
-      }
-      setDispatchedChannel(null);
+    if (cleanContact.length < 5) {
+      setErrorMessage(`Please enter a valid ${contactChannel} contact so we can reach you.`);
+      return;
+    }
+    if (selectedPillars.length === 0) {
+      setErrorMessage('Please select at least one service you need.');
+      return;
+    }
+    if (cleanBrief.length < 8) {
+      setErrorMessage('Please share a brief description of your project goals (at least 8 characters).');
       return;
     }
 
-    setDispatchedChannel(channel);
+    setErrorMessage(null);
 
-    // 5xx / Offline Clipboard Auto-Copy Resilience
-    try {
-      await navigator.clipboard.writeText(formatProposalMessage(currentFormPayload));
-      setCopiedBrief(true);
-      setTimeout(() => setCopiedBrief(false), 3000);
-    } catch {
-      recordTelemetryEvent('lead_dispatch', 'error', 1, {
-        reason: 'clipboard_write_unavailable',
-      });
-      setClipboardFallbackNotice(
-        'Formatted brief ready below — use the direct launch button or copy manually.'
-      );
+    if (onSubmitLead) {
+      setSubmitting(true);
+      try {
+        await onSubmitLead({
+          nameOrCompany: cleanName,
+          contact: cleanContact,
+          contactType: contactChannel === 'WhatsApp' ? 'whatsapp' : 'email',
+          inquiryType: inquiryMode,
+          budget: budgetRange,
+          meetingDate: inquiryMode === 'meeting' ? meetingDate : undefined,
+          meetingSlot: inquiryMode === 'meeting' ? meetingSlot : undefined,
+          selectedPillars,
+          projectScope:
+            inquiryMode === 'meeting' && meetingDate
+              ? `[Strategy Meeting: ${meetingDate} at ${meetingSlot}] ${cleanBrief}`
+              : cleanBrief,
+          source: 'Website Dispatch Form',
+        });
+        setSubmittedSuccess(true);
+      } catch {
+        // Still allow WhatsApp or Email fallback
+      } finally {
+        setSubmitting(false);
+      }
     }
-  };
 
-  const handleCopyFormattedBrief = async () => {
-    try {
-      await navigator.clipboard.writeText(formatProposalMessage(currentFormPayload));
-      setCopiedBrief(true);
-      setTimeout(() => setCopiedBrief(false), 2500);
-    } catch {
-      setCopiedBrief(true);
-      setTimeout(() => setCopiedBrief(false), 2500);
+    const effectiveScope =
+      inquiryMode === 'meeting' && meetingDate
+        ? `[Meeting Requested: ${meetingDate} • ${meetingSlot}] ${cleanBrief}`
+        : cleanBrief;
+
+    const messageText = [
+      'Hello SkyLine Digital Team,',
+      'I would like to request a custom project proposal & roadmap.',
+      '',
+      `• Name / Business: ${cleanName}`,
+      `• ${contactChannel}: ${cleanContact}`,
+      `• Services Needed: ${selectedPillars.join(', ')}`,
+      `• Budget Range: ${budgetRange}`,
+      `• Project Brief: ${effectiveScope}`,
+    ].join('\n');
+
+    if (mode === 'whatsapp') {
+      const url = `https://wa.me/${SKYLINE_WHATSAPP_NUMBER}?text=${encodeURIComponent(messageText)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else if (mode === 'email') {
+      const subject = `Project Proposal Request — ${cleanName}`;
+      const mailUrl = `mailto:${SKYLINE_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(messageText)}`;
+      window.location.href = mailUrl;
     }
-  };
-
-  const whatsappHref = buildProposalWhatsAppUrl(currentFormPayload);
-  const mailtoHref = buildProposalMailtoUrl(currentFormPayload);
-  const urgentQuoteWhatsAppUrl = `https://wa.me/${SKYLINE_WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    'Hi SkyLine Technologies! I would like to discuss a project and get a fast architectural quote.'
-  )}`;
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <footer className="platinum-canvas border-t border-[var(--border-metallic)]">
-      {/* SECTION 10: DUAL-MODE CONTACT ("Let's Build Something Great Together") */}
-      <div id="contact" className="max-w-[1320px] mx-auto py-16 sm:py-20 px-4 sm:px-6 lg:px-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-          {/* Left Column (5 Cols): Fast Response Badge, Title, 2x2 Trust Grid, Contact Cards, Official WhatsApp Quote Banner */}
+    <footer
+      id="contact"
+      className="pt-20 sm:pt-28 pb-24 px-4 sm:px-8 lg:px-12 bg-[var(--bg-canvas)] relative overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto">
+        {/* =================================================================
+            1. CONTACT & PROPOSAL DISPATCH SECTION
+           ================================================================= */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-20 border-b border-[var(--border-hairline)]">
+          {/* Left Column: Agency Info & Direct Channels (5 Cols) */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="space-y-3.5">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full accent-pill-rose font-mono text-xs font-bold">
-                <Zap className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>FAST 30-MIN RESPONSE</span>
-              </div>
-
-              <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-[var(--text-primary)] leading-[1.08] tracking-tight">
-                Let&apos;s Build Something
-                <br />
-                <span className="text-[var(--text-secondary)]">Great Together.</span>
-              </h2>
-
-              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                Get an architectural breakdown, Local Business or SaaS tech scope, and transparent
-                fixed-price ₹ INR milestone roadmap.
-              </p>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-sage-status">
+              <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+              <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
+                START YOUR PROJECT TODAY
+              </span>
             </div>
 
-            {/* 2x2 Trust Feature Pills Grid */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3.5 rounded-2xl platinum-card flex items-center gap-2.5 text-xs font-display font-bold text-[var(--text-primary)]">
-                <Check className="w-4 h-4 text-[#10B981] shrink-0" aria-hidden="true" />
-                <span>Free 60s Audit</span>
-              </div>
-              <div className="p-3.5 rounded-2xl platinum-card flex items-center gap-2.5 text-xs font-display font-bold text-[var(--text-primary)]">
-                <ShieldCheck className="w-4 h-4 text-[#6366F1] shrink-0" aria-hidden="true" />
-                <span>Strict NDA</span>
-              </div>
-              <div className="p-3.5 rounded-2xl platinum-card flex items-center gap-2.5 text-xs font-display font-bold text-[var(--text-primary)]">
-                <Check className="w-4 h-4 text-[#10B981] shrink-0" aria-hidden="true" />
-                <span>Fixed Roadmap</span>
-              </div>
-              <div className="p-3.5 rounded-2xl platinum-card flex items-center gap-2.5 text-xs font-display font-bold text-[var(--text-primary)]">
-                <Clock className="w-4 h-4 text-[#F59E0B] shrink-0" aria-hidden="true" />
-                <span>24h Proposal</span>
-              </div>
-            </div>
+            <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-[var(--text-primary)] leading-[1.08]">
+              Let's Build & Scale{' '}
+              <span className="font-serif-editorial italic font-semibold">
+                Your Business.
+              </span>
+            </h2>
 
-            {/* Official Desk Email, Phone & Official WhatsApp Green (#25D366) Urgent Quote Banner */}
-            <div className="space-y-3">
-              <a
-                href={`mailto:${SKYLINE_EMAIL}`}
-                className="p-4 rounded-2xl platinum-card hover:opacity-90 flex items-center gap-3.5 transition-opacity"
-              >
-                <div className="w-10 h-10 rounded-xl btn-platinum-primary flex items-center justify-center shrink-0">
-                  <Mail className="w-4 h-4" aria-hidden="true" />
-                </div>
-                <div className="min-w-0">
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
-                    OFFICIAL DESK
-                  </div>
-                  <div className="font-mono text-xs sm:text-sm font-bold text-[var(--text-primary)] truncate">
-                    {SKYLINE_EMAIL}
-                  </div>
-                </div>
-              </a>
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+              Fill out the quick brief to get a custom roadmap and fixed-price quote—or jump straight onto WhatsApp to chat with our team in under 2 minutes.
+            </p>
 
-              <div className="p-4 rounded-2xl platinum-card flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl btn-platinum-primary flex items-center justify-center shrink-0">
-                  <Phone className="w-4 h-4" aria-hidden="true" />
-                </div>
-                <div className="min-w-0">
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
-                    CALL US (MON – SAT, 10 AM – 9 PM IST)
-                  </div>
-                  <div className="font-mono text-xs sm:text-sm font-bold text-[var(--text-primary)] flex flex-wrap items-center gap-2 tabular-nums">
-                    <a href="tel:+918643002478" className="hover:underline">
-                      +91 8643002478
-                    </a>
-                    <span className="text-[var(--text-muted)]">•</span>
-                    <a href="tel:+918959144686" className="hover:underline">
-                      {SKYLINE_SECONDARY_PHONE}
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Official WhatsApp Green (#25D366) Urgent Quote Banner */}
-              <a
-                href={urgentQuoteWhatsAppUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-4 sm:p-5 rounded-2xl bg-[#25D366] text-white hover:opacity-95 flex items-center justify-between gap-3 transition-opacity shadow-md"
-              >
+            {/* Contact Cards */}
+            <div className="space-y-3 pt-2">
+              <div className="p-4 rounded-2xl surface-card flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <span className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
-                    <WhatsAppLogoIcon className="w-5 h-5" />
-                  </span>
+                  <div className="p-2.5 rounded-xl surface-elevated text-[var(--text-primary)]">
+                    <Phone className="w-4 h-4" />
+                  </div>
                   <div>
-                    <div className="font-display font-extrabold text-sm">Need an Urgent Quote?</div>
-                    <div className="text-xs font-medium text-white/90">
-                      Chat directly with Lead Engineer on WhatsApp
+                    <div className="font-mono-tech text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
+                      WHATSAPP & PHONE DESK
+                    </div>
+                    <div className="font-mono-tech text-xs sm:text-sm font-semibold text-[var(--text-primary)]">
+                      +91 81096 97311
                     </div>
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
-              </a>
-            </div>
+                <a
+                  href={`https://wa.me/${SKYLINE_WHATSAPP_NUMBER}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2 rounded-xl btn-whatsapp-official text-xs font-semibold flex items-center gap-1.5"
+                >
+                  <WhatsAppBrandBadge size="sm" className="border border-white/30" />
+                  <span>Chat</span>
+                </a>
+              </div>
 
-            {/* Official Social Icon-Only Bar (Instagram, WhatsApp, LinkedIn, GitHub — Zero @handle text) */}
-            <div className="pt-1 flex flex-wrap items-center justify-between gap-3">
-              <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--text-muted)]">
-                CONNECT WITH SKYLINE:
-              </span>
-              <div className="flex items-center gap-2">
-                <a
-                  href={SKYLINE_INSTAGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Follow SkyLine on Instagram"
-                  title="Follow SkyLine on Instagram"
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full platinum-card text-[var(--text-primary)] instagram-icon-btn"
+              <div className="p-4 rounded-2xl surface-card flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <GmailBrandIcon size="md" />
+                  <div>
+                    <div className="font-mono-tech text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
+                      OFFICIAL EMAIL DESK
+                    </div>
+                    <div className="font-mono-tech text-xs sm:text-sm font-semibold text-[var(--text-primary)]">
+                      {SKYLINE_EMAIL}
+                    </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  className="px-3 py-1.5 rounded-lg btn-platinum-secondary text-xs font-mono-tech flex items-center gap-1.5 cursor-pointer"
                 >
-                  <InstagramLogoIcon className="w-4 h-4" />
-                </a>
-                <a
-                  href="https://wa.me/918643002478"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Chat with SkyLine on WhatsApp"
-                  title="Chat with SkyLine on WhatsApp"
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#25D366] text-white hover:scale-105 transition-transform"
-                >
-                  <WhatsAppLogoIcon className="w-4 h-4" />
-                </a>
-                <a
-                  href="#contact"
-                  aria-label="SkyLine LinkedIn Architecture Desk"
-                  title="LinkedIn"
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full platinum-card text-[var(--text-primary)] hover:opacity-80 transition-opacity"
-                >
-                  <LinkedInLogoIcon className="w-4 h-4" />
-                </a>
-                <a
-                  href="#capabilities"
-                  aria-label="SkyLine Engineering Stack"
-                  title="GitHub Engineering"
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full platinum-card text-[var(--text-primary)] hover:opacity-80 transition-opacity"
-                >
-                  <GitHubLogoIcon className="w-4 h-4" />
-                </a>
+                  {copiedEmail ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-[var(--text-primary)]" />
+                      <span>Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Complete 5-App Social Bar in Contact Section */}
+              <div className="p-4 rounded-2xl surface-card flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div className="font-mono-tech text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
+                    CONNECT WITH SKYLINE
+                  </div>
+                  <div className="text-xs font-semibold text-[var(--text-primary)] mt-0.5">
+                    Official Social & Messaging Channels
+                  </div>
+                </div>
+                <SocialIconBar size="sm" />
+              </div>
+
+              <div className="p-4 rounded-2xl surface-card flex items-center gap-3">
+                <div className="p-2.5 rounded-xl surface-elevated text-[var(--text-primary)]">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="font-mono-tech text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
+                    HEADQUARTERS & REACH
+                  </div>
+                  <div className="text-xs sm:text-sm font-medium text-[var(--text-primary)]">
+                    {SKYLINE_LOCATION}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column (7 Cols): Dual-Mode Form Card (Strict Allowlist & Regex Validation + 60s Idempotency) */}
-          <div className="lg:col-span-7 rounded-3xl platinum-card p-6 sm:p-10 space-y-6">
-            {/* Top 2-Tab Segmented Switcher */}
-            <div className="grid grid-cols-2 p-1.5 rounded-2xl platinum-subdued gap-1.5">
-              <button
-                type="button"
-                onClick={() => setContactTab('inquiry')}
-                className={`py-3 px-4 rounded-xl font-display font-bold text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                  contactTab === 'inquiry'
-                    ? 'btn-platinum-primary shadow-sm'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                <Send className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>Send Project Inquiry</span>
-              </button>
+          {/* Right Column: Interactive Proposal & Meeting Booking Form (7 Cols) */}
+          <div className="lg:col-span-7 surface-card rounded-3xl p-6 sm:p-9">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-5 mb-6 border-b border-[var(--border-hairline)]">
+              <div>
+                <h3 className="font-display text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
+                  Request Your Custom Proposal
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  Saves directly to our CRM + optional instant WhatsApp dispatch.
+                </p>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => setContactTab('meeting')}
-                className={`py-3 px-4 rounded-xl font-display font-bold text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                  contactTab === 'meeting'
-                    ? 'btn-platinum-primary shadow-sm'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>Book Strategy Meeting</span>
-              </button>
+              {/* Mode Switcher: Project Proposal vs Book Strategy Call */}
+              <div className="inline-flex rounded-xl p-1 surface-elevated">
+                <button
+                  type="button"
+                  onClick={() => setInquiryMode('inquiry')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+                    inquiryMode === 'inquiry'
+                      ? 'btn-platinum-primary'
+                      : 'text-[var(--text-secondary)]'
+                  }`}
+                >
+                  Project Quote
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInquiryMode('meeting')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all flex items-center gap-1.5 ${
+                    inquiryMode === 'meeting'
+                      ? 'btn-platinum-primary'
+                      : 'text-[var(--text-secondary)]'
+                  }`}
+                >
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>Book Strategy Call</span>
+                </button>
+              </div>
             </div>
 
-            <form
-              noValidate
-              onSubmit={(e) => {
-                e.preventDefault();
-                void handleDispatch('whatsapp');
-              }}
-              className="space-y-5"
-            >
-              {/* Name / Company */}
-              <div>
-                <label
-                  htmlFor="proposal-name"
-                  className="block font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--text-primary)] mb-2"
-                >
-                  YOUR NAME / COMPANY <span>*</span>
-                </label>
-                <input
-                  id="proposal-name"
-                  type="text"
-                  required
-                  value={nameOrCompany}
-                  onChange={(e) => {
-                    setNameOrCompany(e.target.value);
-                    if (validation) setValidation(null);
-                  }}
-                  placeholder="e.g. Rahul Sharma / Apex Clinic & Showroom"
-                  aria-invalid={Boolean(validation?.errors.nameOrCompany)}
-                  className={`w-full px-4 py-3.5 min-h-[48px] rounded-xl platinum-subdued text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/60 focus:outline-none ${
-                    validation?.errors.nameOrCompany ? 'ring-2 ring-[#F43F5E]' : ''
-                  }`}
-                />
-                {validation?.errors.nameOrCompany && (
-                  <p role="alert" className="text-xs text-[#F43F5E] font-mono mt-1.5 font-semibold">
-                    {validation.errors.nameOrCompany}
-                  </p>
-                )}
-              </div>
-
-              {/* WhatsApp Number or Email */}
-              <div>
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                  <label
-                    htmlFor="proposal-contact"
-                    className="font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--text-primary)]"
-                  >
-                    WHATSAPP NUMBER OR EMAIL <span>*</span>
+            <div className="space-y-5">
+              {/* Name & Contact */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-mono-tech text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">
+                    Your Name & Business Name *
                   </label>
-                  <span className="font-mono text-[10px] font-bold uppercase text-[var(--text-muted)]">
-                    +91 MOBILE OR WORK EMAIL
-                  </span>
+                  <input
+                    type="text"
+                    value={nameOrCompany}
+                    onChange={(e) => {
+                      setNameOrCompany(e.target.value);
+                      setSubmittedSuccess(false);
+                    }}
+                    placeholder="e.g. Rahul Verma / Apex Clinic"
+                    className="w-full px-4 py-3 rounded-xl surface-elevated text-xs sm:text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--platinum-primary)]"
+                  />
                 </div>
-                <input
-                  id="proposal-contact"
-                  type="text"
-                  required
-                  value={contact}
-                  onChange={(e) => {
-                    setContact(e.target.value);
-                    if (validation) setValidation(null);
-                  }}
-                  placeholder="+91 98765 43210 or yourname@company.com"
-                  aria-invalid={Boolean(validation?.errors.contact)}
-                  className={`w-full px-4 py-3.5 min-h-[48px] rounded-xl platinum-subdued text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/60 focus:outline-none ${
-                    validation?.errors.contact ? 'ring-2 ring-[#F43F5E]' : ''
-                  }`}
-                />
-                {validation?.errors.contact && (
-                  <p role="alert" className="text-xs text-[#F43F5E] font-mono mt-1.5 font-semibold">
-                    {validation.errors.contact}
-                  </p>
-                )}
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="font-mono-tech text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">
+                      Your {contactChannel} *
+                    </label>
+                    <div className="flex items-center gap-1 text-[10px] font-mono-tech">
+                      {(['WhatsApp', 'Email'] as const).map((ch) => (
+                        <button
+                          key={ch}
+                          type="button"
+                          onClick={() => setContactChannel(ch)}
+                          className={`px-2 py-0.5 rounded cursor-pointer ${
+                            contactChannel === ch
+                              ? 'btn-platinum-primary'
+                              : 'text-[var(--text-muted)]'
+                          }`}
+                        >
+                          {ch}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    value={contactValue}
+                    onChange={(e) => {
+                      setContactValue(e.target.value);
+                      setSubmittedSuccess(false);
+                    }}
+                    placeholder={
+                      contactChannel === 'WhatsApp'
+                        ? '+91 98765 43210'
+                        : 'founder@company.com'
+                    }
+                    className="w-full px-4 py-3 rounded-xl surface-elevated text-xs sm:text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--platinum-primary)]"
+                  />
+                </div>
               </div>
 
-              {/* Conditional Meeting Date & Slot Selector */}
-              {contactTab === 'meeting' && (
-                <div className="p-4 rounded-2xl platinum-subdued grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Optional Strategy Call Date & Time Slot */}
+              {inquiryMode === 'meeting' && (
+                <div className="p-4 rounded-2xl surface-elevated grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label
-                      htmlFor="meeting-date-input"
-                      className="block font-mono text-[10px] font-bold uppercase text-[var(--text-muted)] mb-1.5"
-                    >
-                      PREFERRED MEETING DATE
+                    <label className="block font-mono-tech text-[10px] uppercase tracking-wider text-[var(--text-primary)] font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5" />
+                      <span>Preferred Call Date</span>
                     </label>
                     <input
-                      id="meeting-date-input"
                       type="date"
                       value={meetingDate}
                       onChange={(e) => setMeetingDate(e.target.value)}
-                      className="w-full px-3.5 py-2.5 min-h-[42px] rounded-xl platinum-card text-xs font-mono text-[var(--text-primary)] focus:outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl surface-card text-xs text-[var(--text-primary)] focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label
-                      htmlFor="meeting-slot-select"
-                      className="block font-mono text-[10px] font-bold uppercase text-[var(--text-muted)] mb-1.5"
-                    >
-                      PREFERRED TIME SLOT
+                    <label className="block font-mono-tech text-[10px] uppercase tracking-wider text-[var(--text-primary)] font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Preferred Time Slot</span>
                     </label>
                     <select
-                      id="meeting-slot-select"
                       value={meetingSlot}
                       onChange={(e) => setMeetingSlot(e.target.value)}
-                      className="w-full px-3.5 py-2.5 min-h-[42px] rounded-xl platinum-card text-xs font-mono text-[var(--text-primary)] focus:outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl surface-card text-xs text-[var(--text-primary)] focus:outline-none"
                     >
-                      {TIME_SLOTS.map((slot) => (
+                      {MEETING_SLOTS.map((slot) => (
                         <option key={slot} value={slot}>
                           {slot}
                         </option>
@@ -471,515 +683,190 @@ export const ContactDispatchFooter: React.FC<ContactDispatchFooterProps> = ({
                 </div>
               )}
 
-              {/* Service Pillar Selection Chips (Strict Allowlist) */}
-              <fieldset>
-                <legend className="font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)] mb-2">
-                  SELECT SERVICE PILLARS *
-                </legend>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {ALLOWLISTED_SERVICE_PILLARS.map((pillar) => {
+              {/* Services Needed */}
+              <div>
+                <label className="block font-mono-tech text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">
+                  Services You Need *
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {PILLAR_CHOICES.map((pillar) => {
                     const active = selectedPillars.includes(pillar);
                     return (
                       <button
                         key={pillar}
                         type="button"
                         onClick={() => togglePillar(pillar)}
-                        aria-pressed={active}
-                        className={`px-3.5 py-2.5 min-h-[42px] rounded-xl text-left text-xs font-semibold flex items-center justify-between gap-2 transition-all cursor-pointer ${
+                        className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                           active
-                            ? 'btn-platinum-primary shadow-sm'
-                            : 'platinum-subdued text-[var(--text-primary)] hover:opacity-85'
+                            ? 'btn-platinum-primary'
+                            : 'surface-elevated text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                         }`}
                       >
-                        <span className="truncate">{pillar}</span>
-                        {active && <Check className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />}
+                        {pillar}
                       </button>
                     );
                   })}
                 </div>
-                {validation?.errors.selectedPillars && (
-                  <p role="alert" className="text-xs text-[#F43F5E] font-mono mt-1.5 font-semibold">
-                    {validation.errors.selectedPillars}
-                  </p>
-                )}
-              </fieldset>
-
-              {/* Brief Scope */}
-              <div>
-                <label
-                  htmlFor="proposal-scope"
-                  className="block font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--text-primary)] mb-2"
-                >
-                  WHAT DO YOU WANT TO BUILD?{' '}
-                  <span className="text-[var(--text-muted)] font-normal">(BRIEF SCOPE)</span>
-                </label>
-                <textarea
-                  id="proposal-scope"
-                  rows={3}
-                  required
-                  value={projectScope}
-                  onChange={(e) => {
-                    setProjectScope(e.target.value);
-                    if (validation) setValidation(null);
-                  }}
-                  placeholder="Tell us about your project requirements, target timeline, or current bottleneck..."
-                  aria-invalid={Boolean(validation?.errors.projectScope)}
-                  className={`w-full p-4 rounded-xl platinum-subdued text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/60 focus:outline-none ${
-                    validation?.errors.projectScope ? 'ring-2 ring-[#F43F5E]' : ''
-                  }`}
-                />
-                {validation?.errors.projectScope && (
-                  <p role="alert" className="text-xs text-[#F43F5E] font-mono mt-1.5 font-semibold">
-                    {validation.errors.projectScope}
-                  </p>
-                )}
               </div>
 
-              {/* 429 Idempotency Notice Banner */}
-              {idempotencyNotice && (
-                <div
-                  role="alert"
-                  className="p-3.5 rounded-xl accent-pill-amber font-mono text-xs flex items-center gap-2"
-                >
-                  <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
-                  <span>{idempotencyNotice}</span>
+              {/* Budget Tier */}
+              <div>
+                <label className="block font-mono-tech text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">
+                  Estimated Budget Range
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {BUDGET_OPTIONS.map((b) => {
+                    const active = budgetRange === b;
+                    return (
+                      <button
+                        key={b}
+                        type="button"
+                        onClick={() => setBudgetRange(b)}
+                        className={`px-3.5 py-2.5 rounded-xl text-left font-mono-tech text-xs transition-all cursor-pointer ${
+                          active
+                            ? 'btn-platinum-primary'
+                            : 'surface-elevated text-[var(--text-secondary)]'
+                        }`}
+                      >
+                        {b}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Project Brief */}
+              <div>
+                <label className="block font-mono-tech text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">
+                  Project Goals or Current Website URL *
+                </label>
+                <textarea
+                  rows={3}
+                  value={projectBrief}
+                  onChange={(e) => {
+                    setProjectBrief(e.target.value);
+                    setSubmittedSuccess(false);
+                  }}
+                  placeholder="Tell us about your business, what you want to build or scale, and your target launch timeline..."
+                  className="w-full px-4 py-3 rounded-xl surface-elevated text-xs sm:text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--platinum-primary)] resize-none"
+                />
+              </div>
+
+              {errorMessage && (
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-medium">
+                  {errorMessage}
                 </div>
               )}
 
-              {/* Dual Submit Actions: Official WhatsApp Green (#25D366) + Email Option */}
-              <div className="space-y-2.5 pt-1">
-                <button
-                  type="submit"
-                  className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 min-h-[52px] rounded-2xl bg-[#25D366] text-white font-display font-bold text-sm hover:opacity-95 transition-opacity cursor-pointer shadow-md"
-                >
-                  <WhatsAppLogoIcon className="w-5 h-5" />
+              {submittedSuccess && (
+                <div className="p-3.5 rounded-xl badge-platinum text-xs font-medium flex items-center justify-between">
                   <span>
-                    {contactTab === 'meeting'
-                      ? 'Schedule Strategy Meeting via WhatsApp'
-                      : 'Send Instant Request via WhatsApp (Proposal in 24h)'}
+                    ✓ Your project brief has been saved to the SkyLine CRM! Our lead architect will reach out shortly.
                   </span>
-                  <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
+                </div>
+              )}
+
+              {/* Submit Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <button
+                  type="button"
+                  disabled={submitting}
+                  onClick={() => handleDispatch('portal')}
+                  className="w-full py-3.5 px-5 rounded-full btn-platinum-primary font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <span>{submitting ? 'Saving...' : 'Submit Brief to CRM'}</span>
+                  <ArrowUpRight className="w-4 h-4" />
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => void handleDispatch('email')}
-                  className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[44px] rounded-xl platinum-subdued text-[var(--text-primary)] font-display font-semibold text-xs hover:opacity-85 transition-opacity cursor-pointer"
+                  disabled={submitting}
+                  onClick={() => handleDispatch('whatsapp')}
+                  className="w-full py-3.5 px-5 rounded-full btn-whatsapp-official font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <Mail className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>Or Send to Official Desk ({SKYLINE_EMAIL})</span>
+                  <WhatsAppBrandBadge size="sm" className="border border-white/30" />
+                  <span>Send on WhatsApp</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={submitting}
+                  onClick={() => handleDispatch('email')}
+                  className="w-full py-3.5 px-5 rounded-full btn-platinum-secondary font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <GmailBrandIcon size="sm" />
+                  <span>Send via Email</span>
                 </button>
               </div>
 
-              {/* Validated Dispatch Confirmation & Direct External Launch */}
-              {validation?.valid && dispatchedChannel && (
-                <div
-                  role="status"
-                  aria-live="polite"
-                  className="p-5 rounded-2xl platinum-subdued space-y-4"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full accent-pill-emerald font-mono text-xs font-bold">
-                      ✓ BRIEF VALIDATED · COPIED &amp; READY FOR DISPATCH
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => void handleCopyFormattedBrief()}
-                      className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--text-primary)] cursor-pointer"
-                    >
-                      <Copy className="w-3.5 h-3.5" aria-hidden="true" />
-                      <span>{copiedBrief ? 'Copied to Clipboard' : 'Copy Text'}</span>
-                    </button>
-                  </div>
-
-                  {clipboardFallbackNotice && (
-                    <p className="text-xs font-mono text-[var(--text-secondary)]">
-                      {clipboardFallbackNotice}
-                    </p>
-                  )}
-
-                  <pre className="p-3 rounded-xl platinum-card text-xs font-mono text-[var(--text-secondary)] whitespace-pre-wrap overflow-x-auto">
-                    {formatProposalMessage(currentFormPayload)}
-                  </pre>
-
-                  <div className="flex flex-wrap items-center gap-3">
-                    {dispatchedChannel === 'whatsapp' ? (
-                      <a
-                        href={whatsappHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-xl bg-[#25D366] text-white font-display font-bold text-xs"
-                      >
-                        <WhatsAppLogoIcon className="w-4 h-4" />
-                        <span>Open Pre-Filled WhatsApp Chat (+91 8643002478)</span>
-                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                      </a>
-                    ) : (
-                      <a
-                        href={mailtoHref}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-xl btn-platinum-primary font-display font-bold text-xs"
-                      >
-                        <span>Launch Default Email Client ({SKYLINE_EMAIL})</span>
-                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Bottom Guarantee Row */}
-              <div className="pt-2 flex flex-wrap items-center justify-center gap-4 text-xs text-[var(--text-muted)]">
-                <span className="inline-flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-[#10B981]" aria-hidden="true" />
-                  <span>Zero spam guarantee</span>
+              <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[var(--text-muted)] font-mono-tech pt-1">
+                <span className="inline-flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--text-primary)]" />
+                  <span>100% Free Initial Consultation</span>
                 </span>
-                <span aria-hidden="true">•</span>
-                <span className="inline-flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-[#10B981]" aria-hidden="true" />
-                  <span>Confidential &amp; NDA protected</span>
-                </span>
+                <span>No spam. Direct conversation with our engineering team.</span>
               </div>
-            </form>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* SECTION 11: 4-COLUMN FOOTER + MONUMENTAL WORDMARK WITH ANIMATED ♾️ INFINITY-LOOP PAPER-PLANE ROCKET */}
-      <div className="border-t border-[var(--border-metallic)] pt-14 pb-6 px-4 sm:px-6 lg:px-10 overflow-hidden">
-        <div className="max-w-[1320px] mx-auto space-y-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10">
-            {/* Col 1 (4 Cols): Code-Prism < S / > Brand & Description + Icon-Only Socials */}
-            <div className="lg:col-span-4 space-y-4">
-              <a href="#top" className="inline-flex items-center">
-                <SkyLineLogo iconClassName="w-11 h-11" showSubtitle />
-              </a>
-
-              <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-sm">
-                Digital engineering &amp; growth agency building sub-100ms web platforms, AI &amp;
-                WhatsApp CRM workflows, Local Business Map Pack #1 engines, and high-ROAS funnels.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-2.5 pt-1">
-                <a
-                  href={SKYLINE_INSTAGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Follow SkyLine on Instagram"
-                  title="Follow SkyLine on Instagram"
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full platinum-card text-[var(--text-primary)] instagram-icon-btn"
-                >
-                  <InstagramLogoIcon className="w-4 h-4" />
-                </a>
-                <a
-                  href="https://wa.me/918643002478"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Chat with SkyLine on WhatsApp"
-                  title="Chat with SkyLine on WhatsApp"
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#25D366] text-white hover:scale-105 transition-transform"
-                >
-                  <WhatsAppLogoIcon className="w-4 h-4" />
-                </a>
-                <a
-                  href="#contact"
-                  aria-label="SkyLine LinkedIn"
-                  title="LinkedIn"
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full platinum-card text-[var(--text-primary)] hover:opacity-80 transition-opacity"
-                >
-                  <LinkedInLogoIcon className="w-4 h-4" />
-                </a>
-                <a
-                  href="#capabilities"
-                  aria-label="SkyLine GitHub"
-                  title="GitHub"
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full platinum-card text-[var(--text-primary)] hover:opacity-80 transition-opacity"
-                >
-                  <GitHubLogoIcon className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-
-            {/* Col 2 (2 Cols): Quick Links */}
-            <div className="lg:col-span-2 space-y-3.5">
-              <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                QUICK LINKS
-              </h4>
-              <ul className="space-y-2.5 text-xs sm:text-sm text-[var(--text-secondary)]">
-                <li>
-                  <a
-                    href="#top"
-                    className="hover:text-[var(--text-primary)] inline-flex items-center gap-2"
-                  >
-                    <Home className="w-3.5 h-3.5" aria-hidden="true" />
-                    <span>Home</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#process"
-                    className="hover:text-[var(--text-primary)] inline-flex items-center gap-2"
-                  >
-                    <Info className="w-3.5 h-3.5" aria-hidden="true" />
-                    <span>Our Process</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#capabilities"
-                    className="hover:text-[var(--text-primary)] inline-flex items-center gap-2"
-                  >
-                    <Layers className="w-3.5 h-3.5" aria-hidden="true" />
-                    <span>Services</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#projects"
-                    className="hover:text-[var(--text-primary)] inline-flex items-center gap-2"
-                  >
-                    <Layout className="w-3.5 h-3.5" aria-hidden="true" />
-                    <span>Our Projects</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#referral"
-                    className="hover:text-[var(--text-primary)] font-semibold inline-flex items-center gap-2"
-                  >
-                    <Zap className="w-3.5 h-3.5 text-[#F59E0B]" aria-hidden="true" />
-                    <span>15% Partner Offer</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#proof"
-                    className="hover:text-[var(--text-primary)] inline-flex items-center gap-2"
-                  >
-                    <Star className="w-3.5 h-3.5 text-[#F59E0B]" aria-hidden="true" />
-                    <span>Reviews</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Col 3 (3 Cols): Core Solutions */}
-            <div className="lg:col-span-3 space-y-3.5">
-              <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                CORE SOLUTIONS
-              </h4>
-              <ul className="space-y-2.5 text-xs sm:text-sm text-[var(--text-secondary)]">
-                <li>
-                  <a
-                    href="#capabilities"
-                    className="hover:text-[var(--text-primary)] inline-flex items-center gap-2"
-                  >
-                    <MapPin className="w-3.5 h-3.5 text-[#F59E0B]" aria-hidden="true" />
-                    <span>Local Business Growth Engine</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#capabilities"
-                    className="hover:text-[var(--text-primary)] inline-flex items-center gap-2"
-                  >
-                    <Globe className="w-3.5 h-3.5 text-[#6366F1]" aria-hidden="true" />
-                    <span>Custom React &amp; Next.js Web</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#capabilities"
-                    className="hover:text-[var(--text-primary)] inline-flex items-center gap-2"
-                  >
-                    <Cpu className="w-3.5 h-3.5 text-[#8B5CF6]" aria-hidden="true" />
-                    <span>AI &amp; WhatsApp CRM Systems</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#capabilities"
-                    className="hover:text-[var(--text-primary)] inline-flex items-center gap-2"
-                  >
-                    <Zap className="w-3.5 h-3.5 text-[#10B981]" aria-hidden="true" />
-                    <span>Meta &amp; Google Ads Funnels</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#capabilities"
-                    className="hover:text-[var(--text-primary)] inline-flex items-center gap-2"
-                  >
-                    <Cloud className="w-3.5 h-3.5 text-[#06B6D4]" aria-hidden="true" />
-                    <span>Technical SEO &amp; AEO Search</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Col 4 (3 Cols): Official Desk & Global Operations */}
-            <div className="lg:col-span-3 space-y-3.5">
-              <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                OFFICIAL DESK
-              </h4>
-              <div className="space-y-3 text-xs sm:text-sm text-[var(--text-secondary)]">
-                <div className="flex items-start gap-2.5">
-                  <MapPin
-                    className="w-4 h-4 text-[var(--text-primary)] shrink-0 mt-0.5"
-                    aria-hidden="true"
-                  />
-                  <span>Madhya Pradesh, India (Serving Startups &amp; Businesses Globally)</span>
-                </div>
-                <div className="flex items-start gap-2.5">
-                  <Mail
-                    className="w-4 h-4 text-[var(--text-primary)] shrink-0 mt-0.5"
-                    aria-hidden="true"
-                  />
-                  <a
-                    href={`mailto:${SKYLINE_EMAIL}`}
-                    className="hover:text-[var(--text-primary)] font-semibold break-all"
-                  >
-                    {SKYLINE_EMAIL}
-                  </a>
-                </div>
-                <div className="flex items-start gap-2.5">
-                  <Phone
-                    className="w-4 h-4 text-[var(--text-primary)] shrink-0 mt-0.5"
-                    aria-hidden="true"
-                  />
-                  <div className="font-mono font-semibold text-[var(--text-primary)] space-x-1.5 tabular-nums">
-                    <a href="tel:+918643002478" className="hover:underline">
-                      +91 8643002478
-                    </a>
-                    <span className="text-[var(--text-muted)]">•</span>
-                    <a href="tel:+918959144686" className="hover:underline">
-                      {SKYLINE_SECONDARY_PHONE}
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Copyright Bar + Back to Top */}
-          <div className="pt-6 border-t border-[var(--border-metallic)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
-            <p>© {new Date().getFullYear()} SkyLine Technologies. All rights reserved.</p>
-
-            <div className="flex items-center gap-6 font-mono text-[11px]">
-              <a href="#faq" className="hover:text-[var(--text-primary)]">
-                Privacy Policy
-              </a>
-              <a href="#faq" className="hover:text-[var(--text-primary)]">
-                Terms of Service
-              </a>
-              <a href="#system-simulator" className="hover:text-[var(--text-primary)] font-bold">
-                60s Audit
-              </a>
-            </div>
-
-            <button
-              type="button"
-              onClick={scrollToTop}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full platinum-card text-[var(--text-primary)] font-display font-bold text-xs cursor-pointer"
-            >
-              <span>Back to top</span>
-              <ArrowUp className="w-3.5 h-3.5" aria-hidden="true" />
-            </button>
-          </div>
-
-          {/* FR-ANIM-005: Monumental SKYLINE Wordmark with Animated ♾️ Infinity-Loop (Lemniscate) Paper-Plane Rocket */}
-          <div
-            aria-hidden="true"
-            className="pt-4 select-none relative text-center overflow-hidden"
-          >
-            {/* Background Monumental SKYLINE Typography */}
-            <div className="font-display font-extrabold text-[4.2rem] sm:text-[8rem] md:text-[10.5rem] lg:text-[13.5rem] leading-[0.84] tracking-tighter text-[var(--bg-subdued)] relative z-0">
+        {/* =================================================================
+            2. MONUMENTAL SKYLINE WORDMARK + UNPREDICTABLE AUTONOMOUS ROCKET CANVAS
+           ================================================================= */}
+        <div className="py-12 sm:py-16 relative select-none overflow-hidden border-b border-[var(--border-hairline)]">
+          {/* Monumental Background Typography */}
+          <div className="text-center">
+            <div className="font-display font-extrabold text-[17vw] sm:text-[15.5vw] leading-[0.84] tracking-[-0.04em] text-[var(--text-primary)] opacity-[0.08] dark:opacity-[0.11]">
               SKYLINE
             </div>
+          </div>
 
-            {/* Full-Bleed Figure-Eight Infinity Loop (♾️ Lemniscate) SVG Superimposed Across SKYLINE */}
-            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-              <svg
-                viewBox="0 0 1200 260"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-full max-w-[1200px] h-full overflow-visible"
+          {/* Unpredictable Autonomous Paper-Plane Rocket + 3.5s Fading Contrail Canvas */}
+          <div
+            className="absolute inset-0 pointer-events-none flex items-center justify-center"
+            aria-hidden="true"
+          >
+            <AutonomousRocketCanvas />
+          </div>
+
+          {/* Center Floating Tagline Pill */}
+          <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 px-2">
+            <SkyLineLogo size="md" />
+
+            <div className="flex flex-wrap items-center gap-3">
+              <SocialIconBar size="sm" />
+
+              <a
+                href="#referral"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document
+                    .getElementById('referral')
+                    ?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full badge-platinum text-xs font-semibold"
               >
-                <defs>
-                  <linearGradient
-                    id="skylineInfinityGradient"
-                    x1="80"
-                    y1="20"
-                    x2="1120"
-                    y2="240"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop offset="0%" stopColor="#6366F1" />
-                    <stop offset="35%" stopColor="#06B6D4" />
-                    <stop offset="70%" stopColor="#10B981" />
-                    <stop offset="100%" stopColor="#F59E0B" />
-                  </linearGradient>
-                </defs>
-
-                {/* Subtle Reference Lemniscate Track */}
-                <path
-                  id="skylineInfinityPath"
-                  d="M 600,130 C 780,20 1120,20 1120,130 C 1120,240 780,240 600,130 C 420,20 80,20 80,130 C 80,240 420,240 600,130 Z"
-                  stroke="url(#skylineInfinityGradient)"
-                  strokeOpacity="0.22"
-                  strokeWidth="2"
-                  strokeDasharray="6 10"
-                  fill="none"
-                />
-
-                {/* Animated Glowing Dashed Trail Along the Infinity Figure-Eight */}
-                <path
-                  d="M 600,130 C 780,20 1120,20 1120,130 C 1120,240 780,240 600,130 C 420,20 80,20 80,130 C 80,240 420,240 600,130 Z"
-                  stroke="url(#skylineInfinityGradient)"
-                  strokeWidth="3.2"
-                  strokeDasharray="8 10"
-                  strokeLinecap="round"
-                  fill="none"
-                  className="animate-infinity-trail"
-                />
-
-                {/* Center Crossover Spark Node */}
-                <circle cx="600" cy="130" r="5" fill="#06B6D4" fillOpacity="0.85" />
-                <circle cx="240" cy="130" r="4" fill="#6366F1" fillOpacity="0.7" />
-                <circle cx="960" cy="130" r="4" fill="#10B981" fillOpacity="0.7" />
-
-                {/* Self-Orienting Paper-Plane Rocket with Flickering Emerald/Cyan Thruster Tail */}
-                <g>
-                  {/* Thruster Flame Wake */}
-                  <polygon
-                    points="-14,0 -28,-5 -24,0 -28,5"
-                    fill="#06B6D4"
-                    opacity="0.85"
-                  />
-                  <polygon
-                    points="-13,0 -22,-3 -19,0 -22,3"
-                    fill="#10B981"
-                  />
-                  {/* Aerodynamic Paper-Plane Rocket Body */}
-                  <path
-                    d="M 18,0 L -14,-10 L -8,-2 L -14,0 L -8,2 L -14,10 Z"
-                    fill="var(--text-primary)"
-                  />
-                  <path
-                    d="M 18,0 L -8,0"
-                    stroke="#6366F1"
-                    strokeWidth="1.8"
-                  />
-                  <circle cx="6" cy="0" r="2" fill="#06B6D4" />
-
-                  <animateMotion
-                    dur="9s"
-                    repeatCount="indefinite"
-                    rotate="auto"
-                    path="M 600,130 C 780,20 1120,20 1120,130 C 1120,240 780,240 600,130 C 420,20 80,20 80,130 C 80,240 420,240 600,130 Z"
-                  />
-                </g>
-              </svg>
+                <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
+                <span>Refer & Earn 15%</span>
+              </a>
             </div>
+          </div>
+        </div>
+
+        {/* Bottom Copyright & Legal */}
+        <div className="pt-8 sm:pl-52 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)] font-mono-tech">
+          <div>
+            © {new Date().getFullYear()} SKYLINE DIGITAL AGENCY. ALL RIGHTS RESERVED.
+          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <span>MADHYA PRADESH, INDIA</span>
+            <span>•</span>
+            <a
+              href={`mailto:${SKYLINE_EMAIL}`}
+              className="hover:text-[var(--text-primary)] transition-colors"
+            >
+              {SKYLINE_EMAIL}
+            </a>
           </div>
         </div>
       </div>

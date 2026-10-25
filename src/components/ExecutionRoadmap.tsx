@@ -1,166 +1,101 @@
-import React, { useState } from 'react';
-import {
-  CheckCircle2,
-  Code2,
-  Compass,
-  Layout,
-  Send,
-  TrendingUp,
-} from 'lucide-react';
-import {
-  EXECUTION_ROADMAP,
-  RoadmapStep,
-  SemanticAccentColor,
-} from '../data/agencyData';
+import React from 'react';
+import { CheckCircle2, Shield, ArrowRight } from 'lucide-react';
+import { EXECUTION_ROADMAP } from '../data/agencyData';
 
-const getAccentPillClass = (accent: SemanticAccentColor): string => {
-  switch (accent) {
-    case 'emerald':
-      return 'accent-pill-emerald';
-    case 'indigo':
-      return 'accent-pill-indigo';
-    case 'violet':
-      return 'accent-pill-violet';
-    case 'amber':
-      return 'accent-pill-amber';
-    case 'cyan':
-      return 'accent-pill-cyan';
-    case 'rose':
-      return 'accent-pill-rose';
-  }
-};
+interface ExecutionRoadmapProps {
+  onNavigate: (sectionId: string) => void;
+}
 
-export const ExecutionRoadmap: React.FC = () => {
-  const [selectedId, setSelectedId] = useState<string>(EXECUTION_ROADMAP[0].id);
-
-  const activeItem: RoadmapStep =
-    EXECUTION_ROADMAP.find((s) => s.id === selectedId) || EXECUTION_ROADMAP[0];
-
-  const renderStepIcon = (type: RoadmapStep['iconType']) => {
-    switch (type) {
-      case 'compass':
-        return <Compass className="w-6 h-6" aria-hidden="true" />;
-      case 'layout':
-        return <Layout className="w-6 h-6" aria-hidden="true" />;
-      case 'code':
-        return <Code2 className="w-6 h-6" aria-hidden="true" />;
-      case 'check':
-        return <CheckCircle2 className="w-6 h-6" aria-hidden="true" />;
-      case 'send':
-        return <Send className="w-6 h-6" aria-hidden="true" />;
-      case 'trending':
-        return <TrendingUp className="w-6 h-6" aria-hidden="true" />;
-    }
-  };
-
+export const ExecutionRoadmap: React.FC<ExecutionRoadmapProps> = ({
+  onNavigate,
+}) => {
   return (
     <section
       id="process"
-      className="py-16 sm:py-20 px-4 sm:px-6 lg:px-10 platinum-canvas border-t border-[var(--border-metallic)]"
+      className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 border-b border-[var(--border-hairline)] bg-architectural-grid"
     >
-      <div className="max-w-[1320px] mx-auto space-y-12">
-        {/* Centered Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-2.5">
-          <div className="font-mono text-xs tracking-widest uppercase text-[var(--text-muted)]">
-            HOW WE WORK
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-14">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-platinum mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--platinum-primary)]" />
+              <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
+                HOW WE DELIVER
+              </span>
+            </div>
+            <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-[var(--text-primary)]">
+              Transparent Milestones.{' '}
+              <span className="font-serif-editorial italic font-semibold">
+                Fast Launch.
+              </span>
+            </h2>
           </div>
-          <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-[var(--text-primary)] tracking-tight">
-            Our Development Process
-          </h2>
-          <p className="text-sm text-[var(--text-secondary)]">
-            Streamlined execution roadmap from your initial 60s audit to full launch and scale.
+          <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-md leading-relaxed">
+            No vague timelines or endless agency retainers. Every project moves through three clear phases with live previews and full code ownership.
           </p>
         </div>
 
-        {/* 6-Node Circular Orbit Roadmap (Zero Cheap Numbering — Uses Vector Icons & Semantic Phase Badges) */}
-        <div className="relative pt-4">
-          <div
-            aria-hidden="true"
-            className="hidden lg:block absolute top-[58px] left-[8%] right-[8%] h-[1px] bg-[var(--border-metallic)]"
-          />
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 sm:gap-8 relative z-10">
-            {EXECUTION_ROADMAP.map((item) => {
-              const isSelected = item.id === selectedId;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setSelectedId(item.id)}
-                  aria-pressed={isSelected}
-                  className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
-                >
-                  {/* Dashed Outer Orbit Ring */}
-                  <div
-                    className={`relative p-3 rounded-full border border-dashed transition-all duration-200 bg-[var(--bg-canvas)] ${
-                      isSelected
-                        ? 'border-[var(--text-primary)] scale-105'
-                        : 'border-[var(--border-metallic)] group-hover:border-[var(--text-secondary)]'
-                    }`}
-                  >
-                    {/* Inner Solid Circle */}
-                    <div
-                      className={`w-16 h-16 rounded-full flex items-center justify-center transition-colors ${
-                        isSelected
-                          ? 'btn-platinum-primary shadow-md'
-                          : 'platinum-card text-[var(--text-primary)]'
-                      }`}
-                    >
-                      {renderStepIcon(item.iconType)}
-                    </div>
-
-                    {/* Bottom Orbit Anchor Dot */}
-                    <span
-                      aria-hidden="true"
-                      className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full border border-[var(--bg-canvas)] ${
-                        isSelected ? 'bg-[#10B981]' : 'bg-[var(--border-metallic)]'
-                      }`}
-                    />
-                  </div>
-
-                  <h3 className="font-display font-bold text-sm sm:text-base mt-3.5 text-[var(--text-primary)]">
-                    {item.shortTitle}
-                  </h3>
-                  <span className="font-mono text-[11px] text-[var(--text-muted)] mt-0.5">
-                    {item.phaseWindow}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {EXECUTION_ROADMAP.map((item) => (
+            <div
+              key={item.phase}
+              className="surface-card rounded-3xl p-7 sm:p-8 flex flex-col justify-between relative group overflow-hidden"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="px-3 py-1 rounded-full font-mono-tech text-[10px] font-semibold uppercase tracking-widest badge-platinum">
+                    {item.phase}
                   </span>
-                </button>
-              );
-            })}
-          </div>
+                  <span className="px-3 py-1 rounded-full surface-elevated font-mono-tech text-xs text-[var(--text-primary)] font-semibold">
+                    {item.duration}
+                  </span>
+                </div>
+
+                <h3 className="font-display text-xl sm:text-2xl font-bold text-[var(--text-primary)] mb-3">
+                  {item.title}
+                </h3>
+
+                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
+                  {item.description}
+                </p>
+
+                <div className="space-y-2.5 mb-6">
+                  {item.deliverables.map((del) => (
+                    <div
+                      key={del}
+                      className="flex items-start gap-2.5 text-xs sm:text-sm text-[var(--text-primary)]"
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-[var(--text-secondary)] shrink-0 mt-0.5" />
+                      <span>{del}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-[var(--border-hairline)]">
+                <div className="p-3 rounded-xl surface-elevated flex items-center gap-2 text-[11px] font-mono-tech text-[var(--text-primary)]">
+                  <Shield className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
+                  <span>{item.verificationGate}</span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Interactive Selected Phase Detail Card */}
-        <div
-          aria-live="polite"
-          className="rounded-3xl platinum-card p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6"
-        >
-          <div className="space-y-2 max-w-2xl">
-            <div
-              className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-mono text-[10px] font-bold uppercase tracking-wider ${getAccentPillClass(
-                activeItem.accentColor
-              )}`}
-            >
-              <span>{activeItem.phaseBadge}</span>
-              <span aria-hidden="true">·</span>
-              <span>{activeItem.phaseWindow}</span>
-            </div>
-            <h4 className="font-display font-bold text-xl text-[var(--text-primary)]">
-              {activeItem.title}
-            </h4>
-            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-              {activeItem.summary}
+        <div className="mt-10 surface-card rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="w-2.5 h-2.5 rounded-full bg-[var(--platinum-primary)] animate-pulse shrink-0" />
+            <p className="text-xs sm:text-sm text-[var(--text-primary)] font-medium">
+              Ready to launch your website, WhatsApp automation, or local Google Maps campaign?
             </p>
           </div>
-
-          <div className="p-4 rounded-2xl platinum-subdued shrink-0">
-            <div className="font-mono text-[10px] text-[var(--text-muted)] uppercase">
-              Deliverable Milestone
-            </div>
-            <div className="font-mono text-xs sm:text-sm font-bold text-[var(--text-primary)] mt-1">
-              {activeItem.artifactDelivered}
-            </div>
-          </div>
+          <button
+            onClick={() => onNavigate('contact')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full btn-platinum-primary text-xs font-semibold cursor-pointer shrink-0"
+          >
+            <span>Book Discovery Call</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     </section>
