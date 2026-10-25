@@ -1,5 +1,27 @@
 import React, { useId } from 'react';
 import {
+  Atom,
+  Braces,
+  Cloud,
+  Code2,
+  Container,
+  Cpu,
+  Database,
+  FileCode2,
+  Globe,
+  Layers,
+  MapPin,
+  Megaphone,
+  Search,
+  Server,
+  ShieldCheck,
+  Sparkles,
+  Terminal,
+  TrendingUp,
+  Workflow,
+  Zap,
+} from 'lucide-react';
+import {
   SKYLINE_INSTAGRAM_URL,
   SKYLINE_WHATSAPP_NUMBER,
   SKYLINE_LINKEDIN_URL,
@@ -8,12 +30,12 @@ import {
 } from '../data/agencyData';
 
 /**
- * Precision Interlocking 'S' + 'A' Geometric Monolith (<SkyLineLogo />):
- * - Back Layer ('S' Monolith): Angular hexagonal ribbon forming 'S' with subtle bevel shading.
- * - Front Interlocking Layer ('A' Apex): Sharp 3D-faceted architectural 'A' rising through and interlocking with the lower spine of 'S' in a Brushed Liquid Platinum linearGradient.
- * - Digital Pixel Disintegration Detail: 3 crisp stepped micro-square pixels detaching diagonally downward from the bottom-right leg of the 'A'.
- * - Precision Axis Chevrons: Upward chevron ('^') above top peak, downward chevron ('v') below base, and subtle '<' and '>' code brackets flanking left and right.
- * - Wordmark Lockup: 'SKYLINE' in tracked regular Montserrat (tracking-[0.22em]) + 'DIGITAL' in bold Montserrat (font-extrabold tracking-[0.18em]).
+ * Precision Interlocking 'S' + 'D' Geometric Monolith (<SkyLineLogo />):
+ * - Back & Interlocking Layer ('S' Monolith): Angular hexagonal ribbon forming 'S' with subtle bevel shading.
+ * - Front Interlocking Layer ('D' Monolith): Sharp 3D-faceted architectural 'D' interlocking with the 'S' spine in a Brushed Liquid Platinum linearGradient.
+ * - Digital Pixel Disintegration Detail: 3 crisp stepped micro-square pixels detaching diagonally downward from the bottom-right chamfer of the 'D'.
+ * - Vertical-Only Axis Chevrons: Upward symbol ('∧') above top peak and downward symbol ('∨') below base (no horizontal '<>' symbols).
+ * - Wordmark Lockup: 'SKYLINE' in tracked regular Poppins (tracking-[0.22em]) + 'DIGITAL' in bold Poppins (font-extrabold tracking-[0.18em]).
  */
 export interface SkyLineLogoProps {
   className?: string;
@@ -32,8 +54,8 @@ export const SkyLineLogo: React.FC<SkyLineLogoProps> = ({
 }) => {
   const uid = useId();
   const sGradId = `s-monolith-${uid}`;
-  const aGradId = `a-apex-${uid}`;
-  const aFacetId = `a-facet-${uid}`;
+  const dGradId = `d-monolith-${uid}`;
+  const dFacetId = `d-facet-${uid}`;
 
   const markDims =
     size === 'sm'
@@ -62,7 +84,7 @@ export const SkyLineLogo: React.FC<SkyLineLogoProps> = ({
         stacked ? 'flex-col items-center text-center gap-2' : 'items-center gap-3'
       } select-none group ${className}`}
     >
-      {/* Bespoke Multi-Layered Vector SVG Monogram: Interlocking S + A Monolith */}
+      {/* Bespoke Multi-Layered Vector SVG Monogram: Interlocking S + D Monolith */}
       <div
         className={`${markDims} relative inline-flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-[1.04]`}
       >
@@ -74,143 +96,135 @@ export const SkyLineLogo: React.FC<SkyLineLogoProps> = ({
           aria-hidden="true"
         >
           <defs>
-            {/* Back Layer ('S' Monolith) Matte Obsidian / Dark Slate Gradient */}
-            <linearGradient id={sGradId} x1="12" y1="10" x2="50" y2="54" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#3F4454" />
-              <stop offset="50%" stopColor="#262936" />
-              <stop offset="100%" stopColor="#181A22" />
+            {/* 'S' Monolith Matte Obsidian / Dark Silver Gradient */}
+            <linearGradient id={sGradId} x1="10" y1="10" x2="44" y2="54" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#71717A" />
+              <stop offset="50%" stopColor="#3F3F46" />
+              <stop offset="100%" stopColor="#18181B" />
             </linearGradient>
 
-            {/* Front Interlocking Layer ('A' Apex) Brushed Liquid Platinum Metallic Gradient */}
-            <linearGradient id={aGradId} x1="18" y1="14" x2="48" y2="54" gradientUnits="userSpaceOnUse">
+            {/* Front Interlocking Layer ('D' Monolith) Brushed Titanium & Silver Metallic Gradient */}
+            <linearGradient id={dGradId} x1="24" y1="12" x2="52" y2="52" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stopColor="#FFFFFF" />
-              <stop offset="38%" stopColor="#CBD5E1" />
-              <stop offset="72%" stopColor="#64748B" />
-              <stop offset="100%" stopColor="#1E293B" />
+              <stop offset="38%" stopColor="#D4D4D8" />
+              <stop offset="75%" stopColor="#71717A" />
+              <stop offset="100%" stopColor="#27272A" />
             </linearGradient>
 
-            {/* High-Contrast Facet Highlight on the 'A' Apex */}
-            <linearGradient id={aFacetId} x1="32" y1="14" x2="44" y2="48" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#F8FAFC" />
-              <stop offset="100%" stopColor="#94A3B8" />
+            {/* High-Contrast Facet Highlight on the 'D' Outer Bow */}
+            <linearGradient id={dFacetId} x1="36" y1="13" x2="50" y2="50" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#FAF8F3" />
+              <stop offset="100%" stopColor="#C5A880" />
             </linearGradient>
           </defs>
 
-          {/* Top Axis Upward Chevron (^) */}
+          {/* Top Vertical Upward Symbol (∧) — Strictly Vertical Only */}
           <path
-            d="M28.5 6.5L32 3L35.5 6.5"
+            d="M28.2 7L32 2.8L35.8 7"
             stroke="currentColor"
-            strokeWidth="1.8"
+            strokeWidth="1.9"
             strokeLinecap="round"
             strokeLinejoin="round"
-            opacity="0.82"
+            opacity="0.85"
           />
 
-          {/* Bottom Axis Downward Chevron (v) */}
+          {/* Bottom Vertical Downward Symbol (∨) — Strictly Vertical Only */}
           <path
-            d="M28.5 57.5L32 61L35.5 57.5"
+            d="M28.2 57L32 61.2L35.8 57"
             stroke="currentColor"
-            strokeWidth="1.8"
+            strokeWidth="1.9"
             strokeLinecap="round"
             strokeLinejoin="round"
-            opacity="0.82"
+            opacity="0.85"
           />
 
-          {/* Left Flanking Code Bracket (<) */}
+          {/* LAYER 1 (BACK): Angular Hexagonal 'S' Monolith Ribbon */}
           <path
-            d="M8.5 26L4 32L8.5 38"
-            stroke="currentColor"
-            strokeWidth="1.7"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity="0.75"
-          />
-
-          {/* Right Flanking Code Bracket (>) */}
-          <path
-            d="M55.5 26L60 32L55.5 38"
-            stroke="currentColor"
-            strokeWidth="1.7"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity="0.75"
-          />
-
-          {/* BACK LAYER: Angular Hexagonal 'S' Monolith Ribbon */}
-          <path
-            d="M44 13L32 9L16 17V29L40 36V44L31 49L19 44L14 48.5L31 55.5L48 47.5V31.5L24 24.5V19.5L32 15.5L40.5 18.5L44 13Z"
+            d="M39 14.5L26.5 10L12 17.5V29.5L35.5 36.5V43.5L25.5 48.5L15 43.5L11 48L25.5 54.5L42 46.5V31.5L18.5 24.5V19.5L26.5 15.5L35.5 19L39 14.5Z"
             fill={`url(#${sGradId})`}
             stroke="currentColor"
-            strokeOpacity="0.28"
+            strokeOpacity="0.3"
             strokeWidth="0.9"
             strokeLinejoin="round"
           />
 
           {/* Subtle Inner Bevel Line on 'S' Ribbon */}
           <path
-            d="M32 11.5L18.5 18.2V27.2L45.5 35.2V45.8"
-            stroke="#94A3B8"
-            strokeOpacity="0.35"
+            d="M26.5 12.2L14.5 18.4V27.6L39.5 35.2V45"
+            stroke="#C5A880"
+            strokeOpacity="0.45"
             strokeWidth="1"
             strokeLinecap="round"
           />
 
-          {/* FRONT INTERLOCKING LAYER: 3D-Faceted Architectural 'A' Apex */}
-          {/* Left Ascending Blade of 'A' */}
+          {/* LAYER 2 (FRONT INTERLOCKING): 3D-Faceted Architectural 'D' Monolith */}
+          {/* Compound 'D' Body with Geometric Counter Cutout */}
           <path
-            d="M32 14L17.5 50H24.5L32 29.5V14Z"
-            fill={`url(#${aGradId})`}
-            stroke="#0F172A"
-            strokeOpacity="0.35"
-            strokeWidth="0.8"
-            strokeLinejoin="round"
-          />
-          {/* Right Descending Faceted Blade of 'A' */}
-          <path
-            d="M32 14L45.5 47.5L39.2 49.5L32 29.5V14Z"
-            fill={`url(#${aFacetId})`}
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M25 13H40.5L51 22.5V41.5L40.5 51H25V13ZM31.2 19.2V44.8H38.2L44.5 39V25L38.2 19.2H31.2Z"
+            fill={`url(#${dGradId})`}
             stroke="currentColor"
-            strokeOpacity="0.35"
-            strokeWidth="0.8"
+            strokeOpacity="0.38"
+            strokeWidth="0.85"
             strokeLinejoin="round"
-          />
-          {/* Interlocking Architectural Crossbar of 'A' Locking Around the Spine of 'S' */}
-          <polygon
-            points="23.5,39.5 40.5,39.5 42.5,44 21.5,44"
-            fill="currentColor"
-            fillOpacity="0.9"
           />
 
-          {/* DIGITAL PIXEL DISINTEGRATION DETAIL: 3 Stepped Micro-Square Pixels on Bottom-Right Leg of 'A' */}
+          {/* 3D Faceted Right-Edge Bevel Highlight on the 'D' */}
+          <path
+            d="M40.5 13L51 22.5V41.5L40.5 51L38.2 44.8L44.5 39V25L38.2 19.2L40.5 13Z"
+            fill={`url(#${dFacetId})`}
+            fillOpacity="0.65"
+          />
+
+          {/* LAYER 3 (INTERLOCKING OVERWEAVE): Center Diagonal Spine of 'S' Crossing Over the Left Stem of 'D' */}
+          <path
+            d="M18.5 24.5L36.5 30V36.8L18.5 31.2V24.5Z"
+            fill={`url(#${sGradId})`}
+            stroke="currentColor"
+            strokeOpacity="0.45"
+            strokeWidth="0.85"
+            strokeLinejoin="round"
+          />
+
+          {/* Crisp Metallic Accent Line on the Interlocking 'S' Overweave */}
+          <path
+            d="M20 26.8L35 31.5"
+            stroke="#C5A880"
+            strokeOpacity="0.65"
+            strokeWidth="1"
+            strokeLinecap="round"
+          />
+
+          {/* DIGITAL PIXEL DISINTEGRATION DETAIL: 3 Stepped Micro-Square Pixels Detaching from Bottom-Right of 'D' */}
           <rect
-            x="44.5"
-            y="47.5"
+            x="45.5"
+            y="47.2"
             width="3.2"
             height="3.2"
             rx="0.4"
             fill="currentColor"
           />
           <rect
-            x="48.8"
-            y="50.5"
+            x="49.8"
+            y="50.2"
             width="2.6"
             height="2.6"
             rx="0.35"
-            fill="currentColor"
-            opacity="0.85"
+            fill="#71717A"
           />
           <rect
-            x="52.4"
-            y="53.2"
+            x="53.4"
+            y="52.8"
             width="2"
             height="2"
             rx="0.3"
-            fill="#10B981"
+            fill="#C5A880"
           />
         </svg>
       </div>
 
-      {/* Wordmark Lockup: SKYLINE (Regular Tracked Montserrat) + DIGITAL (ExtraBold Tracked Montserrat) */}
+      {/* Wordmark Lockup: SKYLINE (Regular Tracked Poppins) + DIGITAL (ExtraBold Tracked Poppins) */}
       {showText && (
         <div className="flex flex-col leading-none">
           <div className="flex items-baseline gap-1.5 whitespace-nowrap">
@@ -254,7 +268,7 @@ export const WhatsAppLogoIcon: React.FC<IconProps> = ({ className = 'w-4 h-4' })
 );
 
 /**
- * Official WhatsApp Brand Badge (#25D366 circle/squircle + crisp white vector icon)
+ * Official WhatsApp Brand Badge (Default WhatsApp Green #25D366 circle + crisp white vector icon)
  */
 export const WhatsAppBrandBadge: React.FC<{ size?: 'sm' | 'md' | 'lg'; className?: string }> = ({
   size = 'md',
@@ -420,7 +434,6 @@ export const XTwitterBrandIcon: React.FC<{ size?: 'sm' | 'md' | 'lg'; className?
 
 /**
  * Official 4-Color Gmail / Google Workspace Envelope Vector Accent
- * (#EA4335 Red, #FBBC05 Amber, #34A853 Green, #4285F4 Blue)
  */
 export const GmailBrandIcon: React.FC<{ size?: 'sm' | 'md' | 'lg'; className?: string }> = ({
   size = 'md',
@@ -529,7 +542,7 @@ export const SocialIconBar: React.FC<{
 };
 
 /**
- * Authentic Brand-Colored Vector Icons for the Infinite Tech & Growth Marquee
+ * Lucide Icons for the Infinite Tech & Growth Marquee (with Default Green for WhatsApp)
  */
 export const TechStackBrandIcon: React.FC<{ name: string; className?: string }> = ({
   name,
@@ -537,232 +550,61 @@ export const TechStackBrandIcon: React.FC<{ name: string; className?: string }> 
 }) => {
   const lower = name.toLowerCase();
 
-  // React (#61DAFB)
-  if (lower.includes('react')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <circle cx="12" cy="12" r="2.2" fill="#61DAFB" />
-        <ellipse cx="12" cy="12" rx="10" ry="4.2" stroke="#61DAFB" strokeWidth="1.6" />
-        <ellipse
-          cx="12"
-          cy="12"
-          rx="10"
-          ry="4.2"
-          stroke="#61DAFB"
-          strokeWidth="1.6"
-          transform="rotate(60 12 12)"
-        />
-        <ellipse
-          cx="12"
-          cy="12"
-          rx="10"
-          ry="4.2"
-          stroke="#61DAFB"
-          strokeWidth="1.6"
-          transform="rotate(120 12 12)"
-        />
-      </svg>
-    );
-  }
-
-  // TypeScript (#3178C6)
-  if (lower.includes('typescript')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <rect x="2" y="2" width="20" height="20" rx="3.5" fill="#3178C6" />
-        <path
-          d="M12.5 11.2H9.8V18H8V11.2H5.3V9.7H12.5V11.2ZM19.2 15.8C19.2 17.2 18 18.2 16.1 18.2C14.6 18.2 13.5 17.6 13 16.8L14.1 15.6C14.5 16.2 15.2 16.7 16.1 16.7C17 16.7 17.5 16.3 17.5 15.8C17.5 15.2 16.9 15 15.7 14.6C14.2 14.1 13.3 13.5 13.3 12C13.3 10.6 14.4 9.6 16.2 9.6C17.5 9.6 18.5 10.1 19 10.8L17.9 12C17.5 11.4 16.9 11.1 16.2 11.1C15.4 11.1 15 11.5 15 11.9C15 12.5 15.5 12.7 16.7 13.1C18.2 13.6 19.2 14.3 19.2 15.8Z"
-          fill="#FFFFFF"
-        />
-      </svg>
-    );
-  }
-
-  // Python (#3776AB & #FFD43B)
-  if (lower.includes('python') || lower.includes('fastapi')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <path
-          d="M11.9 2C7.8 2 8.1 3.8 8.1 3.8V5.9H12.1V6.6H6.4C6.4 6.6 2 6.1 2 11.8C2 17.5 5.8 17.3 5.8 17.3H8V14.7C8 14.7 7.9 11.5 11.2 11.5H15.2C15.2 11.5 17.8 11.5 17.8 9V4.8C17.8 4.8 18.2 2 11.9 2Z"
-          fill="#3776AB"
-        />
-        <path
-          d="M12.1 22C16.2 22 15.9 20.2 15.9 20.2V18.1H11.9V17.4H17.6C17.6 17.4 22 17.9 22 12.2C22 6.5 18.2 6.7 18.2 6.7H16V9.3C16 9.3 16.1 12.5 12.8 12.5H8.8C8.8 12.5 6.2 12.5 6.2 15V19.2C6.2 19.2 5.8 22 12.1 22Z"
-          fill="#FFD43B"
-        />
-      </svg>
-    );
-  }
-
-  // PostgreSQL / Prisma (#336791)
-  if (lower.includes('postgres') || lower.includes('prisma')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <ellipse cx="12" cy="6" rx="8" ry="3.5" fill="#336791" />
-        <path
-          d="M4 6V12C4 13.93 7.58 15.5 12 15.5C16.42 15.5 20 13.93 20 12V6"
-          stroke="#336791"
-          strokeWidth="2"
-        />
-        <path
-          d="M4 12V18C4 19.93 7.58 21.5 12 21.5C16.42 21.5 20 19.93 20 18V12"
-          stroke="#5B9BD5"
-          strokeWidth="2"
-        />
-      </svg>
-    );
-  }
-
-  // Docker (#2496ED)
-  if (lower.includes('docker')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <rect x="4" y="10" width="3" height="2.6" rx="0.4" fill="#2496ED" />
-        <rect x="7.6" y="10" width="3" height="2.6" rx="0.4" fill="#2496ED" />
-        <rect x="11.2" y="10" width="3" height="2.6" rx="0.4" fill="#2496ED" />
-        <rect x="7.6" y="6.8" width="3" height="2.6" rx="0.4" fill="#2496ED" />
-        <rect x="11.2" y="6.8" width="3" height="2.6" rx="0.4" fill="#2496ED" />
-        <path
-          d="M2 13.5C2 13.5 3.5 13.2 5 13.2H18.2C19.5 12.6 20.4 11.4 20.6 10.5C21.3 10.9 22.1 11.8 22 12.9C21.5 17.2 17.5 19.5 12.2 19.5C6.8 19.5 3 17.2 2 13.5Z"
-          fill="#2496ED"
-        />
-      </svg>
-    );
-  }
-
-  // AWS (#FF9900)
-  if (lower.includes('aws')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <path
-          d="M6.5 10.5L9.5 4.5L12.5 10.5M7.3 9H11.7"
-          stroke="#FF9900"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M14.5 5L16 10.5L17.5 6.5L19 10.5L20.5 5"
-          stroke="#FF9900"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M4 15.5C8.5 19 15.5 19 20 15.5"
-          stroke="#FF9900"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-        />
-        <path
-          d="M18.2 14.8L20.4 15.2L19.6 17.4"
-          stroke="#FF9900"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  // Meta Ads (#0081FB)
-  if (lower.includes('meta')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <path
-          d="M6.8 7.5C4.2 7.5 2.2 10.2 2.2 13.2C2.2 15.6 3.7 17.2 5.6 17.2C7.4 17.2 8.9 15.7 11.2 12.1L12 10.8L12.8 12.1C15.1 15.7 16.6 17.2 18.4 17.2C20.3 17.2 21.8 15.6 21.8 13.2C21.8 10.2 19.8 7.5 17.2 7.5C15.3 7.5 13.8 8.9 12 11.6C10.2 8.9 8.7 7.5 6.8 7.5Z"
-          stroke="#0081FB"
-          strokeWidth="2.3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  // Google Ads / Google Map Pack / GA4 / Schema (#4285F4, #34A853, #FBBC05, #EA4335)
-  if (lower.includes('google') || lower.includes('ga4') || lower.includes('schema')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4" />
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 1.8.68 3.44 1.8 4.68L12 9V2z" fill="#EA4335" />
-        <path d="M5 9c0 2.6 1.5 5.6 3.7 8.4L12 9H5z" fill="#FBBC05" />
-        <path d="M12 9l-3.3 8.4C10.4 19.8 12 22 12 22s7-7.75 7-13h-7z" fill="#34A853" />
-        <circle cx="12" cy="9" r="2.8" fill="#FFFFFF" />
-      </svg>
-    );
-  }
-
-  // WhatsApp Cloud API (#25D366)
   if (lower.includes('whatsapp')) {
     return <WhatsAppBrandBadge size="sm" />;
   }
-
-  // Tailwind CSS (#38BDF8)
+  if (lower.includes('react')) {
+    return <Atom className={`${className} text-[#C5A880]`} />;
+  }
+  if (lower.includes('typescript')) {
+    return <FileCode2 className={`${className} text-[#71717A]`} />;
+  }
+  if (lower.includes('python') || lower.includes('fastapi')) {
+    return <Terminal className={`${className} text-[#C5A880]`} />;
+  }
+  if (lower.includes('postgres') || lower.includes('prisma') || lower.includes('redis')) {
+    return <Database className={`${className} text-[#71717A]`} />;
+  }
+  if (lower.includes('docker')) {
+    return <Container className={`${className} text-[#C5A880]`} />;
+  }
+  if (lower.includes('aws') || lower.includes('cloud')) {
+    return <Cloud className={`${className} text-[#71717A]`} />;
+  }
+  if (lower.includes('meta') || lower.includes('ads')) {
+    return <Megaphone className={`${className} text-[#C5A880]`} />;
+  }
+  if (lower.includes('map') || lower.includes('local')) {
+    return <MapPin className={`${className} text-[#C5A880]`} />;
+  }
+  if (lower.includes('google') || lower.includes('seo') || lower.includes('ga4')) {
+    return <Search className={`${className} text-[#71717A]`} />;
+  }
   if (lower.includes('tailwind')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <path
-          d="M12 6C9.33 6 7.67 7.33 7 10C8 8.67 9.17 8.17 10.5 8.5C11.26 8.69 11.8 9.24 12.4 9.85C13.38 10.85 14.52 12 17 12C19.67 12 21.33 10.67 22 8C21 9.33 19.83 9.83 18.5 9.5C17.74 9.31 17.2 8.76 16.6 8.15C15.62 7.15 14.48 6 12 6ZM7 12C4.33 12 2.67 13.33 2 16C3 14.67 4.17 14.17 5.5 14.5C6.26 14.69 6.8 15.24 7.4 15.85C8.38 16.85 9.52 18 12 18C14.67 18 16.33 16.67 17 14C16 15.33 14.83 15.83 13.5 15.5C12.74 15.31 12.2 14.76 11.6 14.15C10.62 13.15 9.48 12 7 12Z"
-          fill="#38BDF8"
-        />
-      </svg>
-    );
+    return <Sparkles className={`${className} text-[#C5A880]`} />;
   }
-
-  // Node.js / UPI (#339933 / #10B981)
-  if (lower.includes('node') || lower.includes('upi')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <polygon
-          points="12 2 20.66 7 20.66 17 12 22 3.34 17 3.34 7"
-          fill="#339933"
-        />
-        <path d="M9.5 9.5L14.5 12L9.5 14.5V9.5Z" fill="#FFFFFF" />
-      </svg>
-    );
+  if (lower.includes('node') || lower.includes('next')) {
+    return <Server className={`${className} text-[#71717A]`} />;
   }
-
-  // Redis (#DC382D)
-  if (lower.includes('redis')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <polygon points="12 3 21 7.5 12 12 3 7.5" fill="#DC382D" />
-        <polyline
-          points="3 12 12 16.5 21 12"
-          stroke="#DC382D"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-        />
-        <polyline
-          points="3 16.5 12 21 21 16.5"
-          stroke="#DC382D"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
+  if (lower.includes('upi') || lower.includes('razorpay')) {
+    return <Zap className={`${className} text-[#C5A880]`} />;
   }
-
-  // HubSpot / CRM (#FF7A59)
   if (lower.includes('hubspot') || lower.includes('crm')) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-        <circle cx="12" cy="12" r="4.5" stroke="#FF7A59" strokeWidth="2.2" />
-        <circle cx="18.5" cy="5.5" r="2" fill="#FF7A59" />
-        <circle cx="5.5" cy="18.5" r="2" fill="#FF7A59" />
-        <line x1="15.2" y1="8.8" x2="17.2" y2="6.8" stroke="#FF7A59" strokeWidth="2" />
-        <line x1="8.8" y1="15.2" x2="6.8" y2="17.2" stroke="#FF7A59" strokeWidth="2" />
-      </svg>
-    );
+    return <Workflow className={`${className} text-[#71717A]`} />;
+  }
+  if (lower.includes('schema') || lower.includes('json')) {
+    return <Braces className={`${className} text-[#C5A880]`} />;
+  }
+  if (lower.includes('openai') || lower.includes('langchain')) {
+    return <Cpu className={`${className} text-[#C5A880]`} />;
   }
 
-  // Default Next.js / Vercel / OpenAI / LangChain geometric mark
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <circle cx="12" cy="12" r="9" fill="#18181B" stroke="#71717A" strokeWidth="1.5" />
-      <path d="M9 16V8L16.5 17.5" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
-      <path d="M15 8V13" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
+  return <Code2 className={`${className} text-[#71717A]`} />;
+};
+
+export {
+  Layers,
+  ShieldCheck,
+  TrendingUp,
+  Globe,
 };

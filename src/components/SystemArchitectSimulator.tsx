@@ -242,7 +242,7 @@ export const SystemArchitectSimulator: React.FC<SystemArchitectSimulatorProps> =
   return (
     <section
       id="simulator"
-      className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 border-b border-[var(--border-hairline)] bg-[var(--bg-surface)]"
+      className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)]"
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}

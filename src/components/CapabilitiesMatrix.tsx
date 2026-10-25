@@ -196,17 +196,41 @@ export const CapabilitiesMatrix: React.FC<CapabilitiesMatrixProps> = ({
     };
   });
 
+  // 16 Orbiting 3D Circular/Spherical Satellite Nodes around the 360° Geodesic Sphere
+  const outerSphericalNodes = Array.from({ length: 16 }, (_, idx) => {
+    const baseAngle = (idx / 16) * Math.PI * 2 + angles.y * (idx % 2 === 0 ? 1.15 : -0.95);
+    const tilt = ((idx % 4) - 1.5) * 0.48 + Math.sin(angles.x + idx) * 0.18;
+    const orbitRadius = 1.22 + (idx % 3) * 0.09;
+    const vx = Math.cos(baseAngle) * Math.cos(tilt) * orbitRadius;
+    const vy = Math.sin(tilt) * orbitRadius;
+    const vz = Math.sin(baseAngle) * Math.cos(tilt) * orbitRadius;
+
+    const cosX = Math.cos(angles.x * 0.7);
+    const sinX = Math.sin(angles.x * 0.7);
+    const y1 = vy * cosX - vz * sinX;
+    const z1 = vy * sinX + vz * cosX;
+
+    const scale = 250 / (3.4 - z1 * 0.78);
+    return {
+      cx: 160 + vx * scale,
+      cy: 115 + y1 * scale,
+      depth: z1,
+      r: Math.max(2.2, (z1 + 1.8) * 1.45),
+      isChampagne: idx % 2 === 0,
+    };
+  });
+
   return (
     <section
       id="expertise"
-      className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 border-b border-[var(--border-hairline)] relative bg-[var(--bg-secondary)]"
+      className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 border-b border-[var(--border-hairline)] relative bg-[var(--bg-canvas)]"
     >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-14">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-platinum mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880]" />
               <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
                 OUR CORE EXPERTISE
               </span>
@@ -315,7 +339,7 @@ export const CapabilitiesMatrix: React.FC<CapabilitiesMatrixProps> = ({
               <div className="md:col-span-6 surface-elevated rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden select-none">
                 <div className="w-full flex items-center justify-between text-[10px] font-mono-tech text-[var(--text-muted)] mb-1">
                   <span className="inline-flex items-center gap-1 text-[var(--text-primary)] font-semibold">
-                    <Rotate3d className="w-3.5 h-3.5 text-[#10B981]" />
+                    <Rotate3d className="w-3.5 h-3.5 text-[#C5A880]" />
                     <span>360° 3D GEODESIC SPHERE</span>
                   </span>
                   <span>DRAG TO ROTATE</span>
@@ -330,6 +354,19 @@ export const CapabilitiesMatrix: React.FC<CapabilitiesMatrixProps> = ({
                   onPointerLeave={handlePointerUp}
                   aria-label="Interactive 360 degree 3D geodesic sphere"
                 >
+                  <defs>
+                    <radialGradient id="sphereNodeChampagne" cx="35%" cy="30%" r="70%">
+                      <stop offset="0%" stopColor="#FFFDF9" />
+                      <stop offset="55%" stopColor="#C5A880" />
+                      <stop offset="100%" stopColor="#52525B" />
+                    </radialGradient>
+                    <radialGradient id="sphereNodeSilver" cx="35%" cy="30%" r="70%">
+                      <stop offset="0%" stopColor="#FFFFFF" />
+                      <stop offset="55%" stopColor="#A1A1AA" />
+                      <stop offset="100%" stopColor="#3F3F46" />
+                    </radialGradient>
+                  </defs>
+
                   {/* Outer spherical boundary halo */}
                   <circle
                     cx="160"
@@ -348,10 +385,10 @@ export const CapabilitiesMatrix: React.FC<CapabilitiesMatrixProps> = ({
                     rx="108"
                     ry="34"
                     fill="none"
-                    stroke="var(--border-strong)"
+                    stroke="#C5A880"
                     strokeWidth="1"
                     strokeDasharray="4 4"
-                    opacity="0.5"
+                    opacity="0.55"
                     transform={`rotate(${(angles.z * 70) % 360} 160 115)`}
                   />
 
@@ -368,27 +405,66 @@ export const CapabilitiesMatrix: React.FC<CapabilitiesMatrixProps> = ({
                         y1={v1.cy}
                         x2={v2.cx}
                         y2={v2.cy}
-                        stroke={idx % 11 === 0 && avgDepth > 0.2 ? '#10B981' : 'var(--text-primary)'}
+                        stroke={idx % 11 === 0 && avgDepth > 0.2 ? '#C5A880' : 'var(--text-primary)'}
                         strokeWidth={avgDepth > 0 ? '1.2' : '0.75'}
                         strokeOpacity={opacity}
                       />
                     );
                   })}
 
-                  {/* Geodesic Sphere Nodes */}
+                  {/* Geodesic Sphere 3D Vertex Nodes */}
                   {projectedVertices.map((v, idx) => {
-                    const r = Math.max(1.4, (v.depth + 1.5) * 1.15);
-                    const opacity = Math.max(0.22, Math.min(0.95, (v.depth + 1.2) / 2.1));
-                    const isAccent = idx % 7 === 0 && v.depth > 0.15;
+                    const r = Math.max(1.5, (v.depth + 1.5) * 1.2);
+                    const opacity = Math.max(0.24, Math.min(0.96, (v.depth + 1.2) / 2.1));
+                    const isAccent = idx % 5 === 0 && v.depth > 0.1;
                     return (
                       <circle
                         key={idx}
                         cx={v.cx}
                         cy={v.cy}
-                        r={isAccent ? r + 0.8 : r}
-                        fill={isAccent ? '#10B981' : 'var(--text-primary)'}
+                        r={isAccent ? r + 0.9 : r}
+                        fill={isAccent ? 'url(#sphereNodeChampagne)' : 'url(#sphereNodeSilver)'}
                         fillOpacity={opacity}
                       />
+                    );
+                  })}
+
+                  {/* Outer Orbiting 3D Circular/Spherical Satellite Nodes around the Geodesic Sphere */}
+                  {outerSphericalNodes.map((node, idx) => {
+                    const nearVert = projectedVertices[(idx * 3) % projectedVertices.length];
+                    const alpha = Math.max(0.3, Math.min(0.95, (node.depth + 1.4) / 2.4));
+                    return (
+                      <g key={`sat-${idx}`} opacity={alpha}>
+                        <line
+                          x1={node.cx}
+                          y1={node.cy}
+                          x2={nearVert.cx}
+                          y2={nearVert.cy}
+                          stroke={node.isChampagne ? '#C5A880' : '#71717A'}
+                          strokeWidth="0.65"
+                          strokeDasharray="2 2"
+                          strokeOpacity="0.45"
+                        />
+                        <circle
+                          cx={node.cx}
+                          cy={node.cy}
+                          r={node.r + 2.2}
+                          fill="none"
+                          stroke={node.isChampagne ? '#C5A880' : '#71717A'}
+                          strokeWidth="0.6"
+                          strokeOpacity="0.4"
+                        />
+                        <circle
+                          cx={node.cx}
+                          cy={node.cy}
+                          r={node.r}
+                          fill={
+                            node.isChampagne
+                              ? 'url(#sphereNodeChampagne)'
+                              : 'url(#sphereNodeSilver)'
+                          }
+                        />
+                      </g>
                     );
                   })}
                 </svg>
@@ -450,7 +526,7 @@ export const CapabilitiesMatrix: React.FC<CapabilitiesMatrixProps> = ({
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1.5">
                       <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-[#C5A880] shrink-0" />
                         <h4 className="font-display font-bold text-sm sm:text-base text-[var(--text-primary)]">
                           {item.name}
                         </h4>
@@ -494,7 +570,7 @@ export const CapabilitiesMatrix: React.FC<CapabilitiesMatrixProps> = ({
         >
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-sage-status">
-              <Store className="w-3.5 h-3.5 text-[#10B981]" />
+              <Store className="w-3.5 h-3.5 text-[#C5A880]" />
               <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
                 SPECIALIZED LOCAL BUSINESS PACKAGES
               </span>

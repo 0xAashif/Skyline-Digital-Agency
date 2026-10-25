@@ -446,7 +446,7 @@ export const ContactDispatchFooter: React.FC<ContactDispatchFooterProps> = ({
           {/* Left Column: Agency Info & Direct Channels (5 Cols) */}
           <div className="lg:col-span-5 space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-sage-status">
-              <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+              <span className="w-2 h-2 rounded-full bg-[#C5A880]" />
               <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
                 START YOUR PROJECT TODAY
               </span>
@@ -814,9 +814,9 @@ export const ContactDispatchFooter: React.FC<ContactDispatchFooterProps> = ({
             2. MONUMENTAL SKYLINE WORDMARK + UNPREDICTABLE AUTONOMOUS ROCKET CANVAS
            ================================================================= */}
         <div className="py-12 sm:py-16 relative select-none overflow-hidden border-b border-[var(--border-hairline)]">
-          {/* Monumental Background Typography */}
+          {/* Monumental Background Typography in Metallic Silver */}
           <div className="text-center">
-            <div className="font-display font-extrabold text-[17vw] sm:text-[15.5vw] leading-[0.84] tracking-[-0.04em] text-[var(--text-primary)] opacity-[0.08] dark:opacity-[0.11]">
+            <div className="font-display font-extrabold text-[17vw] sm:text-[15.5vw] leading-[0.84] tracking-[-0.04em] bg-gradient-to-b from-[#E4E4E7] via-[#A1A1AA] to-[#71717A] bg-clip-text text-transparent opacity-65 dark:opacity-55">
               SKYLINE
             </div>
           </div>
@@ -846,7 +846,7 @@ export const ContactDispatchFooter: React.FC<ContactDispatchFooterProps> = ({
                 }}
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full badge-platinum text-xs font-semibold"
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#C5A880]" />
                 <span>Refer & Earn 15%</span>
               </a>
             </div>

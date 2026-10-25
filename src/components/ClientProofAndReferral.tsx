@@ -110,7 +110,7 @@ export const ClientProofAndReferral: React.FC<ClientProofAndReferralProps> = ({
   return (
     <section
       id="proof"
-      className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 border-b border-[var(--border-hairline)] bg-[var(--bg-secondary)]"
+      className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)]"
     >
       <div className="max-w-7xl mx-auto space-y-24">
         {/* =================================================================
@@ -120,7 +120,7 @@ export const ClientProofAndReferral: React.FC<ClientProofAndReferralProps> = ({
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-14">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-platinum mb-4">
-                <TrendingUp className="w-3.5 h-3.5 text-[#10B981]" />
+                <TrendingUp className="w-3.5 h-3.5 text-[#C5A880]" />
                 <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
                   PROVEN CLIENT IMPACT
                 </span>
@@ -237,7 +237,7 @@ export const ClientProofAndReferral: React.FC<ClientProofAndReferralProps> = ({
 
                 <div className="pt-5 mt-5 border-t border-[var(--border-hairline)] space-y-2">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md surface-elevated font-mono-tech text-[10px] text-[var(--text-primary)] font-semibold">
-                    <Award className="w-3 h-3 text-[#10B981]" />
+                    <Award className="w-3 h-3 text-[#C5A880]" />
                     <span>{rev.impactHighlight || rev.verifiedOutcome || 'Verified ROI'}</span>
                   </div>
                   <div>
@@ -265,7 +265,7 @@ export const ClientProofAndReferral: React.FC<ClientProofAndReferralProps> = ({
             {/* Left Explanation (6 Cols) */}
             <div className="lg:col-span-6 space-y-5">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full badge-sage-status">
-                <Gift className="w-3.5 h-3.5 text-[#10B981]" />
+                <Gift className="w-3.5 h-3.5 text-[#C5A880]" />
                 <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
                   SKYLINE PARTNER PROGRAM • 15% DIRECT PAYOUT
                 </span>
@@ -286,19 +286,19 @@ export const ClientProofAndReferral: React.FC<ClientProofAndReferralProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                 {[
                   {
-                    icon: <Share2 className="w-4 h-4 text-[#10B981]" />,
+                    icon: <Share2 className="w-4 h-4 text-[#C5A880]" />,
                     tag: 'INTRODUCE',
                     title: 'Share Intro',
                     sub: 'Connect us on WhatsApp',
                   },
                   {
-                    icon: <Handshake className="w-4 h-4 text-[#10B981]" />,
+                    icon: <Handshake className="w-4 h-4 text-[#C5A880]" />,
                     tag: 'BLUEPRINT',
                     title: 'We Pitch & Close',
                     sub: 'Free audit & proposal',
                   },
                   {
-                    icon: <Wallet className="w-4 h-4 text-[#10B981]" />,
+                    icon: <Wallet className="w-4 h-4 text-[#C5A880]" />,
                     tag: 'REWARD',
                     title: 'Get 15% Payout',
                     sub: 'Instant UPI / Bank transfer',
@@ -458,11 +458,11 @@ export const ClientProofAndReferral: React.FC<ClientProofAndReferralProps> = ({
 
               <div className="flex items-center justify-between text-[11px] text-[var(--text-muted)] font-mono-tech">
                 <span className="inline-flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#C5A880]" />
                   <span>No limit on referrals</span>
                 </span>
                 <span className="inline-flex items-center gap-1">
-                  <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#C5A880]" />
                   <span>Direct UPI / Bank Payout</span>
                 </span>
               </div>

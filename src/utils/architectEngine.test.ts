@@ -15,6 +15,28 @@ import {
   SKYLINE_WHATSAPP_NUMBER,
   SKYLINE_EMAIL,
 } from './architectEngine';
+import { FOUNDER_PROFILES, HERO_ORBS } from '../data/agencyData';
+
+test('FOUNDER_PROFILES contains complete resume details for Aashif Khan and Sachin Sahu and HERO_ORBS uses titanium/silver/champagne palette', () => {
+  assert.equal(FOUNDER_PROFILES.length, 2);
+  const aashif = FOUNDER_PROFILES.find((f) => f.id === 'aashif-khan');
+  const sachin = FOUNDER_PROFILES.find((f) => f.id === 'sachin-sahu');
+  assert.ok(aashif, 'Expected Aashif Khan founder profile');
+  assert.ok(sachin, 'Expected Sachin Sahu founder profile');
+  assert.equal(aashif.email, 'aashifkpp@gmail.com');
+  assert.equal(sachin.email, 'sachinsahuji306@gmail.com');
+  assert.ok(aashif.resumePdfUrl.includes('Aashif_Khan_Resume'));
+  assert.ok(sachin.resumePdfUrl.includes('Sachin_Sahu_Resume'));
+  assert.ok(aashif.projects.some((p) => p.name.includes('FileGuard AI')));
+  assert.ok(sachin.projects.some((p) => p.name.includes('ShadowBase')));
+  assert.ok(sachin.projects.some((p) => p.name.includes('GridWeaver')));
+
+  // Verify zero #8B5CF6 or #10B981 in HERO_ORBS
+  for (const orb of HERO_ORBS) {
+    assert.notEqual(orb.psychColor.toUpperCase(), '#8B5CF6');
+    assert.notEqual(orb.psychColor.toUpperCase(), '#10B981');
+  }
+});
 
 test('generateSystemBlueprint produces unique valid 3-layer blueprints across all 16 combinations', () => {
   clearTelemetryBuffer();
