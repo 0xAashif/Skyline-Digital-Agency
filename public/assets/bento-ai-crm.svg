@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 260" fill="none">
+  <rect width="600" height="260" rx="16" fill="#0B131E"/>
+  <!-- Connecting Workflow Lines -->
+  <path d="M160 130 L250 130 M350 130 L440 130" stroke="#49C5B6" stroke-width="2.5" stroke-dasharray="5 5"/>
+  <!-- Node 1: Inbound Ad/Web Lead -->
+  <rect x="32" y="70" width="128" height="120" rx="14" fill="#152033" stroke="#334155"/>
+  <text x="52" y="112" fill="#94A3B8" font-family="monospace" font-size="10">INBOUND CLICK</text>
+  <text x="52" y="138" fill="#F8FAFC" font-family="sans-serif" font-size="15" font-weight="700">Meta / Web</text>
+  <text x="52" y="162" fill="#49C5B6" font-family="monospace" font-size="11">Webhook 0.1s</text>
+
+  <!-- Node 2: AI Qualification Core -->
+  <rect x="236" y="54" width="128" height="152" rx="18" fill="#152033" stroke="#49C5B6" stroke-width="2"/>
+  <circle cx="300" cy="104" r="22" fill="#49C5B6" fill-opacity="0.2" stroke="#49C5B6"/>
+  <text x="290" y="110" fill="#49C5B6" font-family="monospace" font-size="14" font-weight="800">AI</text>
+  <text x="254" y="152" fill="#F8FAFC" font-family="sans-serif" font-size="14" font-weight="700">WhatsApp Bot</text>
+  <text x="256" y="176" fill="#49C5B6" font-family="monospace" font-size="11">&lt; 6s Qualifier</text>
+
+  <!-- Node 3: CRM Deal Booked -->
+  <rect x="440" y="70" width="128" height="120" rx="14" fill="#49C5B6" fill-opacity="0.16" stroke="#49C5B6"/>
+  <text x="458" y="112" fill="#49C5B6" font-family="monospace" font-size="10">PIPELINE SYNC</text>
+  <text x="458" y="138" fill="#F8FAFC" font-family="sans-serif" font-size="15" font-weight="700">Deal Booked</text>
+  <text x="458" y="162" fill="#49C5B6" font-family="monospace" font-size="11">24/7 Active</text>
+</svg>

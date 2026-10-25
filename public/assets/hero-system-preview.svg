@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="960" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B131E"/>
+      <stop offset="55%" stop-color="#0E1726"/>
+      <stop offset="100%" stop-color="#091D24"/>
+    </linearGradient>
+    <radialGradient id="tealAura" cx="70%" cy="30%" r="55%">
+      <stop offset="0%" stop-color="#49C5B6" stop-opacity="0.32"/>
+      <stop offset="60%" stop-color="#0D9488" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#0B131E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cardSurface" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#182232" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="tealStroke" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#49C5B6"/>
+      <stop offset="100%" stop-color="#14B8A6" stop-opacity="0.2"/>
+    </linearGradient>
+    <pattern id="isoGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#334155" stroke-width="0.7" stroke-opacity="0.35"/>
+    </pattern>
+  </defs>
+
+  <!-- Base Architectural Canvas -->
+  <rect width="960" height="600" rx="24" fill="url(#bgGrad)"/>
+  <rect width="960" height="600" rx="24" fill="url(#isoGrid)"/>
+  <rect width="960" height="600" rx="24" fill="url(#tealAura)"/>
+
+  <!-- Geometric Skyline Perspective Vectors -->
+  <g stroke="#49C5B6" stroke-opacity="0.22" stroke-width="1.2">
+    <path d="M620 560 L620 150 L700 90 L700 560"/>
+    <path d="M540 560 L540 230 L620 180"/>
+    <path d="M700 180 L790 130 L790 560"/>
+    <path d="M470 560 L470 300 L540 260"/>
+  </g>
+
+  <!-- Top Telemetry Window Bar -->
+  <rect x="36" y="32" width="888" height="48" rx="12" fill="#131C2B" stroke="#26354D"/>
+  <circle cx="62" cy="56" r="6" fill="#EF4444" fill-opacity="0.8"/>
+  <circle cx="82" cy="56" r="6" fill="#F59E0B" fill-opacity="0.8"/>
+  <circle cx="102" cy="56" r="6" fill="#49C5B6"/>
+  <text x="128" y="61" fill="#94A3B8" font-family="monospace" font-size="13" font-weight="600">SKYLINE-SYSTEM-ARCHITECT // EDGE TELEMETRY · 99.4 CWV</text>
+  <rect x="760" y="42" width="144" height="28" rx="14" fill="#49C5B6" fill-opacity="0.15" stroke="#49C5B6" stroke-opacity="0.5"/>
+  <text x="782" y="60" fill="#49C5B6" font-family="monospace" font-size="11" font-weight="700">● 84ms TTFB LIVE</text>
+
+  <!-- Left Column: 3-Layer Architecture Pipeline Nodes -->
+  <!-- Node 01 -->
+  <rect x="36" y="104" width="430" height="132" rx="16" fill="url(#cardSurface)" stroke="url(#tealStroke)" stroke-width="1.5"/>
+  <rect x="56" y="124" width="44" height="44" rx="10" fill="#49C5B6" fill-opacity="0.15" stroke="#49C5B6"/>
+  <text x="68" y="151" fill="#49C5B6" font-family="monospace" font-size="15" font-weight="700">01</text>
+  <text x="116" y="142" fill="#49C5B6" font-family="monospace" font-size="11" font-weight="700">LAYER 01 · DEMAND CAPTURE</text>
+  <text x="116" y="166" fill="#F8FAFC" font-family="sans-serif" font-size="18" font-weight="700">Meta CAPI &amp; Search AEO Graph</text>
+  <text x="56" y="198" fill="#94A3B8" font-family="sans-serif" font-size="13">High-intent Google Search + Reels hooks with server-side attribution.</text>
+  <rect x="346" y="122" width="100" height="24" rx="6" fill="#0F172A" stroke="#334155"/>
+  <text x="360" y="138" fill="#49C5B6" font-family="monospace" font-size="11" font-weight="700">4.2x ROAS</text>
+
+  <!-- Connector Arrow 1 -> 2 -->
+  <path d="M251 236 L251 264" stroke="#49C5B6" stroke-width="2" stroke-dasharray="4 4"/>
+  <circle cx="251" cy="250" r="4" fill="#49C5B6"/>
+
+  <!-- Node 02 -->
+  <rect x="36" y="264" width="430" height="132" rx="16" fill="url(#cardSurface)" stroke="#334155" stroke-width="1.2"/>
+  <rect x="56" y="284" width="44" height="44" rx="10" fill="#0F172A" stroke="#49C5B6"/>
+  <text x="65" y="311" fill="#49C5B6" font-family="monospace" font-size="14" font-weight="700">&lt;/&gt;</text>
+  <text x="116" y="302" fill="#94A3B8" font-family="monospace" font-size="11" font-weight="700">LAYER 02 · SUB-100MS WEB CORE</text>
+  <text x="116" y="326" fill="#F8FAFC" font-family="sans-serif" font-size="18" font-weight="700">Next.js 15 &amp; TypeScript Edge UI</text>
+  <text x="56" y="358" fill="#94A3B8" font-family="sans-serif" font-size="13">Zero-bloat SSR storefront &amp; conversion funnels with 99+ Web Vitals.</text>
+  <rect x="346" y="282" width="100" height="24" rx="6" fill="#0F172A" stroke="#334155"/>
+  <text x="358" y="298" fill="#F8FAFC" font-family="monospace" font-size="11" font-weight="700">99/100 CWV</text>
+
+  <!-- Connector Arrow 2 -> 3 -->
+  <path d="M251 396 L251 424" stroke="#49C5B6" stroke-width="2" stroke-dasharray="4 4"/>
+  <circle cx="251" cy="410" r="4" fill="#49C5B6"/>
+
+  <!-- Node 03 -->
+  <rect x="36" y="424" width="430" height="136" rx="16" fill="url(#cardSurface)" stroke="url(#tealStroke)" stroke-width="1.5"/>
+  <rect x="56" y="444" width="44" height="44" rx="10" fill="#49C5B6" stroke="#49C5B6"/>
+  <text x="68" y="471" fill="#0B131E" font-family="monospace" font-size="15" font-weight="800">AI</text>
+  <text x="116" y="462" fill="#49C5B6" font-family="monospace" font-size="11" font-weight="700">LAYER 03 · AUTONOMOUS CONVERSION</text>
+  <text x="116" y="486" fill="#F8FAFC" font-family="sans-serif" font-size="18" font-weight="700">WhatsApp Cloud API &amp; AI CRM</text>
+  <text x="56" y="518" fill="#94A3B8" font-family="sans-serif" font-size="13">Sub-6-second automated lead qualification, brochure dispatch &amp; booking.</text>
+  <rect x="346" y="442" width="100" height="24" rx="6" fill="#49C5B6" fill-opacity="0.2" stroke="#49C5B6"/>
+  <text x="358" y="458" fill="#49C5B6" font-family="monospace" font-size="11" font-weight="700">&lt; 6s REPLY</text>
+
+  <!-- Right Column: Revenue Velocity & Rising Skyline Analytics Card -->
+  <rect x="494" y="104" width="430" height="456" rx="20" fill="url(#cardSurface)" stroke="#334155" stroke-width="1.2"/>
+  <text x="524" y="142" fill="#94A3B8" font-family="monospace" font-size="11" font-weight="700">VERIFIED CLIENT PIPELINE VELOCITY</text>
+  <text x="524" y="178" fill="#F8FAFC" font-family="sans-serif" font-size="28" font-weight="800">+214% Qualified Pipeline</text>
+  <text x="524" y="204" fill="#49C5B6" font-family="monospace" font-size="13" font-weight="600">▲ +62% Mobile Conversion Rate · -38% CAC</text>
+
+  <!-- Architectural Rising Bar & Trend Graph (Inspired by SkyLine Logo) -->
+  <g transform="translate(524, 236)">
+    <rect x="0" y="128" width="44" height="82" rx="6" fill="#1E293B" stroke="#334155"/>
+    <rect x="62" y="102" width="44" height="108" rx="6" fill="#1E293B" stroke="#334155"/>
+    <rect x="124" y="74" width="44" height="136" rx="6" fill="#0D9488" fill-opacity="0.35" stroke="#49C5B6"/>
+    <rect x="186" y="42" width="44" height="168" rx="6" fill="#0D9488" fill-opacity="0.55" stroke="#49C5B6"/>
+    <rect x="248" y="10" width="44" height="200" rx="6" fill="#49C5B6" fill-opacity="0.85" stroke="#49C5B6"/>
+    <rect x="310" y="-14" width="48" height="224" rx="6" fill="#49C5B6"/>
+
+    <!-- Rising Trend Line -->
+    <path d="M 22 115 L 84 88 L 146 62 L 208 26 L 270 -2 L 334 -28" fill="none" stroke="#F8FAFC" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="22" cy="115" r="5" fill="#49C5B6" stroke="#0F172A" stroke-width="2"/>
+    <circle cx="84" cy="88" r="5" fill="#49C5B6" stroke="#0F172A" stroke-width="2"/>
+    <circle cx="146" cy="62" r="5" fill="#49C5B6" stroke="#0F172A" stroke-width="2"/>
+    <circle cx="208" cy="26" r="5" fill="#49C5B6" stroke="#0F172A" stroke-width="2"/>
+    <circle cx="270" cy="-2" r="5" fill="#49C5B6" stroke="#0F172A" stroke-width="2"/>
+    <circle cx="334" cy="-28" r="7" fill="#F8FAFC" stroke="#49C5B6" stroke-width="3"/>
+  </g>
+
+  <!-- Bottom KPI Chips inside Right Card -->
+  <rect x="524" y="476" width="178" height="58" rx="12" fill="#0F172A" stroke="#334155"/>
+  <text x="540" y="498" fill="#94A3B8" font-family="monospace" font-size="10">CORE WEB VITALS</text>
+  <text x="540" y="520" fill="#49C5B6" font-family="monospace" font-size="16" font-weight="700">99 / 100 PASS</text>
+
+  <rect x="716" y="476" width="178" height="58" rx="12" fill="#0F172A" stroke="#334155"/>
+  <text x="732" y="498" fill="#94A3B8" font-family="monospace" font-size="10">WHATSAPP AI SLA</text>
+  <text x="732" y="520" fill="#F8FAFC" font-family="monospace" font-size="16" font-weight="700">4.8s Automated</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="propBg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0C1624"/>
+      <stop offset="100%" stop-color="#112233"/>
+    </linearGradient>
+    <linearGradient id="glassGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#49C5B6" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#propBg)"/>
+  <!-- Architectural Perspective Grid -->
+  <path d="M0 380 L800 380 M0 420 L800 420 M0 460 L800 460" stroke="#334155" stroke-opacity="0.4"/>
+  <path d="M400 220 L100 500 M400 220 L300 500 M400 220 L500 500 M400 220 L700 500" stroke="#49C5B6" stroke-opacity="0.2"/>
+
+  <!-- 3D Architectural Villa / Tower Structure -->
+  <g transform="translate(80, 70)">
+    <!-- Left Wing -->
+    <polygon points="40,290 190,230 190,80 40,140" fill="url(#glassGlow)" stroke="#49C5B6" stroke-width="2"/>
+    <!-- Center Penthouse Tower -->
+    <polygon points="190,290 360,290 360,30 190,80" fill="#16263B" stroke="#49C5B6" stroke-width="2"/>
+    <!-- Warm Interior Lit Windows -->
+    <rect x="215" y="95" width="120" height="45" rx="4" fill="#F59E0B" fill-opacity="0.25" stroke="#FBBF24"/>
+    <rect x="215" y="155" width="120" height="55" rx="4" fill="#49C5B6" fill-opacity="0.25" stroke="#49C5B6"/>
+    <rect x="215" y="225" width="120" height="45" rx="4" fill="#F59E0B" fill-opacity="0.2" stroke="#FBBF24"/>
+
+    <!-- 360 Spatial Orbit Ring -->
+    <ellipse cx="210" cy="285" rx="185" ry="38" fill="none" stroke="#49C5B6" stroke-width="2" stroke-dasharray="8 6"/>
+    <circle cx="395" cy="285" r="7" fill="#49C5B6"/>
+    <circle cx="25" cy="285" r="7" fill="#49C5B6"/>
+  </g>
+
+  <!-- Right Floating PropTech UI Overlay Card -->
+  <rect x="460" y="54" width="296" height="370" rx="16" fill="#0F172A" fill-opacity="0.92" stroke="#334155" stroke-width="1.5"/>
+  <rect x="484" y="78" width="110" height="24" rx="12" fill="#49C5B6" fill-opacity="0.18" stroke="#49C5B6"/>
+  <text x="498" y="94" fill="#49C5B6" font-family="monospace" font-size="11" font-weight="700">360° LIVE TOUR</text>
+  <text x="484" y="132" fill="#F8FAFC" font-family="sans-serif" font-size="20" font-weight="800">Skyline Crest Penthouse</text>
+  <text x="484" y="156" fill="#94A3B8" font-family="sans-serif" font-size="13">4,850 sq.ft · Interactive Spatial View</text>
+
+  <!-- Metrics Inside PropTech Overlay -->
+  <rect x="484" y="180" width="248" height="68" rx="12" fill="#1E293B" stroke="#334155"/>
+  <text x="502" y="204" fill="#94A3B8" font-family="monospace" font-size="10">COST PER QUALIFIED SITE VISIT</text>
+  <text x="502" y="232" fill="#49C5B6" font-family="monospace" font-size="22" font-weight="800">-38% CAC Drop</text>
+
+  <rect x="484" y="262" width="248" height="68" rx="12" fill="#1E293B" stroke="#334155"/>
+  <text x="502" y="286" fill="#94A3B8" font-family="monospace" font-size="10">INSTANT WHATSAPP SCHEDULER</text>
+  <text x="502" y="314" fill="#F8FAFC" font-family="monospace" font-size="18" font-weight="700">2.8x Site Visits</text>
+
+  <rect x="484" y="348" width="248" height="48" rx="12" fill="#49C5B6"/>
+  <text x="526" y="377" fill="#0B131E" font-family="sans-serif" font-size="14" font-weight="800">Book Virtual Walkthrough →</text>
+</svg>

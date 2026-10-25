@@ -1,0 +1,284 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Inter", ui-sans-serif, system-ui, monospace;
+
+  --color-obsidian: #09090B;
+  --color-gunmetal: #141417;
+  --color-hairline: #27272A;
+  --color-platinum-silver: #E4E4E7;
+  --color-brushed-silver: #D4D4D8;
+  --color-alabaster: #F4F4F6;
+  --color-whatsapp: #25D366;
+}
+
+/* Light Mode Palette ("Liquid Silver & Dark Platinum" — Default) */
+:root,
+html[data-theme="light"] {
+  --bg-canvas: #F4F4F6;
+  --bg-surface: #FFFFFF;
+  --bg-subdued: #E4E4E7;
+  --bg-elevated: #FAFAFA;
+  --border-metallic: #D4D4D8;
+  --text-primary: #18181B;
+  --text-secondary: #3F3F46;
+  --text-muted: #52525B;
+  --btn-primary-bg: #18181B;
+  --btn-primary-text: #FAFAFA;
+  --badge-bg: #E4E4E7;
+  --badge-text: #18181B;
+  --card-shadow: 0 10px 30px -10px rgba(24, 24, 27, 0.07), 0 1px 3px rgba(24, 24, 27, 0.05);
+  color-scheme: light;
+}
+
+/* Dark Mode Palette ("Matte Obsidian & Brushed Chrome") */
+html[data-theme="dark"] {
+  --bg-canvas: #09090B;
+  --bg-surface: #141417;
+  --bg-subdued: #18181B;
+  --bg-elevated: #1F1F23;
+  --border-metallic: #27272A;
+  --text-primary: #FAFAFA;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
+  --btn-primary-bg: #E4E4E7;
+  --btn-primary-text: #09090B;
+  --badge-bg: #27272A;
+  --badge-text: #E4E4E7;
+  --card-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.65);
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+  }
+
+  :focus-visible {
+    outline: 2px solid #6366F1;
+    outline-offset: 2px;
+  }
+}
+
+/* Semantic Platinum & Obsidian Surface Helpers */
+.platinum-canvas {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+}
+
+.platinum-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-metallic);
+  box-shadow: var(--card-shadow);
+}
+
+.platinum-subdued {
+  background-color: var(--bg-subdued);
+  border: 1px solid var(--border-metallic);
+}
+
+.btn-platinum-primary {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+
+.btn-platinum-primary:hover {
+  opacity: 0.92;
+}
+
+.badge-platinum {
+  background-color: var(--badge-bg);
+  color: var(--badge-text);
+  border: 1px solid var(--border-metallic);
+}
+
+/* FR-COLOR-003: 6 Semantic Micro-Accent Badges (High Contrast in Both Light & Dark Mode) */
+.accent-pill-emerald {
+  background-color: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #059669;
+}
+html[data-theme="dark"] .accent-pill-emerald {
+  color: #34D399;
+}
+
+.accent-pill-indigo {
+  background-color: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #4F46E5;
+}
+html[data-theme="dark"] .accent-pill-indigo {
+  color: #818CF8;
+}
+
+.accent-pill-violet {
+  background-color: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  color: #7C3AED;
+}
+html[data-theme="dark"] .accent-pill-violet {
+  color: #A78BFA;
+}
+
+.accent-pill-amber {
+  background-color: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #D97706;
+}
+html[data-theme="dark"] .accent-pill-amber {
+  color: #FBBF24;
+}
+
+.accent-pill-cyan {
+  background-color: rgba(6, 182, 212, 0.12);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  color: #0891B2;
+}
+html[data-theme="dark"] .accent-pill-cyan {
+  color: #22D3EE;
+}
+
+.accent-pill-rose {
+  background-color: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  color: #E11D48;
+}
+html[data-theme="dark"] .accent-pill-rose {
+  color: #FB7185;
+}
+
+/* Instagram Official Subtle Gradient Hover Glow */
+.instagram-icon-btn {
+  transition: all 180ms ease;
+}
+.instagram-icon-btn:hover {
+  background: linear-gradient(135deg, #F58529 0%, #DD2A7B 50%, #8134AF 100%);
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+}
+
+/* Hero Architectural Micro-Grid & Metallic Sheen */
+.hero-architectural-bg {
+  background-color: var(--bg-canvas);
+  background-image:
+    radial-gradient(circle at 76% 24%, rgba(99, 102, 241, 0.06) 0%, transparent 48%),
+    radial-gradient(circle at 20% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 45%),
+    linear-gradient(to right, rgba(24, 24, 27, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(24, 24, 27, 0.04) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+}
+
+html[data-theme="dark"] .hero-architectural-bg {
+  background-color: #09090B;
+  background-image:
+    radial-gradient(circle at 76% 24%, rgba(99, 102, 241, 0.11) 0%, transparent 48%),
+    radial-gradient(circle at 18% 82%, rgba(6, 182, 212, 0.08) 0%, transparent 45%),
+    linear-gradient(to right, rgba(39, 39, 42, 0.45) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(39, 39, 42, 0.45) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+}
+
+/* Service Orbs (AI, ADS, SAAS, WEB, SEO, CRM, LOCAL) Gentle Floating Animation */
+@keyframes skyline-orb-float {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -5px, 0);
+  }
+}
+
+.animate-orb-float {
+  animation: skyline-orb-float 3.4s ease-in-out infinite;
+}
+
+/* Infinite Dual-Row Stack Marquee */
+@keyframes skyline-marquee-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes skyline-marquee-right {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: skyline-marquee-left 36s linear infinite;
+}
+
+.animate-marquee-right {
+  display: flex;
+  width: max-content;
+  animation: skyline-marquee-right 40s linear infinite;
+}
+
+.ticker-group:hover .animate-marquee-left,
+.ticker-group:hover .animate-marquee-right,
+.ticker-paused .animate-marquee-left,
+.ticker-paused .animate-marquee-right {
+  animation-play-state: paused;
+}
+
+/* FR-ANIM-005: Infinity Loop (Lemniscate) Glowing Dotted Trail Chase Animation */
+@keyframes skyline-infinity-trail {
+  0% {
+    stroke-dashoffset: 2400;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-infinity-trail {
+  stroke-dasharray: 10 14;
+  animation: skyline-infinity-trail 9s linear infinite;
+}
+
+@keyframes skyline-infinity-wake {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-infinity-wake {
+  stroke-dasharray: 280 720;
+  animation: skyline-infinity-wake 9s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee-left,
+  .animate-marquee-right,
+  .animate-orb-float,
+  .animate-infinity-trail,
+  .animate-infinity-wake {
+    animation: none;
+  }
+}

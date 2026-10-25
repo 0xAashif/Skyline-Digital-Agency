@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="d2cBg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0B131E"/>
+    </linearGradient>
+    <linearGradient id="bottleGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#49C5B6"/>
+      <stop offset="100%" stop-color="#0D9488"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#d2cBg)"/>
+
+  <!-- Left Luxury Product Showcase Card -->
+  <rect x="44" y="42" width="320" height="416" rx="20" fill="#182234" stroke="#334155"/>
+  <circle cx="204" cy="210" r="110" fill="#49C5B6" fill-opacity="0.12" stroke="#49C5B6" stroke-opacity="0.35"/>
+  <!-- Minimalist Botanical Serum Bottle Vector -->
+  <rect x="182" y="96" width="44" height="26" rx="4" fill="#F8FAFC"/>
+  <rect x="192" y="122" width="24" height="16" fill="#94A3B8"/>
+  <rect x="156" y="138" width="96" height="164" rx="18" fill="url(#bottleGrad)" stroke="#F8FAFC" stroke-width="1.5"/>
+  <rect x="170" y="172" width="68" height="92" rx="6" fill="#0B131E" fill-opacity="0.88"/>
+  <text x="180" y="208" fill="#49C5B6" font-family="sans-serif" font-size="11" font-weight="800">AURASCALE</text>
+  <text x="180" y="226" fill="#F8FAFC" font-family="monospace" font-size="9">BIO-SERUM 01</text>
+
+  <text x="74" y="362" fill="#F8FAFC" font-family="sans-serif" font-size="20" font-weight="800">AuraScale Headless Store</text>
+  <text x="74" y="388" fill="#49C5B6" font-family="monospace" font-size="13" font-weight="700">0.4s Instant Page Load · 99 CWV</text>
+
+  <!-- Right Checkout & Conversion Telemetry -->
+  <rect x="392" y="42" width="364" height="196" rx="20" fill="#182234" stroke="#49C5B6" stroke-width="1.5"/>
+  <text x="420" y="78" fill="#49C5B6" font-family="monospace" font-size="11" font-weight="700">SERVER-SIDE META CAPI + REELS FUNNEL</text>
+  <text x="420" y="118" fill="#F8FAFC" font-family="sans-serif" font-size="34" font-weight="800">4.2x Verified ROAS</text>
+  <text x="420" y="148" fill="#94A3B8" font-family="sans-serif" font-size="13">First-party event attribution with zero iOS signal loss.</text>
+  <rect x="420" y="172" width="180" height="36" rx="10" fill="#49C5B6" fill-opacity="0.18" stroke="#49C5B6"/>
+  <text x="438" y="195" fill="#49C5B6" font-family="monospace" font-size="12" font-weight="700">+64% Checkout Lift</text>
+
+  <!-- Bottom Right WhatsApp Abandoned Cart Recovery Card -->
+  <rect x="392" y="262" width="364" height="196" rx="20" fill="#182234" stroke="#334155"/>
+  <text x="420" y="298" fill="#94A3B8" font-family="monospace" font-size="11" font-weight="700">WHATSAPP CLOUD CART RECOVERY</text>
+  <rect x="420" y="318" width="308" height="72" rx="12" fill="#0B131E" stroke="#334155"/>
+  <text x="438" y="344" fill="#49C5B6" font-family="monospace" font-size="11" font-weight="700">● AI Bot (Triggered in 8s)</text>
+  <text x="438" y="368" fill="#F8FAFC" font-family="sans-serif" font-size="13">&quot;Your AuraScale kit is reserved! Tap for 1-click UPI&quot;</text>
+  <text x="420" y="426" fill="#49C5B6" font-family="monospace" font-size="13" font-weight="700">✓ 28.4% Abandoned Carts Recovered Automatically</text>
+</svg>
