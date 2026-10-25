@@ -277,7 +277,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="lg:col-span-5 space-y-5">
               <div className="surface-card rounded-3xl p-6 sm:p-7 space-y-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-sage-status">
-                  <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+                  <span className="w-2 h-2 rounded-full bg-[#C5A880]" />
                   <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
                     ACCEPTING NEW PROJECTS
                   </span>

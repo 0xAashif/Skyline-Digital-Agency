@@ -136,6 +136,191 @@ export interface HeroOrbItem {
   targetSection: string;
 }
 
+export interface FounderProfile {
+  id: string;
+  name: string;
+  role: string;
+  headline: string;
+  education: string;
+  institution: string;
+  location: string;
+  email: string;
+  phone: string;
+  linkedinUrl?: string;
+  linkedinLabel?: string;
+  githubUrl?: string;
+  githubLabel?: string;
+  resumePdfUrl: string;
+  summary: string;
+  languages: string[];
+  frameworksAndTools: string[];
+  coreConcepts: string[];
+  experience: {
+    role: string;
+    company: string;
+    period: string;
+    highlights: string[];
+  }[];
+  projects: {
+    name: string;
+    subtitle: string;
+    stack: string;
+    highlights: string[];
+    repoUrl?: string;
+  }[];
+  certifications: string[];
+}
+
+export const FOUNDER_PROFILES: FounderProfile[] = [
+  {
+    id: 'aashif-khan',
+    name: 'Aashif Khan',
+    role: 'Co-Founder • Software Engineering, Full-Stack & Cybersecurity',
+    headline: 'B.Tech CSE (3rd Year) • Full-Stack Architecture & Cryptographic Security',
+    education: 'B.Tech in Computer Science & Engineering (3rd Year, 6th Semester)',
+    institution: 'Jai Narain College of Technology (JNCT), Bhopal (2023 – Present)',
+    location: 'Ujjain / Bhopal, Madhya Pradesh, India',
+    email: 'aashifkpp@gmail.com',
+    phone: '+91 86430 02478',
+    linkedinUrl: 'https://www.linkedin.com/in/Aashif-Khan',
+    linkedinLabel: 'linkedin.com/in/Aashif-Khan',
+    githubUrl: 'https://github.com/0xAashif',
+    githubLabel: 'github.com/0xAashif',
+    resumePdfUrl: '/assets/aistudio/Aashif_Khan_Resume__1__fec07135.pdf',
+    summary:
+      'Full-stack software engineer and cybersecurity specialist focused on resilient Node.js/Express backends, REST APIs, SHA-256 cryptographic verification, blockchain anchoring, and high-converting cloud deployments across Render and Vercel.',
+    languages: ['C++', 'Python', 'Java', 'JavaScript / TypeScript'],
+    frameworksAndTools: [
+      'Node.js',
+      'Express.js',
+      'REST APIs',
+      'Git & GitHub',
+      'VS Code',
+      'WSL Ubuntu',
+      'Render & Vercel',
+    ],
+    coreConcepts: [
+      'SHA-256 Cryptographic Hashing',
+      'Blockchain Anchoring (OriginStamp)',
+      'Data Structures & Algorithms',
+      'Cybersecurity Architecture',
+      'AI Studio Systems',
+    ],
+    experience: [
+      {
+        role: 'Co-Founder & Lead Full-Stack / Security Architect',
+        company: 'SkyLine Digital Agency — Madhya Pradesh, India',
+        period: '2024 – Present',
+        highlights: [
+          'Architecting full-stack web platforms, Node.js/Express APIs, and automated WhatsApp & CRM pipelines.',
+          'Leading cloud deployments across Vercel and Render with cryptographic security and zero-downtime delivery.',
+        ],
+      },
+    ],
+    projects: [
+      {
+        name: 'FileGuard AI',
+        subtitle: 'Document Integrity Verification Tool',
+        stack: 'Node.js • Express • lowdb • Multer • SHA-256 • OriginStamp Blockchain • Render + Vercel',
+        highlights: [
+          'Full-stack web application verifying document authenticity via SHA-256 hashing and blockchain anchoring (OriginStamp).',
+          'Engineered distributed backend on Render paired with a high-speed frontend deployed on Vercel.',
+        ],
+        repoUrl: 'https://github.com/0xAashif/Fileguard',
+      },
+    ],
+    certifications: [
+      'JPMorgan Chase — Cybersecurity Virtual Experience (Forage)',
+      'IBM Fundamentals of Cybersecurity & NASSCOM Cybersecurity Foundation',
+      'Introduction to Cybersecurity — Cisco Networking Academy',
+      'Natural Language Processing Basics — Salesforce Trailhead',
+      'Microsoft AI Skills Yatra & YUVA AI for ALL (Coursera)',
+      'HackerRank Python (Basic) & Kaggle Python Micro-course Certificate',
+      'TCS iON Career Edge — Young Professional',
+    ],
+  },
+  {
+    id: 'sachin-sahu',
+    name: 'Sachin Sahu',
+    role: 'Co-Founder • Systems Engineering & Java Backend Architecture',
+    headline: 'B.Tech CSE (CGPA: 8.2/10) • High-Concurrency Java, Spring Boot & Distributed Systems',
+    education: 'B.Tech in Computer Science — CGPA: 8.2 / 10 (Expected 2027)',
+    institution: 'Jai Narain College of Technology (JNCT), Bhopal, MP',
+    location: 'Bhopal, Madhya Pradesh, India',
+    email: 'sachinsahuji306@gmail.com',
+    phone: '+91 8085063123',
+    linkedinUrl: 'https://www.linkedin.com/company/skyline-digital-agency',
+    linkedinLabel: 'LinkedIn Profile',
+    githubUrl: 'https://github.com/0xAashif',
+    githubLabel: 'GitHub Portfolio',
+    resumePdfUrl: '/assets/aistudio/Sachin_Sahu_Resume_Infosys_60a42260.pdf',
+    summary:
+      'Systems engineer with hands-on experience building high-concurrency Java backends, Spring Boot microservices, Apache Kafka event streams, and PostgreSQL/MySQL database architectures across two software engineering internships and 160+ solved DSA problems.',
+    languages: ['Core Java (Java 21)', 'SQL', 'Kotlin', 'JavaScript', 'HTML/CSS'],
+    frameworksAndTools: [
+      'Spring Boot',
+      'Hibernate / JPA',
+      'Microservices & REST APIs',
+      'Apache Kafka & Debezium (CDC)',
+      'PostgreSQL & MySQL',
+      'Docker & Testcontainers',
+      'React & Jetpack Compose',
+      'JWT & OAuth 2.0',
+    ],
+    coreConcepts: [
+      'Multithreading & Java 21 Virtual Threads (Loom)',
+      'Data Structures & Algorithms (160+ GFG)',
+      'DBMS & Query Optimization',
+      'Spring State Machine',
+      'Zero-Downtime Schema Migrations',
+    ],
+    experience: [
+      {
+        role: 'Java Development Intern (Associate L1)',
+        company: 'Infotact Solutions — Remote',
+        period: 'May 2026 – Sept 2026',
+        highlights: [
+          'Designed, built, and deployed optimized Java backend applications and secure RESTful APIs using Core Java, OOPs, and Spring Boot.',
+          'Managed database modeling and query optimization via MySQL/PostgreSQL for scalability and high availability.',
+        ],
+      },
+      {
+        role: 'Android Development Intern',
+        company: 'JNCT (Google for Developers) — Bhopal, MP',
+        period: 'Jan 2025 – Feb 2025',
+        highlights: [
+          'Built scalable Android applications using Kotlin, Jetpack Compose, and Firebase with seamless REST API integration.',
+        ],
+      },
+    ],
+    projects: [
+      {
+        name: 'ShadowBase',
+        subtitle: 'Zero-Downtime Schema Migration Sandbox',
+        stack: 'Java • Spring Boot • Apache Kafka • Debezium (CDC) • Testcontainers • React + Monaco Editor',
+        highlights: [
+          'Developed a database sandbox using Java, Debezium (CDC), and Kafka to shadow and replicate live SQL traffic into isolated Dockerized clones.',
+          'Built a high-throughput stream replayer using Java Stream API with a React + Monaco Editor dashboard to monitor error rates.',
+        ],
+      },
+      {
+        name: 'GridWeaver',
+        subtitle: 'Virtual Thread IoT Microgrid State Engine',
+        stack: 'Java 21 (Loom) • Spring State Machine • Apache Kafka • React • Leaflet GIS',
+        highlights: [
+          'Engineered a high-concurrency TCP/WebSocket ingestion engine using Java 21 Virtual Threads handling 50,000+ non-blocking IoT telemetry pings buffered via Apache Kafka.',
+          'Integrated Spring State Machine for dynamic battery node transitions with a live React + Leaflet GIS dashboard.',
+        ],
+      },
+    ],
+    certifications: [
+      'Software Engineering Job Simulation — JPMorgan Chase (Forage), Oct 2025 (Kafka, H2 & REST APIs)',
+      'Java Full Stack Developer Intern — EduSkills Academy, Mar 2026 (Spring Boot, Hibernate, MySQL)',
+      'GeeksforGeeks 160 DSA Challenge Certificate, Jan 2026 (Core Data Structures & Algorithms)',
+    ],
+  },
+];
+
 export const HERO_ORBS: HeroOrbItem[] = [
   {
     id: 'ai',
@@ -143,9 +328,9 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'Autonomous AI & WhatsApp Sales Agents',
     metric: '< 1.2s',
     metricLabel: 'Lead Response Speed',
-    psychColor: '#8B5CF6',
-    psychName: 'Electric Violet',
-    psychMeaning: 'Futuristic Intelligence & Neural Depth',
+    psychColor: '#C5A880',
+    psychName: 'Champagne Titanium',
+    psychMeaning: 'Autonomous Intelligence & Precision Engineering',
     summary:
       '24/7 official WhatsApp Cloud API bots and custom RAG AI agents that answer FAQs, qualify budgets, and book calendar slots automatically.',
     deliverables: ['Official WhatsApp Cloud API', 'RAG Knowledge Base', 'Auto Calendar Sync'],
@@ -157,9 +342,9 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'High-ROAS Meta & Google Performance Funnels',
     metric: '4.1x',
     metricLabel: 'Verified Blended ROAS',
-    psychColor: '#F43F5E',
-    psychName: 'Coral Crimson',
-    psychMeaning: 'Urgency, Attention Capture & Action',
+    psychColor: '#71717A',
+    psychName: 'Dark Silver',
+    psychMeaning: 'High-Contrast Authority & Conversion Velocity',
     summary:
       'Server-side Meta CAPI attribution paired with high-intent Google Search campaigns and conversion-engineered landing pages.',
     deliverables: ['Server-Side Meta CAPI', 'High-Intent Search Ads', 'Live ROAS Dashboards'],
@@ -171,11 +356,11 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'Multi-Tenant Cloud SaaS & Enterprise Portals',
     metric: '99.98%',
     metricLabel: 'Production Uptime SLA',
-    psychColor: '#2563EB',
-    psychName: 'Deep Cobalt Blue',
-    psychMeaning: 'Enterprise Stability & Cloud Trust',
+    psychColor: '#52525B',
+    psychName: 'Brushed Titanium',
+    psychMeaning: 'Enterprise Stability & Resilient Cloud Scale',
     summary:
-      'Production-ready SaaS MVPs, role-based admin dashboards, subscription billing webhooks, and resilient PostgreSQL + Redis architectures.',
+      'Production-ready SaaS MVPs, role-based admin dashboards, subscription billing webhooks, and resilient PostgreSQL + Kafka/Redis architectures.',
     deliverables: ['Multi-Tenant Auth & RBAC', 'Stripe & Razorpay Subscriptions', 'Sub-85ms API Latency'],
     targetSection: 'expertise',
   },
@@ -185,9 +370,9 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'Sub-Second Next.js Websites & D2C Storefronts',
     metric: '99/100',
     metricLabel: 'Google Lighthouse Speed',
-    psychColor: '#10B981',
-    psychName: 'Cyber Emerald',
-    psychMeaning: 'Frictionless Flow & Compounding Growth',
+    psychColor: '#8E9299',
+    psychName: 'Liquid Silver',
+    psychMeaning: 'Frictionless Performance & Architectural Clarity',
     summary:
       'Custom Next.js 15 & React 19 storefronts with 0.4s edge load times and 1-tap UPI checkout flows that convert cold traffic into buyers.',
     deliverables: ['Next.js 15 Edge SSR', '1-Tap UPI Checkout', 'WhatsApp Cart Recovery'],
@@ -199,9 +384,9 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'Programmatic Search SEO & AI Answer Visibility',
     metric: '+240%',
     metricLabel: 'Organic Search Pipeline',
-    psychColor: '#F59E0B',
-    psychName: 'Solar Amber Gold',
-    psychMeaning: 'Spotlight Discovery & #1 Authority',
+    psychColor: '#B6956A',
+    psychName: 'Burnished Bronze-Titanium',
+    psychMeaning: 'Search Authority & #1 Indexing Dominance',
     summary:
       'Dominate Google SERPs, ChatGPT, and Perplexity with JSON-LD entity graphs, programmatic regional hubs, and 100/100 Core Web Vitals.',
     deliverables: ['JSON-LD Entity Graphs', 'Programmatic Location Hubs', 'AI Citation Optimization'],
@@ -213,9 +398,9 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'Unified WhatsApp CRM & Pipeline Orchestration',
     metric: '0%',
     metricLabel: 'Lead Leakage Across Channels',
-    psychColor: '#06B6D4',
-    psychName: 'Radiant Cyan',
-    psychMeaning: 'Clear Communication & Connected Pipelines',
+    psychColor: '#64748B',
+    psychName: 'Anodized Slate Titanium',
+    psychMeaning: 'Connected Pipelines & Instant Dispatch',
     summary:
       'Connect Meta Lead Ads, website forms, WhatsApp inquiries, and sales reps into one automated pipeline with instant follow-up sequences.',
     deliverables: ['Instant Webhook Routing', 'Automated Drip Follow-Ups', 'Executive Sales Telemetry'],
@@ -227,9 +412,9 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'Google Map Pack #1 & Local Walk-In Engines',
     metric: '3.2x',
     metricLabel: 'Daily Local Calls & Walk-Ins',
-    psychColor: '#F97316',
-    psychName: 'Warm Tangerine',
-    psychMeaning: 'Neighborhood Warmth & Physical Footfall',
+    psychColor: '#A38A68',
+    psychName: 'Warm Satin Titanium',
+    psychMeaning: 'Local Trust & Physical Footfall Dominance',
     summary:
       'Built for clinics, salons, cafes, gyms, and showrooms. Rank #1 in "near me" Google Maps searches and automate 5-star QR reviews.',
     deliverables: ['Google Map Pack Top-3', 'Smart QR Review Standees', 'WhatsApp Appointment Bot'],
