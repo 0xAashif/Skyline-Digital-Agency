@@ -5,7 +5,7 @@ import {
   createLeadInquiry,
   createPartnerReferral,
 } from './api/client';
-import { Navbar } from './components/Navbar';
+import { Navbar, PageId } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { CapabilitiesMatrix } from './components/CapabilitiesMatrix';
 import { SystemArchitectSimulator } from './components/SystemArchitectSimulator';
@@ -26,8 +26,34 @@ import {
 
 export type ThemeMode = 'light' | 'dark';
 
+function resolvePageFromHash(hash: string): PageId {
+  const clean = hash.replace(/^#/, '').trim().toLowerCase();
+  if (
+    clean === 'services' ||
+    clean === 'solutions' ||
+    clean === 'expertise' ||
+    clean === 'simulator' ||
+    clean === 'local-business'
+  ) {
+    return 'services';
+  }
+  if (clean === 'work' || clean === 'proof') {
+    return 'work';
+  }
+  if (clean === 'who-we-are' || clean === 'process') {
+    return 'who-we-are';
+  }
+  if (clean === 'referral' || clean === 'faq') {
+    return 'referral';
+  }
+  if (clean === 'contact') {
+    return 'contact';
+  }
+  return 'home';
+}
+
 export function App() {
-  // Light mode ("Safe Milky White / Velvet Alabaster") by default
+  // Light mode ("Minimalist Warm Alabaster #F4F3EF") by default
   const [theme, setTheme] = useState<ThemeMode>(() => {
     try {
       const saved = window.localStorage.getItem('skyline-theme');
@@ -50,6 +76,14 @@ export function App() {
       // ignore
     }
     return 'website';
+  });
+
+  const [activePage, setActivePage] = useState<PageId>(() => {
+    try {
+      return resolvePageFromHash(window.location.hash);
+    } catch {
+      return 'home';
+    }
   });
 
   // Live CMS state backed by Full-Stack API (/api/cms)
@@ -77,12 +111,16 @@ export function App() {
     void syncLiveCms();
   }, [syncLiveCms]);
 
-  // Internal founder access via #admin hash or Ctrl+Shift+A keyboard shortcut
+  // Internal founder access via #admin hash or Ctrl+Shift+A keyboard shortcut + SPA hash sync
   useEffect(() => {
     const handleHashChange = () => {
       if (window.location.hash === '#admin') {
         setViewMode('admin');
+        return;
       }
+      setViewMode('website');
+      const nextPage = resolvePageFromHash(window.location.hash);
+      setActivePage(nextPage);
     };
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
@@ -116,13 +154,27 @@ export function App() {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const handleNavigate = (sectionId: string) => {
-    const normalizedId = sectionId === 'solutions' ? 'services' : sectionId;
-    const el = document.getElementById(normalizedId) || document.getElementById(sectionId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const handleNavigate = useCallback((target: string) => {
+    const resolvedPage = resolvePageFromHash(target);
+    setActivePage(resolvedPage);
+    try {
+      const targetHash = `#${resolvedPage}`;
+      if (window.location.hash !== targetHash) {
+        window.history.pushState(null, '', targetHash);
+      }
+    } catch {
+      // ignore history errors
     }
-  };
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // If a specific sub-anchor on that page was requested (e.g., simulator), scroll to it after mount
+    if (target === 'simulator') {
+      setTimeout(() => {
+        const el = document.getElementById('simulator');
+        el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 120);
+    }
+  }, []);
 
   const handleSelectCapability = (pillarTitle: string) => {
     setPrefilledPillars([pillarTitle]);
@@ -138,9 +190,10 @@ export function App() {
 
   const handleBackToWebsite = () => {
     if (window.location.hash === '#admin') {
-      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      window.history.replaceState(null, '', '#home');
     }
     setViewMode('website');
+    setActivePage('home');
     void syncLiveCms();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -157,37 +210,82 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] overflow-x-hidden transition-colors duration-250">
+    <div className="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] overflow-x-hidden transition-colors duration-250 flex flex-col justify-between">
       <Navbar
+        activePage={activePage}
         onNavigate={handleNavigate}
         theme={theme}
         onToggleTheme={handleToggleTheme}
       />
 
-      <main>
-        <HeroSection onNavigate={handleNavigate} projects={projects} />
+      <main key={activePage} className="pt-16 sm:pt-20 flex-1 animate-page-enter">
+        {/* 1. HOME PAGE: Clean Hero + Tech Marquee + 6 Core Services Bento Summary + Featured Case Studies + Compact CTA */}
+        {activePage === 'home' && (
+          <HeroSection
+            pageView="home"
+            onNavigate={handleNavigate}
+            projects={projects}
+          />
+        )}
 
-        <CapabilitiesMatrix
-          onSelectCapability={handleSelectCapability}
-          pillars={services}
-        />
+        {/* 2. SERVICES PAGE: 7-Track Service Architecture + Local Business Package + 60s Project Estimator */}
+        {activePage === 'services' && (
+          <>
+            <CapabilitiesMatrix
+              onSelectCapability={handleSelectCapability}
+              pillars={services}
+            />
+            <SystemArchitectSimulator onLockBlueprint={handleLockBlueprint} />
+          </>
+        )}
 
-        <SystemArchitectSimulator onLockBlueprint={handleLockBlueprint} />
+        {/* 3. OUR WORK PAGE: Full Case Studies Showcase + Proven Client Impact Metrics + Verified Client Reviews */}
+        {activePage === 'work' && (
+          <>
+            <HeroSection
+              pageView="work"
+              onNavigate={handleNavigate}
+              projects={projects}
+            />
+            <ClientProofAndReferral
+              viewMode="proof-only"
+              reviews={testimonials}
+            />
+          </>
+        )}
 
-        <ExecutionRoadmap onNavigate={handleNavigate} />
+        {/* 4. WHO WE ARE PAGE: The SkyLine Doctrine + Founding Architects Cards + 3-Phase Delivery Roadmap */}
+        {activePage === 'who-we-are' && (
+          <>
+            <HeroSection
+              pageView="who-we-are"
+              onNavigate={handleNavigate}
+              projects={projects}
+            />
+            <ExecutionRoadmap onNavigate={handleNavigate} />
+          </>
+        )}
 
-        <ClientProofAndReferral
-          reviews={testimonials}
-          onSubmitReferral={async (payload) => {
-            await createPartnerReferral(payload);
-            await syncLiveCms();
-          }}
-        />
-
-        <FaqSection onNavigate={handleNavigate} faqs={faqs} />
+        {/* 5. OFFER & REFERRAL PAGE: 15% Partner Commission Program + INR Calculator + Referral Form + Common Questions (FAQ) */}
+        {activePage === 'referral' && (
+          <>
+            <ClientProofAndReferral
+              viewMode="referral-only"
+              reviews={testimonials}
+              onSubmitReferral={async (payload) => {
+                await createPartnerReferral(payload);
+                await syncLiveCms();
+              }}
+            />
+            <FaqSection onNavigate={handleNavigate} faqs={faqs} />
+          </>
+        )}
       </main>
 
+      {/* 6. CONTACT PAGE (Full Dispatch Form + Footer) OR SHARED FOOTER ON OTHER PAGES */}
       <ContactDispatchFooter
+        showContactSection={activePage === 'contact'}
+        onNavigate={handleNavigate}
         prefilledScope={prefilledScope}
         prefilledPillars={prefilledPillars}
         onSubmitLead={async (payload) => {

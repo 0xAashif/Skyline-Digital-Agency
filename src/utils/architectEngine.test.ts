@@ -13,23 +13,46 @@ import {
   getTelemetrySnapshot,
   clearTelemetryBuffer,
   SKYLINE_WHATSAPP_NUMBER,
+  SKYLINE_CALL_NUMBER,
   SKYLINE_EMAIL,
 } from './architectEngine';
-import { FOUNDER_PROFILES, HERO_ORBS } from '../data/agencyData';
+import {
+  FOUNDER_PROFILES,
+  HERO_ORBS,
+  SKYLINE_LOCATION,
+  TECH_STACK_MARQUEE_ROW_1,
+  TECH_STACK_MARQUEE_ROW_2,
+} from '../data/agencyData';
 
-test('FOUNDER_PROFILES contains complete resume details for Aashif Khan and Sachin Sahu and HERO_ORBS uses titanium/silver/champagne palette', () => {
+test('FOUNDER_PROFILES, location, and contact routing strictly match SkyLine Digital Agency specifications', () => {
+  assert.equal(SKYLINE_LOCATION, 'Indore, Bhopal, Madhya Pradesh, India');
+  assert.equal(SKYLINE_WHATSAPP_NUMBER, '918959144686');
+  assert.equal(SKYLINE_CALL_NUMBER, '+918643002478');
+
   assert.equal(FOUNDER_PROFILES.length, 2);
   const aashif = FOUNDER_PROFILES.find((f) => f.id === 'aashif-khan');
   const sachin = FOUNDER_PROFILES.find((f) => f.id === 'sachin-sahu');
   assert.ok(aashif, 'Expected Aashif Khan founder profile');
   assert.ok(sachin, 'Expected Sachin Sahu founder profile');
-  assert.equal(aashif.email, 'aashifkpp@gmail.com');
-  assert.equal(sachin.email, 'sachinsahuji306@gmail.com');
-  assert.ok(aashif.resumePdfUrl.includes('Aashif_Khan_Resume'));
-  assert.ok(sachin.resumePdfUrl.includes('Sachin_Sahu_Resume'));
-  assert.ok(aashif.projects.some((p) => p.name.includes('FileGuard AI')));
-  assert.ok(sachin.projects.some((p) => p.name.includes('ShadowBase')));
-  assert.ok(sachin.projects.some((p) => p.name.includes('GridWeaver')));
+  assert.equal(aashif.phone, '+91 86430 02478');
+  assert.equal(aashif.whatsappNumber, '918643002478');
+  assert.equal(aashif.callNumber, '+918643002478');
+  assert.equal(aashif.contactMode, 'whatsapp-and-call');
+
+  assert.equal(sachin.phone, '+91 89591 44686');
+  assert.equal(sachin.whatsappNumber, '918959144686');
+  assert.equal(sachin.contactMode, 'whatsapp-only');
+  assert.equal('callNumber' in sachin, false);
+
+  // Verify zero student/intern tags in founder profiles
+  const serializedFounders = JSON.stringify(FOUNDER_PROFILES);
+  assert.equal(serializedFounders.includes('3rd Year'), false);
+  assert.equal(serializedFounders.includes('6th Sem'), false);
+  assert.equal(serializedFounders.includes('CGPA'), false);
+  assert.equal(serializedFounders.includes('Intern'), false);
+
+  // Verify 16 tech marquee items
+  assert.equal(TECH_STACK_MARQUEE_ROW_1.length + TECH_STACK_MARQUEE_ROW_2.length, 16);
 
   // Verify zero #8B5CF6 or #10B981 in HERO_ORBS
   for (const orb of HERO_ORBS) {
@@ -95,7 +118,7 @@ test('validateProposalForm accepts valid Indian mobile/email, strips HTML, and e
   clearIdempotencyLocks();
   const validPhoneInput = {
     nameOrCompany: '<b>Aarav Retail</b>',
-    contact: '+91 98765 43210',
+    contact: '+91 86430 02478',
     selectedPillars: ['Local Business Growth & Digitization', 'AI Workflows & CRM Automation'],
     projectScope: 'Rebuilding slow clinic booking site into fast custom portal with WhatsApp recovery.',
   };

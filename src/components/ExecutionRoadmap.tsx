@@ -17,9 +17,9 @@ export const ExecutionRoadmap: React.FC<ExecutionRoadmapProps> = ({
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-14">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-platinum mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--platinum-primary)]" />
-              <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
+            <div className="inline-flex items-center gap-2 mb-3">
+              <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+              <span className="font-mono-tech text-[11px] uppercase tracking-widest font-bold text-[var(--text-primary)]">
                 HOW WE DELIVER
               </span>
             </div>

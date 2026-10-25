@@ -90,7 +90,9 @@ export interface TelemetryEvent {
   timestamp: number;
 }
 
-export const SKYLINE_WHATSAPP_NUMBER = '918643002478';
+export const SKYLINE_WHATSAPP_NUMBER = '918959144686';
+export const SKYLINE_AASHIF_WHATSAPP_NUMBER = '918643002478';
+export const SKYLINE_CALL_NUMBER = '+918643002478';
 export const SKYLINE_SECONDARY_PHONE = '+91 89591 44686';
 export const SKYLINE_EMAIL = 'skylinedigital@gmail.com';
 export const SKYLINE_INSTAGRAM_URL = 'https://www.instagram.com/sky_line_digital';
@@ -462,7 +464,7 @@ export function validateProposalForm(
     errors.contact = 'Enter a valid Indian/International WhatsApp number (+91...) or email address.';
   } else if (!isValidIndianMobile && !isValidIntlPhone && !isValidEmail) {
     errors.contact =
-      'Provide a valid 10-digit Indian mobile (+91 98765 43210), E.164 phone, or RFC-5322 email.';
+      'Provide a valid 10-digit Indian mobile (+91 86430 02478), E.164 phone, or RFC-5322 email.';
   }
 
   const allowlistSet = new Set<string>(ALLOWLISTED_SERVICE_PILLARS);

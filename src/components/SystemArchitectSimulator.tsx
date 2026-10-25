@@ -248,9 +248,9 @@ export const SystemArchitectSimulator: React.FC<SystemArchitectSimulatorProps> =
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-14">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-platinum mb-4">
-              <Sliders className="w-3.5 h-3.5" />
-              <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
+            <div className="inline-flex items-center gap-2 mb-3">
+              <Sliders className="w-3.5 h-3.5 text-[var(--text-primary)]" />
+              <span className="font-mono-tech text-[11px] uppercase tracking-widest font-bold text-[var(--text-primary)]">
                 INTERACTIVE PROJECT & TIMELINE ESTIMATOR
               </span>
             </div>

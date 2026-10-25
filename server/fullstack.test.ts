@@ -11,7 +11,7 @@ import {
 test('validateCreateLeadPayload validates lead name, contact, pillars, and scope', () => {
   const missingName = validateCreateLeadPayload({
     nameOrCompany: 'A',
-    contact: '+91 98260 12345',
+    contact: '+91 86430 02478',
     selectedPillars: ['Local Business Growth & Digitization'],
     projectScope: 'Need Google Map Pack #1 and WhatsApp booking bot.',
   });
@@ -19,7 +19,7 @@ test('validateCreateLeadPayload validates lead name, contact, pillars, and scope
 
   const validWhatsApp = validateCreateLeadPayload({
     nameOrCompany: 'Rahul Sharma / Apex Clinic',
-    contact: '+91 98260 12345',
+    contact: '+91 86430 02478',
     selectedPillars: ['Local Business Growth & Digitization'],
     projectScope: 'Need Google Map Pack #1 and WhatsApp booking bot.',
   });

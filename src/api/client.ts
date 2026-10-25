@@ -123,7 +123,7 @@ function getLocalFallbackDb(): LocalFallbackDb {
       {
         id: 'LEAD-2026-101',
         nameOrCompany: 'Vikramaditya Singh / Pinnacle Luxury Estates',
-        contact: '+91 98260 44120',
+        contact: '+91 86430 02478',
         contactType: 'whatsapp',
         inquiryType: 'meeting',
         budget: '₹2.5L – ₹5L',
@@ -146,7 +146,7 @@ function getLocalFallbackDb(): LocalFallbackDb {
       {
         id: 'REF-2026-201',
         referrerName: 'Rohan Kulkarni',
-        referrerContact: '+91 98930 11223',
+        referrerContact: '+91 86430 02478',
         referredBusiness: 'Apex Multi-Specialty Clinic & Diagnostics',
         estimatedDealValue: 160000,
         commissionAmount: 24000,

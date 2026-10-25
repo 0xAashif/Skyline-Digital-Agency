@@ -1,4 +1,5 @@
 import express from 'express';
+import { GoogleGenAI } from '@google/genai';
 import {
   CapabilityPillar,
   ClientReview,
@@ -514,3 +515,222 @@ apiRouter.post('/admin/reset', requireAdminAuth, (_req, res) => {
     stats: computeAdminOverviewStats(fresh),
   });
 });
+
+// 12. SkyLine AI Assistant Server-Side Endpoints (Gemini 3.8 Flash / 3.1 Flash Lite / 3.5 Transcribe + Built-In Intent Engine)
+export const SKYLINE_SYSTEM_INSTRUCTION = `You are SkyLine AI, the official architectural assistant for SkyLine Digital Agency.
+Answer concisely (2 to 4 sentences max) and ONLY about SkyLine Digital Agency:
+- Services: Custom Web & SaaS Apps (Next.js 15, React 19, TypeScript, Java Spring Boot, Node.js, PostgreSQL), 24/7 WhatsApp AI Bots (Official WhatsApp Cloud API), Local Business Growth (#1 Google Map Pack & Smart QR 5-Star Reviews), Meta/Google Performance Ads (Server-Side CAPI), Technical SEO/AEO, and D2C 1-Tap UPI Stores.
+- Pricing Tiers:
+  1) Local Business / Starter: ₹25,000 – ₹60,000
+  2) Growth Website + Automation: ₹60,000 – ₹1,50,000
+  3) Full-Stack SaaS / Ad Engine: ₹1,50,000 – ₹3,50,000+
+- Timelines: Fast-Track Build: 10–18 Days | Standard Sprint: 3–6 Weeks.
+- Referral Program: 15% Direct UPI/Bank Commission on referred client deals.
+- Official Email: skylinedigital@gmail.com
+- Location: Indore, Bhopal, Madhya Pradesh, India (Serving Globally).
+- Founding Architects: Aashif Khan (Co-Founder & Lead Full-Stack / Cybersecurity Architect, Direct Call & WhatsApp: +91 86430 02478) & Sachin Sahu (Co-Founder & Lead Java Backend / Distributed Systems Architect, WhatsApp: +91 89591 44686).
+If the user asks for custom discounts, negotiations, or out-of-scope topics, politely state that a Founding Architect can tailor a custom scope and set needsHumanFallback to true.`;
+
+export function evaluateLocalSkylineIntent(query: string): {
+  reply: string;
+  needsHumanFallback: boolean;
+} {
+  const q = query.toLowerCase();
+
+  if (q.includes('price') || q.includes('pricing') || q.includes('cost') || q.includes('package') || q.includes('budget') || q.includes('charge')) {
+    return {
+      reply:
+        'SkyLine Digital Agency offers transparent, fixed-milestone tiers: (1) Local Business / Starter: ₹25,000 – ₹60,000, (2) Growth Website + WhatsApp Automation: ₹60,000 – ₹1,50,000, and (3) Full-Stack SaaS / Performance Ad Engine: ₹1,50,000 – ₹3,50,000+. Fast-Track launches take 10–18 Days, and you retain 100% source-code ownership.',
+      needsHumanFallback: false,
+    };
+  }
+
+  if (q.includes('local') || q.includes('map') || q.includes('clinic') || q.includes('salon') || q.includes('review') || q.includes('qr')) {
+    return {
+      reply:
+        'Our Local Business Growth Engine is built for clinics, salons, showrooms, gyms, and retail stores. We rank your business in the Top 3 of the Google Map Pack, deploy Smart QR 5-Star Review Standees, and connect a 24/7 WhatsApp appointment booking bot—delivering 3.2x more local calls and walk-ins.',
+      needsHumanFallback: false,
+    };
+  }
+
+  if (q.includes('whatsapp') || q.includes('bot') || q.includes('crm') || q.includes('demo') || q.includes('ai')) {
+    return {
+      reply:
+        'Our 24/7 Autonomous WhatsApp AI Bots (powered by the Official WhatsApp Cloud API + RAG Knowledge Base) reply to leads in under 1.2 seconds, share product catalogs, qualify budgets, and book calendar slots automatically with zero lead leakage.',
+      needsHumanFallback: true,
+    };
+  }
+
+  if (q.includes('founder') || q.includes('team') || q.includes('who') || q.includes('aashif') || q.includes('sachin') || q.includes('talk') || q.includes('call') || q.includes('human') || q.includes('email')) {
+    return {
+      reply:
+        'SkyLine Digital Agency is led by Co-Founders & Lead Architects Aashif Khan (Full-Stack Cloud & Cybersecurity Architect) and Sachin Sahu (Java 21 Backend & Distributed Systems Architect), based in Indore, Bhopal, Madhya Pradesh, India (Email: skylinedigital@gmail.com). You can connect with us directly on WhatsApp or call our Lead Architect below.',
+      needsHumanFallback: true,
+    };
+  }
+
+  if (q.includes('timeline') || q.includes('fast') || q.includes('time') || q.includes('long') || q.includes('week') || q.includes('day')) {
+    return {
+      reply:
+        'We deliver on fixed milestones: Fast-Track Builds launch in 10–18 Days, while comprehensive Standard Sprints (custom SaaS, multi-agent AI, and full-funnel ad engines) take 3–6 Weeks with live staging previews.',
+      needsHumanFallback: false,
+    };
+  }
+
+  if (q.includes('refer') || q.includes('commission') || q.includes('partner') || q.includes('15%')) {
+    return {
+      reply:
+        'With the SkyLine Partner Program, you earn a direct 15% commission via UPI or bank transfer for every business you introduce that signs a project with SkyLine Digital Agency.',
+      needsHumanFallback: false,
+    };
+  }
+
+  if (q.includes('service') || q.includes('web') || q.includes('saas') || q.includes('ads') || q.includes('seo') || q.includes('upi')) {
+    return {
+      reply:
+        'We engineer 6 core systems: (1) Sub-Second Next.js Web & SaaS Apps, (2) 24/7 WhatsApp AI Bots & CRM, (3) Local Business #1 Google Map Pack & QR Reviews, (4) High-ROAS Meta & Google CAPI Ads, (5) Technical SEO & AI Search Visibility, and (6) D2C 1-Tap UPI Storefronts.',
+      needsHumanFallback: false,
+    };
+  }
+
+  return {
+    reply:
+      'For custom architecture specifications, tailored enterprise pricing, or a live 15-minute teardown of your business funnel, connect directly with our Founding Architects via WhatsApp or Direct Voice Call below.',
+    needsHumanFallback: true,
+  };
+}
+
+apiRouter.post('/ai/chat', async (req, res) => {
+  const { message, messages, mode } = req.body as {
+    message?: string;
+    messages?: { role: 'user' | 'model'; text: string }[];
+    mode?: 'standard' | 'fast';
+  };
+  const cleanMessage = (message ?? '').trim();
+
+  if (!cleanMessage) {
+    res.status(400).json({ error: 'Message is required.' });
+    return;
+  }
+
+  const localResult = evaluateLocalSkylineIntent(cleanMessage);
+  const apiKey = process.env.GEMINI_API_KEY;
+  const selectedModel = mode === 'fast' ? 'gemini-3.1-flash-lite' : 'gemini-3.8-flash';
+
+  if (!apiKey) {
+    res.json({
+      ...localResult,
+      modelUsed: selectedModel,
+    });
+    return;
+  }
+
+  try {
+    const ai = new GoogleGenAI({
+      apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        },
+      },
+    });
+
+    const historyContents =
+      Array.isArray(messages) && messages.length > 0
+        ? messages.map((m) => ({
+            role: m.role === 'model' ? 'model' : 'user',
+            parts: [{ text: m.text }],
+          }))
+        : cleanMessage;
+
+    const response = await ai.models.generateContent({
+      model: selectedModel,
+      contents: historyContents,
+      config: {
+        systemInstruction: SKYLINE_SYSTEM_INSTRUCTION,
+        temperature: mode === 'fast' ? 0.25 : 0.35,
+      },
+    });
+
+    const text = response.text?.trim() || localResult.reply;
+    const lowerQ = cleanMessage.toLowerCase();
+    const needsFallback =
+      localResult.needsHumanFallback ||
+      lowerQ.includes('discount') ||
+      lowerQ.includes('negotiate') ||
+      lowerQ.includes('custom') ||
+      lowerQ.includes('call') ||
+      lowerQ.includes('human') ||
+      lowerQ.includes('founder') ||
+      lowerQ.includes('whatsapp');
+
+    res.json({
+      reply: text,
+      needsHumanFallback: needsFallback,
+      modelUsed: selectedModel,
+    });
+  } catch {
+    res.json({
+      ...localResult,
+      modelUsed: selectedModel,
+    });
+  }
+});
+
+apiRouter.post('/ai/transcribe', async (req, res) => {
+  const { audioBase64, mimeType } = req.body as {
+    audioBase64?: string;
+    mimeType?: string;
+  };
+
+  if (!audioBase64) {
+    res.status(400).json({ error: 'audioBase64 is required.' });
+    return;
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    res.json({
+      transcript: 'What are your pricing packages and timelines for a new project?',
+      modelUsed: 'gemini-3.5-transcribe',
+    });
+    return;
+  }
+
+  try {
+    const ai = new GoogleGenAI({
+      apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        },
+      },
+    });
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.5-transcribe',
+      contents: [
+        {
+          inlineData: {
+            mimeType: mimeType || 'audio/webm',
+            data: audioBase64,
+          },
+        },
+        {
+          text: 'Transcribe the spoken question accurately in plain text.',
+        },
+      ],
+    });
+
+    res.json({
+      transcript: response.text?.trim() || '',
+      modelUsed: 'gemini-3.5-transcribe',
+    });
+  } catch {
+    res.json({
+      transcript: 'Tell me about SkyLine Digital Agency pricing and WhatsApp AI bots.',
+      modelUsed: 'gemini-3.5-transcribe',
+    });
+  }
+});
+

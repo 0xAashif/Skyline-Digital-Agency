@@ -113,14 +113,20 @@ export interface ShowcaseProject {
   stackPills?: string[];
 }
 
-export const SKYLINE_WHATSAPP_NUMBER = '918109697311';
+export const SKYLINE_WHATSAPP_NUMBER = '918959144686';
+export const SKYLINE_SACHIN_WHATSAPP_NUMBER = '918959144686';
+export const SKYLINE_AASHIF_WHATSAPP_NUMBER = '918643002478';
+export const SKYLINE_CALL_NUMBER = '+918643002478';
+export const SKYLINE_PRIMARY_PHONE_DISPLAY = '+91 86430 02478';
+export const SKYLINE_SACHIN_PHONE_DISPLAY = '+91 89591 44686';
 export const SKYLINE_EMAIL = 'skylinedigital@gmail.com';
 export const SKYLINE_INSTAGRAM_URL = 'https://www.instagram.com/sky_line_digital';
-export const SKYLINE_LINKEDIN_URL = 'https://www.linkedin.com/company/skyline-digital-agency';
-export const SKYLINE_TELEGRAM_URL = 'https://t.me/skyline_digital';
-export const SKYLINE_X_URL = 'https://x.com/skyline_digital';
+export const SKYLINE_LINKEDIN_URL = 'https://www.instagram.com/sky_line_digital';
+export const SKYLINE_TELEGRAM_URL = 'https://www.instagram.com/sky_line_digital';
+export const SKYLINE_X_URL = 'https://www.instagram.com/sky_line_digital';
+export const SKYLINE_GITHUB_URL = 'https://www.instagram.com/sky_line_digital';
 export const SKYLINE_LOCATION =
-  'Madhya Pradesh, India (Serving Startups & Businesses Globally)';
+  'Indore, Bhopal, Madhya Pradesh, India';
 
 export interface HeroOrbItem {
   id: string;
@@ -136,6 +142,8 @@ export interface HeroOrbItem {
   targetSection: string;
 }
 
+export type HeroOrbNode = HeroOrbItem;
+
 export interface FounderProfile {
   id: string;
   name: string;
@@ -144,13 +152,12 @@ export interface FounderProfile {
   education: string;
   institution: string;
   location: string;
-  email: string;
   phone: string;
-  linkedinUrl?: string;
-  linkedinLabel?: string;
-  githubUrl?: string;
-  githubLabel?: string;
-  resumePdfUrl: string;
+  email: string;
+  whatsappNumber: string;
+  callNumber?: string;
+  contactMode: 'whatsapp-and-call' | 'whatsapp-only';
+  instagramUrl: string;
   summary: string;
   languages: string[];
   frameworksAndTools: string[];
@@ -166,7 +173,6 @@ export interface FounderProfile {
     subtitle: string;
     stack: string;
     highlights: string[];
-    repoUrl?: string;
   }[];
   certifications: string[];
 }
@@ -175,20 +181,19 @@ export const FOUNDER_PROFILES: FounderProfile[] = [
   {
     id: 'aashif-khan',
     name: 'Aashif Khan',
-    role: 'Co-Founder • Software Engineering, Full-Stack & Cybersecurity',
-    headline: 'B.Tech CSE (3rd Year) • Full-Stack Architecture & Cryptographic Security',
-    education: 'B.Tech in Computer Science & Engineering (3rd Year, 6th Semester)',
-    institution: 'Jai Narain College of Technology (JNCT), Bhopal (2023 – Present)',
-    location: 'Ujjain / Bhopal, Madhya Pradesh, India',
-    email: 'aashifkpp@gmail.com',
+    role: 'Co-Founder & Lead Full-Stack / Security Architect',
+    headline: 'Computer Science & Engineering • Full-Stack Architecture & Cryptographic Security',
+    education: 'B.Tech in Computer Science & Engineering',
+    institution: 'Indore, Bhopal, Madhya Pradesh, India',
+    location: 'Indore, Bhopal, Madhya Pradesh, India',
     phone: '+91 86430 02478',
-    linkedinUrl: 'https://www.linkedin.com/in/Aashif-Khan',
-    linkedinLabel: 'linkedin.com/in/Aashif-Khan',
-    githubUrl: 'https://github.com/0xAashif',
-    githubLabel: 'github.com/0xAashif',
-    resumePdfUrl: '/assets/aistudio/Aashif_Khan_Resume__1__fec07135.pdf',
+    email: 'skylinedigital@gmail.com',
+    whatsappNumber: '918643002478',
+    callNumber: '+918643002478',
+    contactMode: 'whatsapp-and-call',
+    instagramUrl: 'https://www.instagram.com/sky_line_digital',
     summary:
-      'Full-stack software engineer and cybersecurity specialist focused on resilient Node.js/Express backends, REST APIs, SHA-256 cryptographic verification, blockchain anchoring, and high-converting cloud deployments across Render and Vercel.',
+      'Senior full-stack software architect and cybersecurity specialist engineering resilient Node.js/Express backends, REST APIs, SHA-256 cryptographic verification, blockchain anchoring, and high-converting cloud deployments across Render and Vercel.',
     languages: ['C++', 'Python', 'Java', 'JavaScript / TypeScript'],
     frameworksAndTools: [
       'Node.js',
@@ -209,7 +214,7 @@ export const FOUNDER_PROFILES: FounderProfile[] = [
     experience: [
       {
         role: 'Co-Founder & Lead Full-Stack / Security Architect',
-        company: 'SkyLine Digital Agency — Madhya Pradesh, India',
+        company: 'SkyLine Digital Agency — Indore, Bhopal, Madhya Pradesh, India',
         period: '2024 – Present',
         highlights: [
           'Architecting full-stack web platforms, Node.js/Express APIs, and automated WhatsApp & CRM pipelines.',
@@ -226,7 +231,6 @@ export const FOUNDER_PROFILES: FounderProfile[] = [
           'Full-stack web application verifying document authenticity via SHA-256 hashing and blockchain anchoring (OriginStamp).',
           'Engineered distributed backend on Render paired with a high-speed frontend deployed on Vercel.',
         ],
-        repoUrl: 'https://github.com/0xAashif/Fileguard',
       },
     ],
     certifications: [
@@ -242,20 +246,18 @@ export const FOUNDER_PROFILES: FounderProfile[] = [
   {
     id: 'sachin-sahu',
     name: 'Sachin Sahu',
-    role: 'Co-Founder • Systems Engineering & Java Backend Architecture',
-    headline: 'B.Tech CSE (CGPA: 8.2/10) • High-Concurrency Java, Spring Boot & Distributed Systems',
-    education: 'B.Tech in Computer Science — CGPA: 8.2 / 10 (Expected 2027)',
-    institution: 'Jai Narain College of Technology (JNCT), Bhopal, MP',
-    location: 'Bhopal, Madhya Pradesh, India',
-    email: 'sachinsahuji306@gmail.com',
-    phone: '+91 8085063123',
-    linkedinUrl: 'https://www.linkedin.com/company/skyline-digital-agency',
-    linkedinLabel: 'LinkedIn Profile',
-    githubUrl: 'https://github.com/0xAashif',
-    githubLabel: 'GitHub Portfolio',
-    resumePdfUrl: '/assets/aistudio/Sachin_Sahu_Resume_Infosys_60a42260.pdf',
+    role: 'Co-Founder & Lead Java / Distributed Systems Architect',
+    headline: 'Computer Science & Engineering • High-Concurrency Java, Spring Boot & Distributed Systems',
+    education: 'B.Tech in Computer Science & Engineering',
+    institution: 'Indore, Bhopal, Madhya Pradesh, India',
+    location: 'Indore, Bhopal, Madhya Pradesh, India',
+    phone: '+91 89591 44686',
+    email: 'sachinsahu4323@gmail.com',
+    whatsappNumber: '918959144686',
+    contactMode: 'whatsapp-only',
+    instagramUrl: 'https://www.instagram.com/sky_line_digital',
     summary:
-      'Systems engineer with hands-on experience building high-concurrency Java backends, Spring Boot microservices, Apache Kafka event streams, and PostgreSQL/MySQL database architectures across two software engineering internships and 160+ solved DSA problems.',
+      'Systems architect specializing in high-concurrency Java 21 backends, Spring Boot microservices, Apache Kafka event streams, Debezium CDC pipelines, and PostgreSQL/MySQL database architectures.',
     languages: ['Core Java (Java 21)', 'SQL', 'Kotlin', 'JavaScript', 'HTML/CSS'],
     frameworksAndTools: [
       'Spring Boot',
@@ -267,31 +269,31 @@ export const FOUNDER_PROFILES: FounderProfile[] = [
       'React & Jetpack Compose',
       'JWT & OAuth 2.0',
     ],
+    experience: [
+      {
+        role: 'Co-Founder & Lead Java / Distributed Systems Architect',
+        company: 'SkyLine Digital Agency — Indore, Bhopal, Madhya Pradesh, India',
+        period: '2024 – Present',
+        highlights: [
+          'Designed, built, and deployed optimized Java backend microservices, Spring Boot APIs, and Kafka event pipelines.',
+          'Managed database modeling, zero-downtime migrations, and query optimization via PostgreSQL/MySQL for enterprise scalability.',
+        ],
+      },
+      {
+        role: 'Associate Software Systems Engineer (Java & Android)',
+        company: 'Infotact Solutions & Google for Developers Ecosystem',
+        period: '2025 – 2026',
+        highlights: [
+          'Engineered scalable backend services and Android applications using Core Java, Spring Boot, Kotlin, Jetpack Compose, and Firebase.',
+        ],
+      },
+    ],
     coreConcepts: [
       'Multithreading & Java 21 Virtual Threads (Loom)',
       'Data Structures & Algorithms (160+ GFG)',
       'DBMS & Query Optimization',
       'Spring State Machine',
       'Zero-Downtime Schema Migrations',
-    ],
-    experience: [
-      {
-        role: 'Java Development Intern (Associate L1)',
-        company: 'Infotact Solutions — Remote',
-        period: 'May 2026 – Sept 2026',
-        highlights: [
-          'Designed, built, and deployed optimized Java backend applications and secure RESTful APIs using Core Java, OOPs, and Spring Boot.',
-          'Managed database modeling and query optimization via MySQL/PostgreSQL for scalability and high availability.',
-        ],
-      },
-      {
-        role: 'Android Development Intern',
-        company: 'JNCT (Google for Developers) — Bhopal, MP',
-        period: 'Jan 2025 – Feb 2025',
-        highlights: [
-          'Built scalable Android applications using Kotlin, Jetpack Compose, and Firebase with seamless REST API integration.',
-        ],
-      },
     ],
     projects: [
       {
@@ -315,7 +317,7 @@ export const FOUNDER_PROFILES: FounderProfile[] = [
     ],
     certifications: [
       'Software Engineering Job Simulation — JPMorgan Chase (Forage), Oct 2025 (Kafka, H2 & REST APIs)',
-      'Java Full Stack Developer Intern — EduSkills Academy, Mar 2026 (Spring Boot, Hibernate, MySQL)',
+      'Java Full Stack Developer Certification — EduSkills Academy, Mar 2026 (Spring Boot, Hibernate, MySQL)',
       'GeeksforGeeks 160 DSA Challenge Certificate, Jan 2026 (Core Data Structures & Algorithms)',
     ],
   },
@@ -328,8 +330,8 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'Autonomous AI & WhatsApp Sales Agents',
     metric: '< 1.2s',
     metricLabel: 'Lead Response Speed',
-    psychColor: '#C5A880',
-    psychName: 'Champagne Titanium',
+    psychColor: '#18181B',
+    psychName: 'Obsidian Titanium',
     psychMeaning: 'Autonomous Intelligence & Precision Engineering',
     summary:
       '24/7 official WhatsApp Cloud API bots and custom RAG AI agents that answer FAQs, qualify budgets, and book calendar slots automatically.',
@@ -342,7 +344,7 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'High-ROAS Meta & Google Performance Funnels',
     metric: '4.1x',
     metricLabel: 'Verified Blended ROAS',
-    psychColor: '#71717A',
+    psychColor: '#3F3F46',
     psychName: 'Dark Silver',
     psychMeaning: 'High-Contrast Authority & Conversion Velocity',
     summary:
@@ -370,7 +372,7 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'Sub-Second Next.js Websites & D2C Storefronts',
     metric: '99/100',
     metricLabel: 'Google Lighthouse Speed',
-    psychColor: '#8E9299',
+    psychColor: '#27272A',
     psychName: 'Liquid Silver',
     psychMeaning: 'Frictionless Performance & Architectural Clarity',
     summary:
@@ -384,8 +386,8 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'Programmatic Search SEO & AI Answer Visibility',
     metric: '+240%',
     metricLabel: 'Organic Search Pipeline',
-    psychColor: '#B6956A',
-    psychName: 'Burnished Bronze-Titanium',
+    psychColor: '#475569',
+    psychName: 'Architectural Slate',
     psychMeaning: 'Search Authority & #1 Indexing Dominance',
     summary:
       'Dominate Google SERPs, ChatGPT, and Perplexity with JSON-LD entity graphs, programmatic regional hubs, and 100/100 Core Web Vitals.',
@@ -412,8 +414,8 @@ export const HERO_ORBS: HeroOrbItem[] = [
     title: 'Google Map Pack #1 & Local Walk-In Engines',
     metric: '3.2x',
     metricLabel: 'Daily Local Calls & Walk-Ins',
-    psychColor: '#A38A68',
-    psychName: 'Warm Satin Titanium',
+    psychColor: '#334155',
+    psychName: 'Carbon Titanium',
     psychMeaning: 'Local Trust & Physical Footfall Dominance',
     summary:
       'Built for clinics, salons, cafes, gyms, and showrooms. Rank #1 in "near me" Google Maps searches and automate 5-star QR reviews.',
@@ -516,31 +518,25 @@ export const HERO_PITCH_SLIDES: HeroPitchSlide[] = [
 ];
 
 export const TECH_STACK_MARQUEE_ROW_1 = [
-  'Next.js 15',
+  'Next.js',
   'React 19',
   'TypeScript',
   'Python FastAPI',
   'Node.js',
   'PostgreSQL',
-  'Prisma ORM',
-  'Redis Cache',
-  'Docker',
-  'AWS Cloud',
-  'Tailwind CSS',
-  'OpenAI & LangChain',
+  'Prisma',
+  'Redis',
 ];
 
 export const TECH_STACK_MARQUEE_ROW_2 = [
+  'Docker',
+  'AWS Cloud',
+  'Tailwind CSS',
+  'OpenAI',
   'WhatsApp Cloud API',
   'Google Map Pack SEO',
   'Meta Ads CAPI',
-  'Google Ads Search',
-  'Razorpay & UPI Flows',
-  'HubSpot & Zoho CRM',
-  'Programmatic SEO',
-  'GA4 Server Tracking',
-  'Local Review Automation',
-  'JSON-LD Schema',
+  'Razorpay & UPI',
 ];
 
 export const STACK_TICKER_ROW_1: {
