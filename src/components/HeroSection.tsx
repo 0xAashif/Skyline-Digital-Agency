@@ -49,6 +49,12 @@ import {
   GmailBrandIcon,
   TechStackBrandIcon,
 } from './BrandIcons';
+import {
+  GeometrySculptureMode,
+  getMonochromaticPlatinumPalette,
+  computeFibonacciSphereNodes,
+  computeFloatingPrismKinematics,
+} from '../utils/heroScene3DConfig';
 
 export type HeroPageView = 'home' | 'work' | 'who-we-are';
 
@@ -78,24 +84,29 @@ const getOrbLucideIcon = (orbId: string, className = 'w-3.5 h-3.5') => {
   }
 };
 
+const SCULPTURE_MODES: { id: GeometrySculptureMode; label: string }[] = [
+  { id: 'dual-monolith', label: 'DUAL MONOLITH' },
+  { id: 'prism-core', label: 'PRISM CORE' },
+  { id: 'geodesic-sphere', label: 'GEODESIC SPHERE' },
+];
+
 /**
- * Interactive 3D Geodesic Orbital Sphere (Three.js WebGL + 360° Spherical Nodes + Projected Capability Orbs)
- * Features:
- * - Real 3D Geodesic Icosahedron Wireframe + Brushed Titanium Core Sphere
- * - 360-degree small spherical satellite nodes distributed across the geodesic vertices
- * - 3 Inclined Gyroscopic Orbital Rings
- * - 7 Interactive 3D-Projected Capability Nodes (AI, ADS, SAAS, WEB, SEO, CRM, LOCAL)
- * - Pointer drag / hover rotation + software-WebGL frame pacing guard
+ * Interactive 3D Floating Sphere & Crystalline Prism Sculpture
+ * (Three.js WebGL + PMREM Metallic Studio Environment + 360° Spherical Nodes + 7 Projected Capability Satellites)
+ * Strictly uses a refined Monochromatic Silver / Platinum / Obsidian palette (zero golden/bronze).
  */
 const HeroGeodesicSphere3D: React.FC<{
   activeOrb: HeroOrbNode;
   activeOrbIndex: number;
   onSelectOrb: (idx: number) => void;
 }> = ({ activeOrb, activeOrbIndex, onSelectOrb }) => {
+  const [sculptureMode, setSculptureMode] = useState<GeometrySculptureMode>('dual-monolith');
   const mountRef = useRef<HTMLDivElement | null>(null);
   const orbElsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIdxRef = useRef<number>(activeOrbIndex);
+  const modeRef = useRef<GeometrySculptureMode>(sculptureMode);
   activeIdxRef.current = activeOrbIndex;
+  modeRef.current = sculptureMode;
 
   useEffect(() => {
     const container = mountRef.current;
@@ -124,64 +135,129 @@ const HeroGeodesicSphere3D: React.FC<{
     renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.22;
 
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
     camera.position.set(0, 0, 5.25);
 
-    // Studio 3-Point Metallic Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    // Procedural Monochromatic Silver / Platinum Studio Environment Map (PMREM)
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    const envScene = new THREE.Scene();
+    const envStripGeo = new THREE.BoxGeometry(10, 0.4, 2);
+    const envWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const envSilverMat = new THREE.MeshBasicMaterial({ color: 0xd4d4d8 });
+    const envZincMat = new THREE.MeshBasicMaterial({ color: 0x52525b });
+
+    const topStrip = new THREE.Mesh(envStripGeo, envWhiteMat);
+    topStrip.position.set(0, 6, 3);
+    envScene.add(topStrip);
+
+    const sideStripLeft = new THREE.Mesh(envStripGeo, envSilverMat);
+    sideStripLeft.position.set(-6, 1, 4);
+    sideStripLeft.rotation.z = Math.PI / 3;
+    envScene.add(sideStripLeft);
+
+    const sideStripRight = new THREE.Mesh(envStripGeo, envZincMat);
+    sideStripRight.position.set(6, -2, 3);
+    sideStripRight.rotation.z = -Math.PI / 3;
+    envScene.add(sideStripRight);
+
+    const envRenderTarget = pmremGenerator.fromScene(envScene, 0.04);
+    scene.environment = envRenderTarget.texture;
+
+    // Studio 3-Point Monochromatic Platinum Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xf8fafc, 2.2);
-    keyLight.position.set(4, 5, 6);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    keyLight.position.set(4.5, 5.5, 6);
     scene.add(keyLight);
 
-    const rimLight = new THREE.PointLight(0xa1a1aa, 2.4, 15);
-    rimLight.position.set(-4, -3, 3);
+    const rimLight = new THREE.PointLight(0xd4d4d8, 2.6, 16);
+    rimLight.position.set(-4.5, -3.2, 3.5);
     scene.add(rimLight);
+
+    const fillLight = new THREE.DirectionalLight(0xa1a1aa, 1.3);
+    fillLight.position.set(0, -5, -4);
+    scene.add(fillLight);
 
     const rootGroup = new THREE.Group();
     scene.add(rootGroup);
 
-    // 1. Inner Brushed Titanium Core Sphere
-    const coreGeo = new THREE.SphereGeometry(0.92, isSoftwareGl ? 20 : 32, isSoftwareGl ? 20 : 32);
-    const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x18181b,
-      metalness: 0.82,
-      roughness: 0.24,
-    });
-    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-    rootGroup.add(coreMesh);
+    // =========================================================================
+    // 1. FLOATING CRYSTALLINE PRISM CORE (Octahedron + Beveled Inner Facets)
+    // =========================================================================
+    const prismGroup = new THREE.Group();
+    rootGroup.add(prismGroup);
 
-    // 2. Geodesic Icosahedron Wireframe Shell
+    const outerPrismGeo = new THREE.OctahedronGeometry(0.86, 0);
+    const outerPrismMat = new THREE.MeshStandardMaterial({
+      color: 0xd4d4d8,
+      emissive: 0x18181b,
+      emissiveIntensity: 0.32,
+      metalness: 0.9,
+      roughness: 0.16,
+      flatShading: true,
+    });
+    const outerPrismMesh = new THREE.Mesh(outerPrismGeo, outerPrismMat);
+    prismGroup.add(outerPrismMesh);
+
+    const innerPrismGeo = new THREE.IcosahedronGeometry(0.68, 0);
+    const innerPrismMat = new THREE.MeshStandardMaterial({
+      color: 0xa1a1aa,
+      metalness: 0.86,
+      roughness: 0.22,
+      flatShading: true,
+      transparent: true,
+      opacity: 0.88,
+    });
+    const innerPrismMesh = new THREE.Mesh(innerPrismGeo, innerPrismMat);
+    innerPrismMesh.rotation.set(Math.PI / 4, Math.PI / 4, 0);
+    prismGroup.add(innerPrismMesh);
+
+    const prismEdgesGeo = new THREE.EdgesGeometry(outerPrismGeo);
+    const prismEdgesMat = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.82,
+    });
+    const prismEdgeLines = new THREE.LineSegments(prismEdgesGeo, prismEdgesMat);
+    prismEdgeLines.scale.setScalar(1.015);
+    prismGroup.add(prismEdgeLines);
+
+    // =========================================================================
+    // 2. GEODESIC SPHERE LATTICE + 360° VERTEX NODES + GYROSCOPIC RINGS
+    // =========================================================================
+    const sphereGroup = new THREE.Group();
+    rootGroup.add(sphereGroup);
+
     const geoDetail = isSoftwareGl ? 1 : 2;
     const geodesicGeo = new THREE.IcosahedronGeometry(1.52, geoDetail);
     const wireframeGeo = new THREE.WireframeGeometry(geodesicGeo);
     const wireframeMat = new THREE.LineBasicMaterial({
-      color: 0x71717a,
+      color: 0xa1a1aa,
       transparent: true,
-      opacity: 0.52,
+      opacity: 0.5,
     });
     const geodesicWireframe = new THREE.LineSegments(wireframeGeo, wireframeMat);
-    rootGroup.add(geodesicWireframe);
+    sphereGroup.add(geodesicWireframe);
 
-    // 3. Outer Secondary Geodesic Lattice
     const outerGeo = new THREE.IcosahedronGeometry(1.78, 1);
     const outerWireGeo = new THREE.WireframeGeometry(outerGeo);
     const outerWireMat = new THREE.LineBasicMaterial({
-      color: 0xa1a1aa,
+      color: 0xd4d4d8,
       transparent: true,
       opacity: 0.22,
     });
     const outerWireframe = new THREE.LineSegments(outerWireGeo, outerWireMat);
-    rootGroup.add(outerWireframe);
+    sphereGroup.add(outerWireframe);
 
-    // 4. Small Circular / Spherical Nodes Distributed 360° Around Geodesic Vertices
+    // 360° Spherical Vertex Nodes Distributed Across Geodesic Vertices
     const posAttr = geodesicGeo.getAttribute('position');
     const uniqueVertices: THREE.Vector3[] = [];
     const seen = new Set<string>();
@@ -196,13 +272,13 @@ const HeroGeodesicSphere3D: React.FC<{
       }
     }
 
-    const smallNodeGeo = new THREE.SphereGeometry(0.036, 8, 8);
+    const smallNodeGeo = new THREE.SphereGeometry(0.035, 8, 8);
     const smallNodeMat = new THREE.MeshStandardMaterial({
-      color: 0xe4e4e7,
+      color: 0xf4f4f5,
       emissive: 0x52525b,
-      emissiveIntensity: 0.6,
-      metalness: 0.7,
-      roughness: 0.2,
+      emissiveIntensity: 0.55,
+      metalness: 0.85,
+      roughness: 0.18,
     });
     const instancedNodes = new THREE.InstancedMesh(
       smallNodeGeo,
@@ -215,66 +291,66 @@ const HeroGeodesicSphere3D: React.FC<{
       dummy.updateMatrix();
       instancedNodes.setMatrixAt(idx, dummy.matrix);
     });
-    rootGroup.add(instancedNodes);
+    sphereGroup.add(instancedNodes);
 
-    // 5. Three Inclined 3D Gyroscopic Orbital Rings
+    // Three Inclined Gyroscopic Platinum Orbital Rings
     const ringGroup = new THREE.Group();
-    rootGroup.add(ringGroup);
+    sphereGroup.add(ringGroup);
 
+    const ringMats: THREE.MeshBasicMaterial[] = [];
     const createOrbitRing = (radius: number, rx: number, ry: number, opacity: number) => {
-      const rGeo = new THREE.TorusGeometry(radius, 0.008, 8, isSoftwareGl ? 48 : 84);
+      const rGeo = new THREE.TorusGeometry(radius, 0.0085, 8, isSoftwareGl ? 48 : 88);
       const rMat = new THREE.MeshBasicMaterial({
-        color: 0xa1a1aa,
+        color: 0xd4d4d8,
         transparent: true,
         opacity,
       });
+      ringMats.push(rMat);
       const rMesh = new THREE.Mesh(rGeo, rMat);
       rMesh.rotation.set(rx, ry, 0);
       return rMesh;
     };
 
-    const ring1 = createOrbitRing(1.94, Math.PI / 2.6, 0.35, 0.38);
-    const ring2 = createOrbitRing(2.08, -Math.PI / 3.1, -0.45, 0.26);
-    const ring3 = createOrbitRing(1.28, Math.PI / 4, 0.8, 0.32);
+    const ring1 = createOrbitRing(1.94, Math.PI / 2.6, 0.35, 0.42);
+    const ring2 = createOrbitRing(2.08, -Math.PI / 3.1, -0.45, 0.28);
+    const ring3 = createOrbitRing(1.26, Math.PI / 4, 0.8, 0.36);
     ringGroup.add(ring1, ring2, ring3);
 
-    // 6. 7 Primary Capability Spherical Anchors (Fibonacci Sphere Distribution)
-    const orbAnchorPoints: THREE.Vector3[] = HERO_ORBS.map((_, i) => {
-      const n = HERO_ORBS.length;
-      const phi = Math.acos(1 - (2 * (i + 0.5)) / n);
-      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      const r = 1.62;
-      return new THREE.Vector3(
-        r * Math.sin(phi) * Math.cos(theta),
-        r * Math.cos(phi) * 0.88,
-        r * Math.sin(phi) * Math.sin(theta)
-      );
-    });
+    // =========================================================================
+    // 3. 7 CAPABILITY SATELLITE ANCHORS (Fibonacci 360° Sphere Distribution)
+    // =========================================================================
+    const fibNodes = computeFibonacciSphereNodes(
+      HERO_ORBS.map((o) => ({ id: o.id, label: o.label })),
+      1.64,
+      0.88
+    );
 
     const anchorMeshes: THREE.Mesh[] = [];
-    const anchorGeo = new THREE.SphereGeometry(0.085, 14, 14);
-    orbAnchorPoints.forEach((pt) => {
+    const anchorGeo = new THREE.OctahedronGeometry(0.09, 1);
+    fibNodes.forEach((node) => {
       const mat = new THREE.MeshStandardMaterial({
         color: 0xf4f4f5,
         emissive: 0x27272a,
         emissiveIntensity: 0.7,
-        metalness: 0.85,
-        roughness: 0.15,
+        metalness: 0.9,
+        roughness: 0.14,
       });
       const m = new THREE.Mesh(anchorGeo, mat);
-      m.position.copy(pt);
+      m.position.set(node.x, node.y, node.z);
       rootGroup.add(m);
       anchorMeshes.push(m);
     });
 
-    // Pointer Interaction State
+    // Pointer Interaction State (Drag + Hover Parallax)
     let isDragging = false;
     let prevX = 0;
     let prevY = 0;
-    let targetRotY = 0.4;
+    let targetRotY = 0.42;
     let targetRotX = 0.18;
-    let curRotY = 0.4;
+    let curRotY = 0.42;
     let curRotX = 0.18;
+    let hoverParallaxX = 0;
+    let hoverParallaxY = 0;
 
     const onPointerDown = (e: PointerEvent) => {
       isDragging = true;
@@ -282,13 +358,22 @@ const HeroGeodesicSphere3D: React.FC<{
       prevY = e.clientY;
     };
     const onPointerMove = (e: PointerEvent) => {
+      const rect = container.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+        const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+        if (Math.abs(nx) <= 1.2 && Math.abs(ny) <= 1.2) {
+          hoverParallaxX = ny * 0.12;
+          hoverParallaxY = nx * 0.18;
+        }
+      }
       if (!isDragging) return;
       const dx = e.clientX - prevX;
       const dy = e.clientY - prevY;
       prevX = e.clientX;
       prevY = e.clientY;
-      targetRotY += dx * 0.008;
-      targetRotX = Math.max(-0.65, Math.min(0.65, targetRotX + dy * 0.006));
+      targetRotY += dx * 0.0085;
+      targetRotX = Math.max(-0.68, Math.min(0.68, targetRotX + dy * 0.0065));
     };
     const onPointerUp = () => {
       isDragging = false;
@@ -313,6 +398,7 @@ const HeroGeodesicSphere3D: React.FC<{
     let stopped = false;
     let rafId = 0;
     let timerId = 0;
+    const startTime = performance.now();
     const afterDraw = isSoftwareGl
       ? (cb: () => void) => {
           timerId = window.setTimeout(() => {
@@ -328,24 +414,54 @@ const HeroGeodesicSphere3D: React.FC<{
     const animate = () => {
       if (stopped || !renderer) return;
 
+      const elapsedSeconds = (performance.now() - startTime) * 0.001;
       const isDark = document.documentElement.classList.contains('dark');
-      wireframeMat.color.setHex(isDark ? 0xa1a1aa : 0x52525b);
-      wireframeMat.opacity = isDark ? 0.46 : 0.38;
-      coreMat.color.setHex(isDark ? 0x18181b : 0x27272a);
+      const palette = getMonochromaticPlatinumPalette(isDark);
+      const kinematics = computeFloatingPrismKinematics(
+        elapsedSeconds,
+        activeIdxRef.current,
+        modeRef.current
+      );
+
+      // Apply Monochromatic Silver / Platinum Theme Colors
+      outerPrismMat.color.setHex(palette.prismCoreHex);
+      outerPrismMat.emissive.setHex(palette.prismEmissiveHex);
+      prismEdgesMat.color.setHex(palette.prismEdgeHex);
+      wireframeMat.color.setHex(palette.sphereWireframeHex);
+      wireframeMat.opacity =
+        modeRef.current === 'prism-core' ? 0.22 : isDark ? 0.5 : 0.42;
+      smallNodeMat.color.setHex(palette.sphereVertexNodeHex);
+      ringMats.forEach((rm) => rm.color.setHex(palette.orbitalRingHex));
 
       if (!isDragging) {
         targetRotY += 0.0042;
       }
 
-      curRotY += (targetRotY - curRotY) * 0.08;
-      curRotX += (targetRotX - curRotX) * 0.08;
+      curRotY += (targetRotY + hoverParallaxY - curRotY) * 0.08;
+      curRotX += (targetRotX + hoverParallaxX - curRotX) * 0.08;
 
+      // Floating vertical levitation + gyroscopic rotation
+      rootGroup.position.y = kinematics.floatY;
       rootGroup.rotation.y = curRotY;
       rootGroup.rotation.x = curRotX;
 
-      outerWireframe.rotation.y = -curRotY * 0.35;
-      ring1.rotation.z += 0.003;
-      ring2.rotation.z -= 0.0025;
+      // Counter-rotating floating crystalline prism inside the geodesic sphere
+      prismGroup.rotation.x = kinematics.prismRotX;
+      prismGroup.rotation.y = kinematics.prismRotY;
+      const currentPrismScale = prismGroup.scale.x;
+      prismGroup.scale.setScalar(
+        currentPrismScale + (kinematics.prismScale - currentPrismScale) * 0.1
+      );
+
+      const currentSphereScale = sphereGroup.scale.x;
+      sphereGroup.scale.setScalar(
+        currentSphereScale + (kinematics.sphereScale - currentSphereScale) * 0.1
+      );
+
+      outerWireframe.rotation.y = -curRotY * 0.38;
+      ring1.rotation.z += 0.0032;
+      ring2.rotation.z -= 0.0026;
+      ring3.rotation.x += 0.0022;
 
       // Update anchor mesh highlight & project 3D coordinates to 2D overlay badges
       const cw = container.clientWidth || width;
@@ -354,9 +470,14 @@ const HeroGeodesicSphere3D: React.FC<{
       anchorMeshes.forEach((mesh, idx) => {
         const isSelected = activeIdxRef.current === idx;
         const mat = mesh.material as THREE.MeshStandardMaterial;
-        mat.color.setHex(isSelected ? 0x10b981 : 0xf4f4f5);
-        mat.emissive.setHex(isSelected ? 0x10b981 : 0x3f3f46);
-        mesh.scale.setScalar(isSelected ? 1.45 : 1.0);
+        mat.color.setHex(
+          isSelected ? palette.activeSatelliteHex : palette.inactiveSatelliteHex
+        );
+        mat.emissive.setHex(
+          isSelected ? palette.prismEdgeHex : palette.prismEmissiveHex
+        );
+        mat.emissiveIntensity = isSelected ? 0.85 : 0.35;
+        mesh.scale.setScalar(isSelected ? 1.48 : 1.0);
 
         const btn = orbElsRef.current[idx];
         if (btn) {
@@ -366,7 +487,7 @@ const HeroGeodesicSphere3D: React.FC<{
           const x = (projVec.x * 0.5 + 0.5) * cw;
           const y = (-projVec.y * 0.5 + 0.5) * ch;
           const scale = depthZ > 0 ? 1 : 0.84;
-          const opacity = depthZ > -0.35 ? 1 : 0.42;
+          const opacity = depthZ > -0.35 ? 1 : 0.44;
           btn.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${
             isSelected ? 1.12 : scale
           })`;
@@ -389,8 +510,18 @@ const HeroGeodesicSphere3D: React.FC<{
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
       window.removeEventListener('resize', handleResize);
-      coreGeo.dispose();
-      coreMat.dispose();
+      envStripGeo.dispose();
+      envWhiteMat.dispose();
+      envSilverMat.dispose();
+      envZincMat.dispose();
+      envRenderTarget.dispose();
+      pmremGenerator.dispose();
+      outerPrismGeo.dispose();
+      outerPrismMat.dispose();
+      innerPrismGeo.dispose();
+      innerPrismMat.dispose();
+      prismEdgesGeo.dispose();
+      prismEdgesMat.dispose();
       geodesicGeo.dispose();
       wireframeGeo.dispose();
       wireframeMat.dispose();
@@ -405,18 +536,47 @@ const HeroGeodesicSphere3D: React.FC<{
   }, []);
 
   return (
-    <div className="w-full surface-card rounded-3xl p-4 sm:p-5 relative overflow-hidden">
-      {/* Top Status Header */}
+    <div
+      data-testid="hero-3d-sphere-prism"
+      className="w-full surface-card rounded-3xl p-4 sm:p-5 relative overflow-hidden"
+    >
+      {/* Top Status & Sculpture Mode Header (Strictly Monochromatic Silver/Platinum) */}
       <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-1 border-b border-[var(--border-hairline)]">
         <div className="inline-flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-[var(--text-primary)] animate-pulse" />
           <span className="font-mono-tech text-[10px] uppercase tracking-widest font-bold text-[var(--text-primary)]">
-            360° 3D GEODESIC ARCHITECTURE CORE
+            3D FLOATING SPHERE &amp; PRISM MONOLITH
           </span>
         </div>
-        <span className="inline-flex items-center gap-1.5 font-mono-tech text-[10px] font-semibold text-[var(--text-secondary)]">
-          <Activity className="w-3 h-3 text-[#10B981]" />
-          <span>DRAG TO ROTATE • {activeOrb.label} ACTIVE</span>
+
+        {/* Interactive Geometry Mode Switcher */}
+        <div className="inline-flex items-center gap-1 p-0.5 rounded-full surface-elevated border border-[var(--border-hairline)]">
+          {SCULPTURE_MODES.map((m) => {
+            const active = sculptureMode === m.id;
+            return (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => setSculptureMode(m.id)}
+                className={`px-2 py-0.5 rounded-full font-mono-tech text-[9px] font-bold tracking-wider transition-all cursor-pointer ${
+                  active
+                    ? 'bg-[#09090B] text-[#F8F8F6] dark:bg-[#F4F4F5] dark:text-[#09090B] shadow-xs'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                {m.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Sub-bar telemetry */}
+      <div className="flex items-center justify-between text-[10px] font-mono-tech text-[var(--text-muted)] pb-1">
+        <span>PLATINUM WEBGL • DRAG OR HOVER TO ORBIT</span>
+        <span className="inline-flex items-center gap-1 font-semibold text-[var(--text-primary)]">
+          <Activity className="w-3 h-3 text-[var(--text-primary)]" />
+          <span>{activeOrb.label} NODE LOCKED</span>
         </span>
       </div>
 
@@ -438,11 +598,17 @@ const HeroGeodesicSphere3D: React.FC<{
                 onClick={() => onSelectOrb(idx)}
                 className={`pointer-events-auto absolute top-0 left-0 px-2.5 py-1 rounded-full font-mono-tech text-[10px] font-bold transition-colors cursor-pointer inline-flex items-center gap-1 border shadow-md ${
                   isSelected
-                    ? 'bg-[#09090B] text-[#F4F4F5] dark:bg-[#F4F4F5] dark:text-[#09090B] border-[#10B981]'
+                    ? 'bg-[#09090B] text-[#F4F4F5] dark:bg-[#F4F4F5] dark:text-[#09090B] border-[var(--text-primary)] ring-2 ring-[var(--text-primary)]/25'
                     : 'bg-[var(--bg-surface)]/92 text-[var(--text-primary)] border-[var(--border-strong)] hover:border-[var(--text-primary)]'
                 }`}
               >
-                <span className={isSelected ? 'text-[#10B981]' : 'text-[var(--text-secondary)]'}>
+                <span
+                  className={
+                    isSelected
+                      ? 'text-current'
+                      : 'text-[var(--text-secondary)]'
+                  }
+                >
                   {getOrbLucideIcon(orb.id, 'w-3 h-3')}
                 </span>
                 <span>{orb.label}</span>
@@ -468,7 +634,7 @@ const HeroGeodesicSphere3D: React.FC<{
                   : 'surface-elevated text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <span className={isActive ? 'text-[#10B981]' : 'text-[var(--text-secondary)]'}>
+              <span className={isActive ? 'text-current' : 'text-[var(--text-secondary)]'}>
                 {getOrbLucideIcon(orb.id, 'w-3 h-3')}
               </span>
               <span>{orb.label}</span>
@@ -813,7 +979,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <div className="lg:col-span-6 space-y-6">
                   {/* Zero-Pill Discipline Kicker */}
                   <div className="inline-flex items-center gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+                    <span className="w-2 h-2 rounded-full bg-[var(--text-primary)]" />
                     <span className="font-mono-tech text-[11px] uppercase tracking-widest text-[var(--text-primary)] font-bold">
                       SKYLINE DIGITAL AGENCY • WEB, SAAS, AI, ADS & LOCAL GROWTH
                     </span>
@@ -944,7 +1110,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                             key={item}
                             className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg surface-elevated font-mono-tech text-[10px] text-[var(--text-primary)]"
                           >
-                            <CheckCircle2 className="w-3 h-3 shrink-0 text-[#10B981]" />
+                            <CheckCircle2 className="w-3 h-3 shrink-0 text-[var(--text-primary)]" />
                             <span>{item}</span>
                           </span>
                         ))}
@@ -1005,7 +1171,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('referral')}
                   className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full badge-platinum font-mono-tech text-[11px] font-semibold cursor-pointer hover:opacity-90 transition-opacity"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[var(--text-primary)]" />
                   <span>Refer a Client & Earn 15% Commission</span>
                 </button>
               </div>
@@ -1128,7 +1294,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                             key={del}
                             className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg surface-elevated font-mono-tech text-[10px] text-[var(--text-primary)]"
                           >
-                            <CheckCircle2 className="w-3 h-3 text-[#10B981] shrink-0" />
+                            <CheckCircle2 className="w-3 h-3 text-[var(--text-primary)] shrink-0" />
                             <span>{del}</span>
                           </span>
                         ))}
@@ -1356,7 +1522,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--border-hairline)] pb-5">
                           <div className="space-y-1.5">
                             <div className="inline-flex items-center gap-2 font-mono-tech text-[10px] font-bold uppercase tracking-wider text-[var(--text-primary)]">
-                              <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
+                              <ShieldCheck className="w-3.5 h-3.5 text-[var(--text-primary)]" />
                               <span>{founder.role}</span>
                             </div>
                             <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)] tracking-tight pt-1">
@@ -1473,7 +1639,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                                 <ul className="space-y-1 text-[11px] text-[var(--text-secondary)]">
                                   {exp.highlights.map((h) => (
                                     <li key={h} className="flex items-start gap-1.5">
-                                      <CheckCircle2 className="w-3 h-3 text-[#10B981] shrink-0 mt-0.5" />
+                                      <CheckCircle2 className="w-3 h-3 text-[var(--text-primary)] shrink-0 mt-0.5" />
                                       <span>{h}</span>
                                     </li>
                                   ))}
@@ -1509,7 +1675,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                                 <ul className="space-y-1 text-[11px] text-[var(--text-secondary)]">
                                   {proj.highlights.map((h) => (
                                     <li key={h} className="flex items-start gap-1.5">
-                                      <CheckCircle2 className="w-3 h-3 text-[#10B981] shrink-0 mt-0.5" />
+                                      <CheckCircle2 className="w-3 h-3 text-[var(--text-primary)] shrink-0 mt-0.5" />
                                       <span>{h}</span>
                                     </li>
                                   ))}
@@ -1715,7 +1881,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         key={res}
                         className="flex items-center gap-2.5 p-3 rounded-xl surface-elevated text-xs font-medium text-[var(--text-primary)]"
                       >
-                        <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-[var(--text-primary)] shrink-0" />
                         <span>{res}</span>
                       </div>
                     ))}
