@@ -1,835 +1,938 @@
-export type SemanticAccentColor = 'emerald' | 'indigo' | 'violet' | 'amber' | 'cyan' | 'rose';
+export type SemanticAccentColor =
+  | 'emerald'
+  | 'indigo'
+  | 'violet'
+  | 'amber'
+  | 'cyan'
+  | 'rose';
+
+export interface CapabilityPillar {
+  id: string;
+  index?: string;
+  title: string;
+  subtitle: string;
+  description?: string;
+  architectureNote?: string;
+  metrics?: {
+    label: string;
+    value: string;
+    delta: string;
+  }[];
+  deliverables: ({
+    name: string;
+    spec: string;
+    impact: string;
+  } | string)[];
+  // Compatible fields for Admin CMS
+  categoryLabel?: string;
+  shortTab?: string;
+  badgeTag?: string;
+  accentColor?: SemanticAccentColor;
+  leadSentence?: string;
+  outcomeMetric?: string;
+  timeline?: string;
+  architectureSpecs?: { key: string; val: string }[];
+  previewMode?: string;
+}
+
+export interface RoadmapPhase {
+  step: string;
+  phase: string;
+  duration: string;
+  title: string;
+  description: string;
+  deliverables: string[];
+  verificationGate: string;
+}
+
+export interface ClientProofCase {
+  id: string;
+  clientSector: string;
+  challenge: string;
+  solution: string;
+  primaryMetric: string;
+  primaryMetricLabel: string;
+  secondaryMetric: string;
+  timeframe: string;
+  tags: string[];
+}
+
+export interface VerifiedReview {
+  id: string;
+  quote: string;
+  author: string;
+  role: string;
+  serviceTag?: string;
+  impactHighlight?: string;
+  rating?: number;
+  // Admin CMS compatibility
+  initials?: string;
+  engagementScope?: string;
+  verifiedOutcome?: string;
+  relatedProjectId?: string;
+}
+
+export type ClientReview = VerifiedReview;
+
+export interface FaqItem {
+  id: string;
+  category: string;
+  question: string;
+  answer: string;
+  accentColor?: SemanticAccentColor;
+}
+
+export interface ShowcaseProject {
+  id: string;
+  title: string;
+  clientType?: string;
+  categoryTag?: string;
+  summary?: string;
+  impactMetric?: string;
+  secondaryMetric?: string;
+  techStack?: string[];
+  livePreviewLabel?: string;
+  imageUrl: string;
+  challenge?: string;
+  solution?: string;
+  results?: string[];
+  // Admin CMS compatibility
+  statusBadge?: string;
+  accentColor?: SemanticAccentColor;
+  category?: string;
+  locationTag?: string;
+  tags?: string;
+  metricsHeadline?: string;
+  metricsSub?: string;
+  architectureNodes?: string[];
+  accentMetric?: string;
+  fallbackSvgUrl?: string;
+  problemStatement?: string;
+  architectureSummary?: string;
+  impactMetrics?: { label: string; before: string; after: string; delta: string }[];
+  stackPills?: string[];
+}
+
+export const SKYLINE_WHATSAPP_NUMBER = '918109697311';
+export const SKYLINE_EMAIL = 'skylinedigital@gmail.com';
+export const SKYLINE_INSTAGRAM_URL = 'https://www.instagram.com/sky_line_digital';
+export const SKYLINE_LINKEDIN_URL = 'https://www.linkedin.com/company/skyline-digital-agency';
+export const SKYLINE_TELEGRAM_URL = 'https://t.me/skyline_digital';
+export const SKYLINE_X_URL = 'https://x.com/skyline_digital';
+export const SKYLINE_LOCATION =
+  'Madhya Pradesh, India (Serving Startups & Businesses Globally)';
 
 export interface HeroOrbItem {
   id: string;
-  shortCode: string;
   label: string;
-  targetCapabilityId: string;
-  accentColor: SemanticAccentColor;
-  targetSlideIndex: number;
-  liveMetricBadge: string;
+  title: string;
+  metric: string;
+  metricLabel: string;
+  psychColor: string;
+  psychName: string;
+  psychMeaning: string;
+  summary: string;
+  deliverables: string[];
+  targetSection: string;
 }
 
-export const HERO_SERVICE_ORBS: HeroOrbItem[] = [
+export const HERO_ORBS: HeroOrbItem[] = [
   {
-    id: 'orb-ai',
-    shortCode: 'AI',
-    label: 'AI Automation & Agents',
-    targetCapabilityId: 'ai-crm',
-    accentColor: 'violet',
-    targetSlideIndex: 1,
-    liveMetricBadge: '< 6s WhatsApp AI SLA',
+    id: 'ai',
+    label: 'AI',
+    title: 'Autonomous AI & WhatsApp Sales Agents',
+    metric: '< 1.2s',
+    metricLabel: 'Lead Response Speed',
+    psychColor: '#8B5CF6',
+    psychName: 'Electric Violet',
+    psychMeaning: 'Futuristic Intelligence & Neural Depth',
+    summary:
+      '24/7 official WhatsApp Cloud API bots and custom RAG AI agents that answer FAQs, qualify budgets, and book calendar slots automatically.',
+    deliverables: ['Official WhatsApp Cloud API', 'RAG Knowledge Base', 'Auto Calendar Sync'],
+    targetSection: 'services',
   },
   {
-    id: 'orb-ads',
-    shortCode: 'ADS',
-    label: 'Meta & Google Ads',
-    targetCapabilityId: 'performance-ads',
-    accentColor: 'amber',
-    targetSlideIndex: 3,
-    liveMetricBadge: '₹14.8L Pipeline · 4.2x ROAS',
+    id: 'ads',
+    label: 'ADS',
+    title: 'High-ROAS Meta & Google Performance Funnels',
+    metric: '4.1x',
+    metricLabel: 'Verified Blended ROAS',
+    psychColor: '#F43F5E',
+    psychName: 'Coral Crimson',
+    psychMeaning: 'Urgency, Attention Capture & Action',
+    summary:
+      'Server-side Meta CAPI attribution paired with high-intent Google Search campaigns and conversion-engineered landing pages.',
+    deliverables: ['Server-Side Meta CAPI', 'High-Intent Search Ads', 'Live ROAS Dashboards'],
+    targetSection: 'services',
   },
   {
-    id: 'orb-saas',
-    shortCode: 'SAAS',
-    label: 'SaaS & Web Portals',
-    targetCapabilityId: 'web-engineering',
-    accentColor: 'indigo',
-    targetSlideIndex: 0,
-    liveMetricBadge: 'Next.js 15 · 99+ CWV',
+    id: 'saas',
+    label: 'SAAS',
+    title: 'Multi-Tenant Cloud SaaS & Enterprise Portals',
+    metric: '99.98%',
+    metricLabel: 'Production Uptime SLA',
+    psychColor: '#2563EB',
+    psychName: 'Deep Cobalt Blue',
+    psychMeaning: 'Enterprise Stability & Cloud Trust',
+    summary:
+      'Production-ready SaaS MVPs, role-based admin dashboards, subscription billing webhooks, and resilient PostgreSQL + Redis architectures.',
+    deliverables: ['Multi-Tenant Auth & RBAC', 'Stripe & Razorpay Subscriptions', 'Sub-85ms API Latency'],
+    targetSection: 'expertise',
   },
   {
-    id: 'orb-web',
-    shortCode: 'WEB',
-    label: 'Full-Stack Web Systems',
-    targetCapabilityId: 'web-engineering',
-    accentColor: 'emerald',
-    targetSlideIndex: 0,
-    liveMetricBadge: '84ms Edge TTFB · ₹0 Cloud Waste',
+    id: 'web',
+    label: 'WEB',
+    title: 'Sub-Second Next.js Websites & D2C Storefronts',
+    metric: '99/100',
+    metricLabel: 'Google Lighthouse Speed',
+    psychColor: '#10B981',
+    psychName: 'Cyber Emerald',
+    psychMeaning: 'Frictionless Flow & Compounding Growth',
+    summary:
+      'Custom Next.js 15 & React 19 storefronts with 0.4s edge load times and 1-tap UPI checkout flows that convert cold traffic into buyers.',
+    deliverables: ['Next.js 15 Edge SSR', '1-Tap UPI Checkout', 'WhatsApp Cart Recovery'],
+    targetSection: 'work',
   },
   {
-    id: 'orb-seo',
-    shortCode: 'SEO',
-    label: 'Technical SEO & AEO',
-    targetCapabilityId: 'seo-aeo',
-    accentColor: 'rose',
-    targetSlideIndex: 5,
-    liveMetricBadge: '+210% Organic & AI Citations',
+    id: 'seo',
+    label: 'SEO',
+    title: 'Programmatic Search SEO & AI Answer Visibility',
+    metric: '+240%',
+    metricLabel: 'Organic Search Pipeline',
+    psychColor: '#F59E0B',
+    psychName: 'Solar Amber Gold',
+    psychMeaning: 'Spotlight Discovery & #1 Authority',
+    summary:
+      'Dominate Google SERPs, ChatGPT, and Perplexity with JSON-LD entity graphs, programmatic regional hubs, and 100/100 Core Web Vitals.',
+    deliverables: ['JSON-LD Entity Graphs', 'Programmatic Location Hubs', 'AI Citation Optimization'],
+    targetSection: 'expertise',
   },
   {
-    id: 'orb-crm',
-    shortCode: 'CRM',
-    label: 'WhatsApp & Custom CRM',
-    targetCapabilityId: 'ai-crm',
-    accentColor: 'cyan',
-    targetSlideIndex: 1,
-    liveMetricBadge: '+91 Official Cloud API Live',
+    id: 'crm',
+    label: 'CRM',
+    title: 'Unified WhatsApp CRM & Pipeline Orchestration',
+    metric: '0%',
+    metricLabel: 'Lead Leakage Across Channels',
+    psychColor: '#06B6D4',
+    psychName: 'Radiant Cyan',
+    psychMeaning: 'Clear Communication & Connected Pipelines',
+    summary:
+      'Connect Meta Lead Ads, website forms, WhatsApp inquiries, and sales reps into one automated pipeline with instant follow-up sequences.',
+    deliverables: ['Instant Webhook Routing', 'Automated Drip Follow-Ups', 'Executive Sales Telemetry'],
+    targetSection: 'simulator',
   },
   {
-    id: 'orb-local',
-    shortCode: 'LOCAL',
-    label: 'Local Business Growth Engine',
-    targetCapabilityId: 'local-business',
-    accentColor: 'amber',
-    targetSlideIndex: 2,
-    liveMetricBadge: '4.9★ Google Map Pack #1',
+    id: 'local',
+    label: 'LOCAL',
+    title: 'Google Map Pack #1 & Local Walk-In Engines',
+    metric: '3.2x',
+    metricLabel: 'Daily Local Calls & Walk-Ins',
+    psychColor: '#F97316',
+    psychName: 'Warm Tangerine',
+    psychMeaning: 'Neighborhood Warmth & Physical Footfall',
+    summary:
+      'Built for clinics, salons, cafes, gyms, and showrooms. Rank #1 in "near me" Google Maps searches and automate 5-star QR reviews.',
+    deliverables: ['Google Map Pack Top-3', 'Smart QR Review Standees', 'WhatsApp Appointment Bot'],
+    targetSection: 'local-business',
   },
 ];
 
 export interface HeroPitchSlide {
   id: string;
-  categoryTag: string;
+  badge: string;
   title: string;
   subtitle: string;
-  imageUrl: string;
-  fallbackSvgUrl: string;
-  primaryMetric: string;
-  secondaryMetric: string;
-  liveStatusLabel: string;
-  indianContextChip: string;
-  accentColor: SemanticAccentColor;
-  targetCapabilityId: string;
+  metricValue: string;
+  metricLabel: string;
+  highlights: string[];
+  visualType:
+    | 'code-edge'
+    | 'whatsapp-bot'
+    | 'local-maps'
+    | 'roas-analytics'
+    | 'upi-storefront'
+    | 'seo-terminal';
+  targetSection: string;
 }
 
 export const HERO_PITCH_SLIDES: HeroPitchSlide[] = [
   {
     id: 'slide-web-saas',
-    categoryTag: 'WEB & SAAS ARCHITECTURE',
-    title: 'Full-Stack Web & SaaS Platforms',
-    subtitle: 'Indore • Bengaluru Edge Node | 99 CWV | ₹0 Cloud Waste',
-    imageUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=85',
-    fallbackSvgUrl: '/assets/hero-system-preview.svg',
-    primaryMetric: '99 CWV · 84ms TTFB',
-    secondaryMetric: '₹0 Cloud Waste',
-    liveStatusLabel: 'INDORE • BENGALURU EDGE NODE',
-    indianContextChip: 'Next.js 15 · Mumbai & Hyderabad CDN',
-    accentColor: 'indigo',
-    targetCapabilityId: 'web-engineering',
+    badge: 'FULL-STACK WEB & SAAS',
+    title: 'Sub-Second Websites & Scalable SaaS Platforms',
+    subtitle:
+      'Custom Next.js, React, and Python/Node architectures engineered for instant load times, enterprise security, and frictionless checkout.',
+    metricValue: '0.4s',
+    metricLabel: 'Global Edge LCP Speed',
+    highlights: ['Next.js 15 & TypeScript', 'Cloud-Native Postgres', '99.98% Uptime Architecture'],
+    visualType: 'code-edge',
+    targetSection: 'expertise',
   },
   {
     id: 'slide-ai-whatsapp',
-    categoryTag: 'AUTONOMOUS AI & CRM',
-    title: 'Autonomous AI & WhatsApp CRM',
-    subtitle: '< 6s WhatsApp Business Chat UI with instant +91 lead qualification & catalog dispatch.',
-    imageUrl: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=85',
-    fallbackSvgUrl: '/assets/bento-ai-crm.svg',
-    primaryMetric: '< 6s WhatsApp SLA',
-    secondaryMetric: '+91 Instant Bot Routing',
-    liveStatusLabel: 'OFFICIAL CLOUD API LIVE',
-    indianContextChip: 'WhatsApp Business API · Hindi/English AI',
-    accentColor: 'violet',
-    targetCapabilityId: 'ai-crm',
+    badge: 'AI & WHATSAPP AUTOMATION',
+    title: '24/7 AI Sales Agents & WhatsApp CRM Flows',
+    subtitle:
+      'Turn every Instagram DM, website inquiry, and missed call into an instant WhatsApp conversation that qualifies leads and books appointments automatically.',
+    metricValue: '< 1.2s',
+    metricLabel: 'Automated Lead Response',
+    highlights: ['Official WhatsApp Cloud API', 'RAG Knowledge Base', 'Auto Calendar & CRM Sync'],
+    visualType: 'whatsapp-bot',
+    targetSection: 'simulator',
   },
   {
     id: 'slide-local-business',
-    categoryTag: 'LOCAL BUSINESS DIGITIZATION',
-    title: 'Local Business Growth Engine',
-    subtitle: 'Google Map Pack #1 (MP & Pan-India) • Smart QR 4.9★ Review Standee',
-    imageUrl: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=1200&q=85',
-    fallbackSvgUrl: '/assets/project-carve-edtech.svg',
-    primaryMetric: '4.9★ Google Map Pack #1',
-    secondaryMetric: '+185% Walk-In & Call Volume',
-    liveStatusLabel: 'SMART QR 4.9★ REVIEW STANDEE',
-    indianContextChip: 'Indore · Bhopal · Mumbai · Delhi NCR',
-    accentColor: 'amber',
-    targetCapabilityId: 'local-business',
+    badge: 'LOCAL BUSINESS DOMINANCE',
+    title: 'Google Map Pack #1 & Hyper-Local Lead Engines',
+    subtitle:
+      'Built for clinics, salons, cafes, gyms, and retail stores. Dominate "near me" Google searches, automate 5-star review collection, and capture local walk-ins.',
+    metricValue: '3.2x',
+    metricLabel: 'Local Calls & Walk-Ins',
+    highlights: ['Google Business Profile #1', 'QR Review Automation', 'Hyper-Local Meta Geo-Ads'],
+    visualType: 'local-maps',
+    targetSection: 'local-business',
   },
   {
-    id: 'slide-meta-google-ads',
-    categoryTag: 'PAID DEMAND ACQUISITION',
-    title: 'High-ROAS Meta & Google Ads',
-    subtitle: '₹14.8L Pipeline Generated • 4.2x Verified ROAS with Server-Side CAPI.',
-    imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=85',
-    fallbackSvgUrl: '/assets/project-360-proptech.svg',
-    primaryMetric: '4.2x Verified ROAS',
-    secondaryMetric: '₹14.8L Pipeline Generated',
-    liveStatusLabel: 'SERVER-SIDE CAPI ACTIVE',
-    indianContextChip: '₹ INR Cost-Per-Lead Attribution',
-    accentColor: 'amber',
-    targetCapabilityId: 'performance-ads',
+    id: 'slide-paid-ads',
+    badge: 'PERFORMANCE MARKETING',
+    title: 'ROI-Backed Meta & Google Ad Funnels',
+    subtitle:
+      'Stop burning budget on vanity clicks. We pair server-side Meta CAPI tracking with high-converting landing pages that turn ad spend into predictable revenue.',
+    metricValue: '4.1x',
+    metricLabel: 'Verified Blended ROAS',
+    highlights: ['Server-Side Meta CAPI', 'High-Intent Search Ads', 'Real-Time ROAS Dashboards'],
+    visualType: 'roas-analytics',
+    targetSection: 'expertise',
   },
   {
-    id: 'slide-headless-ecom',
-    categoryTag: 'HEADLESS D2C COMMERCE',
-    title: 'Headless E-Commerce & D2C Stores',
-    subtitle: '1-Tap UPI (GPay / PhonePe / Paytm) Checkout + 8s WhatsApp Cart Recovery.',
-    imageUrl: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=85',
-    fallbackSvgUrl: '/assets/project-aurascale-d2c.svg',
-    primaryMetric: '+64% Checkout Lift',
-    secondaryMetric: '1-Tap UPI Checkout',
-    liveStatusLabel: 'GPAY • PHONEPE • PAYTM READY',
-    indianContextChip: 'Razorpay / Cashfree 1-Tap UPI Flow',
-    accentColor: 'emerald',
-    targetCapabilityId: 'conversion-ux',
+    id: 'slide-ecommerce-d2c',
+    badge: 'D2C & E-COMMERCE',
+    title: 'High-Converting Storefronts with 1-Tap UPI Checkout',
+    subtitle:
+      'Custom D2C storefronts and digital catalogs with Razorpay/Stripe integration, automated WhatsApp cart recovery, and sub-second product filtering.',
+    metricValue: '+68%',
+    metricLabel: 'Checkout Conversion Lift',
+    highlights: ['1-Tap UPI & Card Flows', 'WhatsApp Cart Recovery', 'Real-Time Inventory Sync'],
+    visualType: 'upi-storefront',
+    targetSection: 'work',
   },
   {
-    id: 'slide-seo-aeo-reels',
-    categoryTag: 'ORGANIC SEARCH & REELS',
-    title: 'Technical SEO, AEO & Viral Reels',
-    subtitle: '+210% Organic Search & ChatGPT/Perplexity Brand Citations across India & Global.',
-    imageUrl: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=85',
-    fallbackSvgUrl: '/assets/bento-web-cloud.svg',
-    primaryMetric: '+210% Organic Reach',
-    secondaryMetric: 'ChatGPT & Gemini Citations',
-    liveStatusLabel: 'AI ANSWER ENGINE INDEXED',
-    indianContextChip: 'JSON-LD Entity Graph · High-Retention Reels',
-    accentColor: 'rose',
-    targetCapabilityId: 'seo-aeo',
+    id: 'slide-seo-authority',
+    badge: 'TECHNICAL SEO & AEO',
+    title: 'Programmatic SEO & AI Search Visibility',
+    subtitle:
+      'Rank at the top of Google Search and AI answer engines (ChatGPT, Perplexity) with programmatic landing pages, JSON-LD schema, and Core Web Vitals mastery.',
+    metricValue: '+240%',
+    metricLabel: 'Organic Search Pipeline',
+    highlights: ['JSON-LD Entity Graphs', 'Programmatic Location Pages', '100/100 Core Web Vitals'],
+    visualType: 'seo-terminal',
+    targetSection: 'expertise',
   },
 ];
 
+export const TECH_STACK_MARQUEE_ROW_1 = [
+  'Next.js 15',
+  'React 19',
+  'TypeScript',
+  'Python FastAPI',
+  'Node.js',
+  'PostgreSQL',
+  'Prisma ORM',
+  'Redis Cache',
+  'Docker',
+  'AWS Cloud',
+  'Tailwind CSS',
+  'OpenAI & LangChain',
+];
+
+export const TECH_STACK_MARQUEE_ROW_2 = [
+  'WhatsApp Cloud API',
+  'Google Map Pack SEO',
+  'Meta Ads CAPI',
+  'Google Ads Search',
+  'Razorpay & UPI Flows',
+  'HubSpot & Zoho CRM',
+  'Programmatic SEO',
+  'GA4 Server Tracking',
+  'Local Review Automation',
+  'JSON-LD Schema',
+];
+
+export const STACK_TICKER_ROW_1: {
+  name: string;
+  category: string;
+  accentColor: SemanticAccentColor;
+}[] = TECH_STACK_MARQUEE_ROW_1.map((name) => ({
+  name,
+  category: 'ENGINEERING',
+  accentColor: 'indigo',
+}));
+
+export const STACK_TICKER_ROW_2: {
+  name: string;
+  category: string;
+  accentColor: SemanticAccentColor;
+}[] = TECH_STACK_MARQUEE_ROW_2.map((name) => ({
+  name,
+  category: 'GROWTH & LOCAL',
+  accentColor: 'emerald',
+}));
+
 export interface BentoSolutionCard {
   id: string;
-  categoryBadge: string;
+  tag: string;
   title: string;
-  description: string;
-  metricCallout: string;
-  indianContextOverlay: string;
-  accentColor: SemanticAccentColor;
-  featured?: boolean;
-  targetCapabilityId: string;
-  imageUrl: string;
-  fallbackSvgUrl: string;
+  summary: string;
+  metric: string;
+  deliverables: string[];
+  spanClass: string;
+  visualType:
+    | 'web-architecture'
+    | 'whatsapp-crm'
+    | 'local-gbp'
+    | 'roas-funnel'
+    | 'seo-schema'
+    | 'upi-catalog';
 }
 
 export const BENTO_SOLUTIONS: BentoSolutionCard[] = [
   {
     id: 'bento-web',
-    categoryBadge: 'WEB & SAAS CORE',
-    title: 'Web & Custom SaaS Portals',
-    description: 'Sub-100ms Next.js platforms, custom ERPs, and high-converting landing systems.',
-    metricCallout: '99+ Core Web Vitals',
-    indianContextOverlay: 'Indore • Bengaluru Edge',
-    accentColor: 'indigo',
-    targetCapabilityId: 'web-engineering',
-    imageUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80',
-    fallbackSvgUrl: '/assets/bento-web-cloud.svg',
+    tag: 'WEB & SAAS ENGINEERING',
+    title: 'Custom Web Apps, SaaS Portals & High-Speed Websites',
+    summary:
+      'We replace bloated templates with custom React/Next.js frontends and resilient backend APIs that load in under 0.5 seconds and convert cold visitors into paying clients.',
+    metric: '99/100 Google PageSpeed',
+    deliverables: ['Custom UI/UX Architecture', 'Secure Admin & Client Portals', 'API & Payment Integrations'],
+    spanClass: 'lg:col-span-7',
+    visualType: 'web-architecture',
   },
   {
-    id: 'bento-crm',
-    categoryBadge: 'AUTONOMOUS AI CRM',
-    title: 'AI & WhatsApp CRM Systems',
-    description: '6-second automated +91 lead qualification, catalog flows, and CRM pipeline sync.',
-    metricCallout: '< 6s Lead Response',
-    indianContextOverlay: '+91 Official WhatsApp API',
-    accentColor: 'violet',
-    featured: true,
-    targetCapabilityId: 'ai-crm',
-    imageUrl: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=900&q=80',
-    fallbackSvgUrl: '/assets/bento-ai-crm.svg',
+    id: 'bento-ai-crm',
+    tag: 'AI & WHATSAPP AUTOMATION',
+    title: '24/7 WhatsApp Sales Bots & Automated CRM',
+    summary:
+      'Never lose a lead to slow replies. Our official WhatsApp bots answer FAQs, share catalogs, qualify budgets, and book calls straight into your calendar.',
+    metric: '< 1.2s Instant Reply',
+    deliverables: ['WhatsApp Catalog & Booking Bot', 'Automated Follow-Up Sequences', 'Unified Lead Pipeline'],
+    spanClass: 'lg:col-span-5',
+    visualType: 'whatsapp-crm',
   },
   {
     id: 'bento-local',
-    categoryBadge: 'LOCAL BUSINESS ENGINE',
-    title: 'Local Business Growth & Digitization',
-    description: 'Google Map Pack #1, WhatsApp booking, local Reels ads & Smart QR review standees.',
-    metricCallout: '4.9★ Google Map Pack #1',
-    indianContextOverlay: 'Smart QR Standee • Clinics & Retail',
-    accentColor: 'amber',
-    featured: true,
-    targetCapabilityId: 'local-business',
-    imageUrl: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=900&q=80',
-    fallbackSvgUrl: '/assets/project-carve-edtech.svg',
+    tag: 'LOCAL BUSINESS GROWTH',
+    title: 'Google Maps #1 Rank, QR Review Systems & Walk-In Funnels',
+    summary:
+      'Tailored for clinics, restaurants, salons, gyms, and retail showrooms. We rank you in the Top 3 on Google Maps and turn local searchers into daily walk-ins.',
+    metric: '3.2x More Local Calls',
+    deliverables: ['Google Business Profile Optimization', 'Automated 5-Star Review Standees', 'WhatsApp Appointment Booking'],
+    spanClass: 'lg:col-span-4',
+    visualType: 'local-gbp',
   },
   {
     id: 'bento-ads',
-    categoryBadge: 'PAID ACQUISITION',
-    title: 'Performance Ads & Funnels',
-    description: 'High-intent Google Search & Meta Reels funnels with ₹ INR Server-Side CAPI.',
-    metricCallout: '4.2x Pipeline ROAS',
-    indianContextOverlay: '₹14.8L Verified Pipeline',
-    accentColor: 'amber',
-    targetCapabilityId: 'performance-ads',
-    imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=900&q=80',
-    fallbackSvgUrl: '/assets/project-360-proptech.svg',
-  },
-  {
-    id: 'bento-ecom',
-    categoryBadge: 'D2C STOREFRONTS',
-    title: 'E-Commerce & Conversion UX',
-    description: 'Headless storefronts, 1-Tap UPI checkouts (GPay/PhonePe), and WhatsApp cart recovery.',
-    metricCallout: '+64% Checkout Lift',
-    indianContextOverlay: '1-Tap UPI • GPay & PhonePe',
-    accentColor: 'emerald',
-    targetCapabilityId: 'conversion-ux',
-    imageUrl: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=900&q=80',
-    fallbackSvgUrl: '/assets/project-aurascale-d2c.svg',
+    tag: 'PAID ACQUISITION',
+    title: 'High-ROAS Meta & Google Ad Engines',
+    summary:
+      'Precision-targeted ad campaigns backed by server-side conversion tracking and dedicated landing pages engineered to lower your cost-per-lead.',
+    metric: '4.1x Average ROAS',
+    deliverables: ['Meta Reels & Lead Ads', 'High-Intent Google Search Ads', 'Server-Side CAPI Attribution'],
+    spanClass: 'lg:col-span-4',
+    visualType: 'roas-funnel',
   },
   {
     id: 'bento-seo',
-    categoryBadge: 'ORGANIC & AI SEARCH',
-    title: 'Technical SEO, AEO & Social',
-    description: 'Google Search dominance, AI Answer Engine schemas, and high-retention Reels.',
-    metricCallout: '+210% Organic Traffic',
-    indianContextOverlay: 'ChatGPT & Perplexity Citations',
-    accentColor: 'rose',
-    targetCapabilityId: 'seo-aeo',
-    imageUrl: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=900&q=80',
-    fallbackSvgUrl: '/assets/hero-system-preview.svg',
-  },
-];
-
-export interface ShowcaseProject {
-  id: string;
-  statusBadge: string;
-  accentColor: SemanticAccentColor;
-  category: string;
-  title: string;
-  locationTag: string;
-  tags: string;
-  metricsHeadline: string;
-  metricsSub: string;
-  architectureNodes: string[];
-  accentMetric: string;
-  imageUrl: string;
-  fallbackSvgUrl: string;
-  problemStatement: string;
-  architectureSummary: string;
-  impactMetrics: { label: string; before: string; after: string; delta: string }[];
-  stackPills: string[];
-}
-
-export const SHOWCASE_PROJECTS: ShowcaseProject[] = [
-  {
-    id: 'project-360-estate',
-    statusBadge: 'LIVE PRODUCTION',
-    accentColor: 'emerald',
-    category: 'REAL ESTATE & PROPTECH',
-    title: '360 Views Property Hub',
-    locationTag: 'Indore • Mumbai Luxury Developments',
-    tags: 'Next.js Edge • Meta CAPI • WhatsApp CRM',
-    metricsHeadline: '-38% Cost Per Site Visit',
-    metricsSub: 'Luxury Indian residential portal with instant +91 WhatsApp buyer qualification.',
-    architectureNodes: ['Next.js Edge UI', '360° Tour Viewport', 'WhatsApp Routing'],
-    accentMetric: '99 CWV · 2.8x Velocity',
-    imageUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=900&q=80',
-    fallbackSvgUrl: '/assets/project-360-proptech.svg',
-    problemStatement:
-      'High ad spend leakage on generic property portals with 14+ hour sales follow-up delays and unqualified broker inquiries.',
-    architectureSummary:
-      'Deployed a sub-100ms Next.js interactive 360° tower explorer wired to Meta Conversions API (CAPI) and an automated 6-second WhatsApp floor-plan + site-visit scheduler.',
-    impactMetrics: [
-      { label: 'Cost Per Qualified Site Visit', before: '₹4,200', after: '₹2,600', delta: '-38% CAC' },
-      { label: 'WhatsApp Brochure & Slot SLA', before: '14 Hours', after: '5.4 Seconds', delta: '99.9% Faster' },
-      { label: 'Mobile Core Web Vitals', before: '54 / 100', after: '99 / 100', delta: '84ms TTFB' },
-    ],
-    stackPills: ['Next.js 15', 'TypeScript', 'WhatsApp Cloud API', 'Meta Server CAPI', 'PostgreSQL'],
+    tag: 'SEARCH & AI VISIBILITY',
+    title: 'Technical SEO & AI Answer Engine Optimization',
+    summary:
+      'Capture high-intent buyers searching on Google, ChatGPT, and Perplexity with structured schema markup and high-authority content clusters.',
+    metric: '+240% Organic Traffic',
+    deliverables: ['Technical Core Web Vitals Audit', 'Local & National Keyword Clusters', 'JSON-LD Schema Architecture'],
+    spanClass: 'lg:col-span-4',
+    visualType: 'seo-schema',
   },
   {
-    id: 'project-carve-portal',
-    statusBadge: 'LIVE PRODUCTION',
-    accentColor: 'indigo',
-    category: 'INSTITUTIONAL ERP & FUNNEL',
-    title: 'Carve Academy ERP',
-    locationTag: 'Central India Campus Network',
-    tags: 'Custom ERP • Local SEO/AEO • Counselor Bot',
-    metricsHeadline: '+210% Admission Inquiries',
-    metricsSub: 'Automated parent inquiries, digital fee/UPI portal, and instant counselor dispatch.',
-    architectureNodes: ['Admission Portal', 'Map Pack #1', 'Instant CRM Alerts'],
-    accentMetric: '84ms TTFB · Zero Drop-Off',
-    imageUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80',
-    fallbackSvgUrl: '/assets/project-carve-edtech.svg',
-    problemStatement:
-      'Seasonal admission bottlenecks, fragmented spreadsheet tracking, and low visibility in regional Google Map Pack searches.',
-    architectureSummary:
-      'Engineered a unified student/parent admission ERP with automated WhatsApp prospectus delivery, counselor round-robin assignment, and #1 Google Map Pack schema authority.',
-    impactMetrics: [
-      { label: 'Verified Admission Inquiries', before: '310 / season', after: '960 / season', delta: '+210% Lift' },
-      { label: 'Counselor First-Touch Time', before: '6.5 Hours', after: '< 6 Seconds', delta: '24/7 Bot' },
-      { label: 'Regional Google Map Ranking', before: 'Position #9', after: 'Map Pack #1', delta: '+3.1x Calls' },
-    ],
-    stackPills: ['React 19', 'Node.js', 'PostgreSQL', 'WhatsApp Cloud API', 'JSON-LD Schema'],
-  },
-  {
-    id: 'project-aurascale-d2c',
-    statusBadge: 'LIVE DEMO',
-    accentColor: 'violet',
-    category: 'HEADLESS D2C COMMERCE',
-    title: 'AuraScale D2C Store',
-    locationTag: 'Pan-India D2C Apparel & Lifestyle',
-    tags: '1-Tap UPI • Reels Funnel • Cart Recovery',
-    metricsHeadline: '4.2x Verified ROAS',
-    metricsSub: 'Sub-second Indian D2C storefront paired with 1-Tap UPI & 8s WhatsApp cart recovery.',
-    architectureNodes: ['1-Tap UPI Flow', 'Server CAPI', 'WhatsApp Recovery'],
-    accentMetric: '+64% Checkout Lift',
-    imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80',
-    fallbackSvgUrl: '/assets/project-aurascale-d2c.svg',
-    problemStatement:
-      '68% mobile checkout drop-off on bloated themes and poor attribution from Instagram Reels campaigns.',
-    architectureSummary:
-      'Replaced legacy storefront with an edge-cached headless commerce UI featuring 1-Tap UPI (GPay / PhonePe / Paytm) checkout and automated WhatsApp abandoned-cart discount triggers.',
-    impactMetrics: [
-      { label: 'Mobile Checkout Conversion', before: '1.8%', after: '2.95%', delta: '+64% Lift' },
-      { label: 'Abandoned Carts Recovered', before: '4.2%', after: '28.4%', delta: 'WhatsApp Bot' },
-      { label: 'Blended Meta Reels ROAS', before: '1.9x', after: '4.2x', delta: 'Server CAPI' },
-    ],
-    stackPills: ['Next.js Storefront', '1-Tap UPI SDK', 'WhatsApp Cart Bot', 'Meta Ads API', 'Tailwind CSS'],
-  },
-  {
-    id: 'project-apex-local',
-    statusBadge: 'LOCAL GROWTH',
-    accentColor: 'amber',
-    category: 'LOCAL CLINIC & SHOWROOM ENGINE',
-    title: 'Apex Local Clinic & Retail',
-    locationTag: 'Indore • Bhopal Multi-Branch',
-    tags: 'Google Map #1 • Smart QR Reviews • WhatsApp Booking',
-    metricsHeadline: '+185% Patient & Showroom Bookings',
-    metricsSub: 'Automated Google Map ranking, reception QR review standee, and WhatsApp slot booking.',
-    architectureNodes: ['GBP Map Pack #1', 'Smart QR Standee', 'WhatsApp Booking'],
-    accentMetric: '4.9★ Rating · 3.2x Calls',
-    imageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=900&q=80',
-    fallbackSvgUrl: '/assets/bento-ai-crm.svg',
-    problemStatement:
-      'Depending solely on word-of-mouth with stagnant Google reviews (3.8★) and missed reception phone calls during peak clinic hours.',
-    architectureSummary:
-      'Implemented Local GBP Map Pack #1 optimization, physical Smart QR 5-Star Review Standees at reception desks, and an automated WhatsApp appointment slot confirmation flow.',
-    impactMetrics: [
-      { label: 'Monthly Walk-Ins & Slot Bookings', before: '140 / mo', after: '399 / mo', delta: '+185% Growth' },
-      { label: 'Verified Google Rating', before: '3.9★ (48 reviews)', after: '4.9★ (410+ reviews)', delta: 'Smart QR Engine' },
-      { label: 'Direct Direction & Call Taps', before: '95 / mo', after: '310 / mo', delta: '3.2x Volume' },
-    ],
-    stackPills: ['Google Business Profile API', 'Smart QR Review Engine', 'WhatsApp Booking Bot', 'Local Reels Ads'],
+    id: 'bento-commerce',
+    tag: 'D2C & DIGITAL CATALOGS',
+    title: 'Frictionless E-Commerce & 1-Tap UPI Checkout Systems',
+    summary:
+      'Launch a blazing-fast online store or digital ordering catalog with instant UPI payments, automated WhatsApp order alerts, and zero marketplace commissions.',
+    metric: '+68% Checkout Completion',
+    deliverables: ['1-Tap UPI / Card Checkout', 'Automated WhatsApp Order Alerts', 'Inventory & GST Billing Sync'],
+    spanClass: 'lg:col-span-12',
+    visualType: 'upi-catalog',
   },
 ];
-
-export interface TickerItem {
-  name: string;
-  category: string;
-  accentColor: SemanticAccentColor;
-}
-
-export const STACK_TICKER_ROW_1: TickerItem[] = [
-  { name: 'Next.js 15', category: 'Web Core', accentColor: 'indigo' },
-  { name: 'React 19', category: 'UI Runtime', accentColor: 'indigo' },
-  { name: 'TypeScript', category: 'Type Safety', accentColor: 'indigo' },
-  { name: 'Python', category: 'Backend & AI', accentColor: 'violet' },
-  { name: 'AI / LLMs', category: 'Autonomous Agents', accentColor: 'violet' },
-  { name: 'PostgreSQL', category: 'Data Layer', accentColor: 'cyan' },
-  { name: 'Tailwind CSS', category: 'Design System', accentColor: 'emerald' },
-  { name: 'Docker & AWS', category: 'Cloud DevOps', accentColor: 'cyan' },
-];
-
-export const STACK_TICKER_ROW_2: TickerItem[] = [
-  { name: 'Meta Ads API', category: 'Paid Social', accentColor: 'amber' },
-  { name: 'Google Ads Search', category: 'High-Intent', accentColor: 'amber' },
-  { name: 'Google Map Pack #1', category: 'Local Growth', accentColor: 'amber' },
-  { name: 'Technical SEO & AEO', category: 'AI Search', accentColor: 'rose' },
-  { name: 'WhatsApp Cloud API', category: 'Instant CRM', accentColor: 'emerald' },
-  { name: 'Smart QR Review Systems', category: 'Local Trust', accentColor: 'amber' },
-  { name: 'High-Retention Reels', category: 'Brand Authority', accentColor: 'rose' },
-  { name: 'Core Web Vitals 99+', category: 'Conversion Speed', accentColor: 'emerald' },
-];
-
-export type CapabilityPreviewMode =
-  | 'web-vitals'
-  | 'whatsapp-ai'
-  | 'local-business'
-  | 'ads-roas'
-  | 'seo-aeo'
-  | 'social-retention'
-  | 'funnel-ux';
-
-export interface CapabilityPillar {
-  id: string;
-  categoryLabel: string;
-  shortTab: string;
-  badgeTag: string;
-  accentColor: SemanticAccentColor;
-  title: string;
-  leadSentence: string;
-  subtitle: string;
-  outcomeMetric: string;
-  timeline: string;
-  deliverables: string[];
-  architectureSpecs: { key: string; val: string }[];
-  previewMode: CapabilityPreviewMode;
-}
 
 export const CAPABILITY_PILLARS: CapabilityPillar[] = [
   {
-    id: 'local-business',
-    categoryLabel: 'LOCAL BUSINESS GROWTH',
-    shortTab: 'Local Businesses',
-    badgeTag: 'Map Pack #1 & WhatsApp Booking',
-    accentColor: 'amber',
-    title: 'Local Business Growth & Digitization',
-    leadSentence: 'Complete digital dominance for Clinics, Real Estate, Showrooms, Restaurants & Retail.',
-    subtitle:
-      'Turn local searches into daily walk-ins and WhatsApp bookings with Google Business Profile #1 ranking, automated WhatsApp catalog/appointment bots, local Instagram Reels ads, and Smart QR Review systems.',
-    outcomeMetric: '+185% Direct Calls, Walk-Ins & WhatsApp Bookings',
-    timeline: '7–14 Days Launch',
+    id: 'software-engineering',
+    index: '01',
+    title: 'Full-Stack Web, SaaS & E-Commerce Engineering',
+    subtitle: 'CLOUD-NATIVE PLATFORMS & HIGH-SPEED STOREFRONTS',
+    description:
+      'We architect production-grade web applications, multi-tenant SaaS products, and high-converting storefronts built for speed, security, and long-term scale.',
+    architectureNote: 'Next.js 15 Edge + Node/Python Micro-APIs + PostgreSQL + Redis',
+    metrics: [
+      { label: 'Core Web Vitals LCP', value: '< 0.6s', delta: '99/100 Perf Score' },
+      { label: 'System Availability', value: '99.98%', delta: 'Zero-Downtime Deploys' },
+    ],
     deliverables: [
-      'Google Business Profile #1 Map Ranking',
-      'Automated WhatsApp Booking & Catalog',
-      'Geo-Fenced Local Meta & Reels Ads',
-      'Smart QR Code 5-Star Review System',
-      'High-Speed Local Storefront Website',
+      {
+        name: 'Custom Web & SaaS Applications',
+        spec: 'React 19, Next.js, TypeScript, role-based dashboards, and multi-tenant data isolation',
+        impact: '3.2x faster feature velocity',
+      },
+      {
+        name: 'API & Payment Infrastructure',
+        spec: 'REST/GraphQL APIs, Razorpay/Stripe webhooks, automated invoicing, and ERP bridges',
+        impact: '64% lower server latency',
+      },
+      {
+        name: 'High-Speed Conversion Websites',
+        spec: 'Interactive 3D/motion UI, technical SEO foundation, and instant edge caching',
+        impact: '+52% visitor-to-lead conversion',
+      },
     ],
-    architectureSpecs: [
-      { key: 'Ideal For', val: 'Clinics · Showrooms · Real Estate · Retail · Cafes' },
-      { key: 'Capture Flow', val: 'Google Maps + Reels -> Instant WhatsApp Booking' },
-      { key: 'Reputation', val: 'Automated QR Review Growth Engine' },
-    ],
-    previewMode: 'local-business',
+    shortTab: 'Full-Stack Web',
+    timeline: '2–4 Weeks',
+    outcomeMetric: '99/100 Lighthouse · <0.6s LCP',
   },
   {
-    id: 'web-engineering',
-    categoryLabel: 'WEB & SAAS ARCHITECTURE',
-    shortTab: 'Web Engineering',
-    badgeTag: 'Sub-100ms Edge',
-    accentColor: 'indigo',
-    title: 'Full-Stack Web Engineering (Next.js & React)',
-    leadSentence: 'Custom web platforms, high-speed landing pages, and scalable SaaS portals.',
-    subtitle:
-      'Engineered from scratch for sub-second load times and conversion velocity with 99+ Core Web Vitals, SSR/ISR caching, and enterprise security.',
-    outcomeMetric: 'Sub-100ms Edge Response · +62% Mobile Conversion Lift',
-    timeline: '2–4 Weeks Delivery',
+    id: 'ai-automation',
+    index: '02',
+    title: 'AI Agents, WhatsApp Automation & CRM Pipelines',
+    subtitle: 'AUTONOMOUS SALES DESKS & WORKFLOW ORCHESTRATION',
+    description:
+      'Eliminate manual follow-ups. We deploy custom AI assistants and official WhatsApp Cloud API workflows that capture, qualify, and close leads 24/7.',
+    architectureNote: 'WhatsApp Cloud API + LLM RAG Pipelines + Webhook CRM Sync',
+    metrics: [
+      { label: 'First Response Speed', value: '< 1.2s', delta: '24/7 Autonomous Desk' },
+      { label: 'Manual Ops Saved', value: '72%', delta: 'Automated Qualification' },
+    ],
     deliverables: [
-      'Custom React / Next.js Websites',
-      'High-Speed Paid Traffic Landers',
-      'E-Commerce & Custom Portals',
-      'SSR / Edge CDN Deployment',
-      '24/7 Web Management & Security',
+      {
+        name: 'Official WhatsApp Sales & Booking Bots',
+        spec: 'Automated catalog sharing, appointment slot booking, and instant FAQ resolution',
+        impact: '2.8x higher lead-to-booking rate',
+      },
+      {
+        name: 'Custom RAG AI Knowledge Agents',
+        spec: 'AI trained on your PDFs, pricing sheets, and inventory with zero hallucination guardrails',
+        impact: '85% instant support resolution',
+      },
+      {
+        name: 'Unified CRM & Lead Routing',
+        spec: 'Instant sync between Meta/Google Lead Ads, website forms, WhatsApp, and your sales team',
+        impact: 'Zero lead leakage across channels',
+      },
     ],
-    architectureSpecs: [
-      { key: 'Stack', val: 'Next.js · React · TypeScript · Node' },
-      { key: 'Performance Target', val: '99+ Lighthouse Mobile & Desktop' },
-      { key: 'Security', val: 'SSL · WAF · Automated Backups' },
-    ],
-    previewMode: 'web-vitals',
-  },
-  {
-    id: 'ai-crm',
-    categoryLabel: 'AUTONOMOUS AUTOMATION',
     shortTab: 'AI & WhatsApp CRM',
-    badgeTag: '24/7 Autonomous',
-    accentColor: 'violet',
-    title: 'AI Workflows & WhatsApp CRM Automation',
-    leadSentence: 'Autonomous lead qualification, WhatsApp Cloud API bots, and custom CRM pipelines.',
-    subtitle:
-      'Eliminate manual follow-up delays. Our AI and WhatsApp automation engines respond in under 6 seconds, qualify buyer intent, dispatch brochures, and sync straight to your sales team.',
-    outcomeMetric: '< 6s Lead Response · Zero Missed Prospects 24/7',
-    timeline: '1–3 Weeks Delivery',
-    deliverables: [
-      'Autonomous Lead Qualification',
-      'WhatsApp Business Cloud API',
-      'Automated Proposal & Booking Flows',
-      'Custom Internal Tools & Dashboards',
-      'CRM Pipeline Webhook Sync',
-    ],
-    architectureSpecs: [
-      { key: 'Messaging Bus', val: 'Official WhatsApp Cloud API' },
-      { key: 'Orchestration', val: 'Python · Custom Webhooks · REST' },
-      { key: 'Availability', val: '24/7 Instant Qualification' },
-    ],
-    previewMode: 'whatsapp-ai',
+    timeline: '10–18 Days',
+    outcomeMetric: '< 1.2s Autonomous Reply',
   },
   {
-    id: 'performance-ads',
-    categoryLabel: 'PAID DEMAND CAPTURE',
-    shortTab: 'Performance Ads',
-    badgeTag: 'ROAS Engineered',
-    accentColor: 'amber',
-    title: 'Performance Advertising (Meta & Google Ads)',
-    leadSentence: 'High-intent Google Search capture and high-converting Meta Reels & retargeting funnels.',
-    subtitle:
-      'Full-funnel paid customer acquisition built around unit economics. We wire server-side Conversions API (CAPI) tracking so algorithms optimize for qualified revenue.',
-    outcomeMetric: 'Server-Side CAPI Tracking · Verified Pipeline ROAS',
-    timeline: '7-Day Launch Sprint',
+    id: 'growth-systems',
+    index: '03',
+    title: 'Performance Ads, Technical SEO & Revenue Funnels',
+    subtitle: 'FULL-FUNNEL DEMAND GENERATION & ATTRIBUTION',
+    description:
+      'We combine high-intent Google & Meta ad campaigns with programmatic SEO and conversion-engineered landing pages to turn marketing spend into measurable profit.',
+    architectureNote: 'Server-Side Meta CAPI + GA4 BigQuery + Programmatic SEO Clusters',
+    metrics: [
+      { label: 'Blended Ad ROAS', value: '4.1x', delta: '+138% Pipeline Efficiency' },
+      { label: 'Organic Search Growth', value: '+240%', delta: 'Top-3 Keyword Authority' },
+    ],
     deliverables: [
-      'Meta Ads: Reels & Lead Funnels',
-      'Dynamic Retargeting Architecture',
-      'Google High-Intent Search & Display',
-      'Server-Side Meta CAPI & GTM Setup',
-      'Weekly CAC & ROAS Optimization',
+      {
+        name: 'Meta & Google Performance Campaigns',
+        spec: 'High-converting video/carousel creatives, search intent capture, and retargeting funnels',
+        impact: '-41% Customer Acquisition Cost',
+      },
+      {
+        name: 'Technical SEO & AI Search (AEO)',
+        spec: 'JSON-LD schema graphs, programmatic city/service pages, and Core Web Vitals optimization',
+        impact: 'Sustained compounding organic leads',
+      },
+      {
+        name: 'Server-Side Attribution & Dashboards',
+        spec: 'First-party cookie tracking, Meta Conversions API, and live revenue-per-channel reporting',
+        impact: '99.2% attribution accuracy',
+      },
     ],
-    architectureSpecs: [
-      { key: 'Channels', val: 'Meta Ads API · Google Ads Search/Shopping' },
-      { key: 'Attribution', val: 'First-Party Server-Side Events' },
-      { key: 'Reporting', val: 'Cost-Per-Qualified-Deal Ledger' },
-    ],
-    previewMode: 'ads-roas',
+    shortTab: 'Meta & Google Ads',
+    timeline: '2–3 Weeks',
+    outcomeMetric: '4.1x Verified Blended ROAS',
   },
   {
-    id: 'seo-aeo',
-    categoryLabel: 'ORGANIC & AI SEARCH',
+    id: 'local-business',
+    index: '04',
+    title: 'Local Business Growth, Map Pack SEO & Digital Catalogs',
+    subtitle: 'BUILT FOR CLINICS, SALONS, CAFES, GYMS & RETAIL SHOWROOMS',
+    description:
+      'Turn nearby smartphone searchers into loyal daily customers. We set up your complete digital storefront, rank you #1 on Google Maps, and automate repeat visits via WhatsApp.',
+    architectureNote: 'Google Business Profile Engine + QR Review Funnel + 1-Tap UPI Catalog',
+    metrics: [
+      { label: 'Google Map Pack Calls', value: '3.2x', delta: 'Top-3 "Near Me" Ranking' },
+      { label: 'Verified 5-Star Reviews', value: '+180%', delta: 'Automated QR Follow-Up' },
+    ],
+    deliverables: [
+      {
+        name: 'Google Business Profile & Map Pack #1',
+        spec: 'Local citation building, geo-tagged media, keyword-rich service menus, and weekly rank tracking',
+        impact: 'Dominates local 5km–15km search radius',
+      },
+      {
+        name: 'WhatsApp Appointment & QR Review System',
+        spec: 'In-store QR standees and automated post-visit WhatsApp nudges that collect 5-star Google reviews',
+        impact: 'Builds unstoppable local trust fast',
+      },
+      {
+        name: 'Digital Ordering & Booking Website',
+        spec: 'Mobile-first catalog with 1-tap WhatsApp ordering, UPI payments, and Google Maps directions',
+        impact: 'Zero commission fees to 3rd-party apps',
+      },
+    ],
+    shortTab: 'Local Businesses',
+    timeline: '10–14 Days',
+    outcomeMetric: '3.2x Local Calls & Walk-Ins',
+  },
+  {
+    id: 'technical-seo-aeo',
+    index: '05',
+    title: 'Technical SEO, Programmatic Hubs & AI Search (AEO)',
+    subtitle: 'ORGANIC SEARCH DOMINANCE & AI ANSWER CITATIONS',
+    description:
+      'Capture buyers searching across Google, ChatGPT, and Perplexity with structured JSON-LD entity graphs, programmatic regional landing pages, and sub-second Core Web Vitals.',
+    architectureNote: 'JSON-LD Schema Graph + Programmatic City Hubs + Edge SSR',
+    metrics: [
+      { label: 'Organic Search Pipeline', value: '+240%', delta: 'Top-3 SERP Positions' },
+      { label: 'Core Web Vitals Score', value: '100/100', delta: 'Zero Layout Shift' },
+    ],
+    deliverables: [
+      {
+        name: 'Programmatic Location & Service Hubs',
+        spec: 'Dynamic schema-backed landing pages targeting high-intent regional and category searches',
+        impact: '+240% compounding organic traffic',
+      },
+      {
+        name: 'AI Answer Engine Optimization (AEO)',
+        spec: 'Structured entity markup engineered for citations in ChatGPT, Perplexity, and Google AI Overviews',
+        impact: 'Top brand authority in AI answers',
+      },
+    ],
     shortTab: 'SEO & AEO Search',
-    badgeTag: 'Search Dominance',
-    accentColor: 'rose',
-    title: 'Search & Answer Engine Dominance (SEO / AEO)',
-    leadSentence: 'Technical SEO, Local Map Pack authority, and AI Answer Engine Optimization.',
-    subtitle:
-      'Capture buyers actively searching across Google Search, Google Maps, and AI Answer Engines (ChatGPT, Perplexity, Gemini) through semantic HTML and JSON-LD entity graphs.',
-    outcomeMetric: '+180% Compounding High-Intent Organic Visibility',
-    timeline: '4-Week Foundation + Ongoing',
-    deliverables: [
-      'Technical SEO & Core Vitals Audits',
-      'Local SEO & Global Search Hubs',
-      'Commercial On-Page Architecture',
-      'AI Search Optimization (AEO / llms.txt)',
-      'Schema.org JSON-LD Entity Graphs',
-    ],
-    architectureSpecs: [
-      { key: 'Schema Standard', val: 'Organization · Service · FAQ JSON-LD' },
-      { key: 'Search Footprint', val: 'GBP Map Pack + Regional/Global Hubs' },
-      { key: 'AI Readiness', val: 'Structured Answer & Citation Blocks' },
-    ],
-    previewMode: 'seo-aeo',
+    timeline: '3–4 Weeks',
+    outcomeMetric: '+240% Organic Pipeline',
   },
   {
-    id: 'organic-social',
-    categoryLabel: 'BRAND AUTHORITY',
-    shortTab: 'Organic & Social',
-    badgeTag: 'Authority Engine',
-    accentColor: 'rose',
-    title: 'Organic Brand & Social Growth Systems',
-    leadSentence: 'Instagram growth engineering, high-retention Reels strategy, and LinkedIn authority.',
-    subtitle:
-      'Turn passive social profiles into inbound trust channels with 3-second retention hooks, visual grid consistency, and automated DM-to-WhatsApp lead capture bridges.',
-    outcomeMetric: '3-Second Hook Engineering · Inbound Authority Trust',
-    timeline: 'Monthly Sprint Cadence',
+    id: 'd2c-ecommerce-upi',
+    index: '06',
+    title: 'D2C Storefronts, Digital Catalogs & 1-Tap UPI Checkouts',
+    subtitle: 'HIGH-SPEED HEADLESS COMMERCE & CART RECOVERY',
+    description:
+      'Replace sluggish marketplaces and high commissions with your own sub-second D2C storefront featuring 1-tap UPI checkout and automated WhatsApp cart recovery.',
+    architectureNote: 'Headless Storefront + Razorpay/Stripe 1-Tap UPI + WhatsApp Recovery',
+    metrics: [
+      { label: 'Checkout Completion', value: '+68%', delta: '1-Tap UPI Flow' },
+      { label: 'Cart Recovery Rate', value: '24%', delta: 'WhatsApp Auto-Nudge' },
+    ],
     deliverables: [
-      'Instagram Growth Engineering',
-      'High-Retention Reels Scripting',
-      'LinkedIn & YouTube Authority',
-      'Brand Grid Visual Systems',
-      'Comment / DM-to-CRM Automation',
+      {
+        name: '1-Tap UPI & Express Checkout',
+        spec: 'Seamless GPay, PhonePe, Paytm, and card payment flows with instant webhook confirmation',
+        impact: '+68% mobile checkout completion',
+      },
+      {
+        name: 'Automated WhatsApp Cart Recovery',
+        spec: 'Instant WhatsApp reminders with 1-click checkout links when shoppers abandon carts',
+        impact: 'Recovers 24% of lost orders',
+      },
     ],
-    architectureSpecs: [
-      { key: 'Primary Channels', val: 'Instagram · LinkedIn · YouTube' },
-      { key: 'Conversion Bridge', val: 'Comment/DM-to-WhatsApp Triggers' },
-      { key: 'Cadence', val: 'Structured Editorial Calendar' },
-    ],
-    previewMode: 'social-retention',
+    shortTab: 'D2C & E-Commerce',
+    timeline: '2–4 Weeks',
+    outcomeMetric: '+68% Checkout Conversion',
   },
   {
-    id: 'conversion-ux',
-    categoryLabel: 'CONVERSION ARCHITECTURE',
-    shortTab: 'Conversion UI/UX',
-    badgeTag: 'Zero Friction',
-    accentColor: 'emerald',
-    title: 'Conversion UI/UX & Funnel Architecture',
-    leadSentence: 'Precision interfaces, frictionless 1-Tap UPI checkouts, and interactive lead flows.',
-    subtitle:
-      'Remove cognitive friction so visitors understand your value proposition in 5 seconds and take action immediately—backed by interactive calculators and mobile-first ergonomics.',
-    outcomeMetric: '-42% Checkout & Lead Form Drop-Off Rate',
-    timeline: '2–3 Weeks Delivery',
+    id: 'cloud-saas-mvp',
+    index: '07',
+    title: 'Custom SaaS MVP, Admin Portals & Cloud Infrastructure',
+    subtitle: 'MULTI-TENANT SAAS & ENTERPRISE INTERNAL TOOLS',
+    description:
+      'Go from concept to revenue-ready SaaS product with multi-tenant authentication, subscription billing, role-based admin dashboards, and auto-scaling cloud deployment.',
+    architectureNote: 'PostgreSQL Multi-Tenant + Docker/AWS + Stripe/Razorpay Subscriptions',
+    metrics: [
+      { label: 'MVP Launch Speed', value: '4 Weeks', delta: 'Production-Ready' },
+      { label: 'API P99 Latency', value: '< 85ms', delta: 'Redis Edge Cache' },
+    ],
     deliverables: [
-      'Swiss Grid UI Design Systems',
-      '1-Tap UPI & Frictionless Checkouts',
-      'Interactive ROI & Quote Calculators',
-      'Core Web Vitals Speed Optimization',
-      'Mobile Touch Ergonomics (44px+)',
+      {
+        name: 'Multi-Tenant Auth & Subscription Billing',
+        spec: 'RBAC permissions, organization workspaces, and automated recurring invoice webhooks',
+        impact: 'Ready for enterprise onboarding',
+      },
+      {
+        name: 'Real-Time Analytics & Admin CRM Portals',
+        spec: 'Custom executive dashboards, audit logs, and automated background job queues',
+        impact: '100% operational visibility',
+      },
     ],
-    architectureSpecs: [
-      { key: 'Accessibility', val: 'WCAG AA/AAA Contrast · 44px+ Touch' },
-      { key: 'Grid Discipline', val: '12-Column Responsive Architecture' },
-      { key: 'Verification', val: 'Funnel Drop-Off & Speed Audits' },
-    ],
-    previewMode: 'funnel-ux',
+    shortTab: 'SaaS & Cloud MVP',
+    timeline: '3–5 Weeks',
+    outcomeMetric: '99.98% Cloud Uptime SLA',
   },
 ];
 
-export interface RoadmapStep {
-  id: string;
-  phaseBadge: string;
-  phaseWindow: string;
-  shortTitle: string;
-  title: string;
-  summary: string;
-  artifactDelivered: string;
-  accentColor: SemanticAccentColor;
-  iconType: 'compass' | 'layout' | 'code' | 'check' | 'send' | 'trending';
-}
-
-export const EXECUTION_ROADMAP: RoadmapStep[] = [
+export const SHOWCASE_PROJECTS: ShowcaseProject[] = [
   {
-    id: 'phase-diagnose',
-    phaseBadge: 'DISCOVERY AUDIT',
-    phaseWindow: 'Day 1',
-    shortTitle: 'Diagnose & 60s Proof',
-    title: 'Diagnose & 60s Custom Proof',
+    id: 'proj-FinVantage',
+    title: 'FinVantage Cloud Treasury & Billing SaaS',
+    clientType: 'B2B FinTech Startup',
+    categoryTag: 'WEB & SAAS',
+    category: 'WEB & SAAS',
+    metricsHeadline: '3.8x Faster Onboarding',
+    tags: 'Next.js 15 • TypeScript • PostgreSQL • Redis',
     summary:
-      'We audit your funnel, website speed, and ad leakage—delivering a custom 60-second teardown before you pay.',
-    artifactDelivered: '60-Second Custom Architecture Teardown',
-    accentColor: 'indigo',
-    iconType: 'compass',
+      'Architected a multi-tenant financial analytics dashboard and automated GST billing engine handling 50,000+ daily transactions with sub-second reporting.',
+    impactMetric: '3.8x Faster Onboarding',
+    secondaryMetric: '99.99% Uptime SLA',
+    techStack: ['Next.js 15', 'TypeScript', 'PostgreSQL', 'Redis', 'Razorpay Route'],
+    livePreviewLabel: 'SaaS Architecture Case Study',
+    imageUrl: '',
+    challenge:
+      'Legacy spreadsheet workflows and slow monolithic dashboards caused a 42% drop-off during enterprise client onboarding and delayed monthly reconciliation.',
+    solution:
+      'Engineered a multi-tenant Next.js 15 + PostgreSQL cloud platform with automated webhook reconciliation, role-based access control, and sub-100ms Redis caching.',
+    results: [
+      '3.8x faster enterprise merchant onboarding within the first 60 days',
+      'Reduced report generation latency from 14 seconds to 180 milliseconds',
+      'Automated 94% of recurring GST invoice and payout reconciliation',
+    ],
   },
   {
-    id: 'phase-blueprint',
-    phaseBadge: 'SYSTEM BLUEPRINT',
-    phaseWindow: 'Days 2–4',
-    shortTitle: 'System Architecture',
-    title: 'System Architecture & Strategy',
+    id: 'proj-AuraCare',
+    title: 'AuraCare Multi-Clinic Booking & Map Pack Engine',
+    clientType: 'Dental & Aesthetics Chain (6 Clinics)',
+    categoryTag: 'LOCAL BUSINESS',
+    category: 'LOCAL BUSINESS',
+    metricsHeadline: '3.4x Patient Bookings',
+    tags: 'Google Map Pack SEO • WhatsApp Cloud API • Smart QR Standees',
     summary:
-      'We align codebase structure, offer positioning, conversion copy, and acquisition unit economics into one blueprint.',
-    artifactDelivered: 'Full-Funnel Wireframe & Tracking Spec',
-    accentColor: 'violet',
-    iconType: 'layout',
+      'Ranked all 6 clinic locations in the Google Maps Top 3 and deployed a 24/7 WhatsApp appointment bot that eliminated missed front-desk calls.',
+    impactMetric: '3.4x Patient Bookings',
+    secondaryMetric: '+420 Google Reviews',
+    techStack: ['Google Map Pack SEO', 'WhatsApp Cloud API', 'Next.js', 'Automated QR Reviews'],
+    livePreviewLabel: 'Local Growth Case Study',
+    imageUrl: '',
+    challenge:
+      'Receptionists were missing 38% of incoming patient calls during peak clinic hours, and competitors were outranking 4 of the 6 branches on Google Maps.',
+    solution:
+      'Deployed an official WhatsApp appointment booking bot synced with doctor calendars, overhauled Google Business Profiles with localized schema, and installed smart QR review standees.',
+    results: [
+      '3.4x increase in confirmed monthly patient appointments across all 6 branches',
+      '420+ new verified 5-star Google reviews collected in 90 days',
+      'Ranked #1 in Google Map Pack for 18 high-intent local treatment keywords',
+    ],
   },
   {
-    id: 'phase-engineering',
-    phaseBadge: 'CORE BUILD',
-    phaseWindow: 'Weeks 1–2',
-    shortTitle: 'Full-Stack Build',
-    title: 'Full-Stack Engineering',
+    id: 'proj-VeloraD2C',
+    title: 'Velora D2C Storefront & Performance Ad Funnel',
+    clientType: 'D2C Apparel & Lifestyle Brand',
+    categoryTag: 'ADS & E-COMMERCE',
+    category: 'ADS & E-COMMERCE',
+    metricsHeadline: '4.4x Blended ROAS',
+    tags: 'React Storefront • Meta CAPI • 1-Tap UPI Checkout',
     summary:
-      'Senior engineers build your custom React/Next.js platform, server-side event tracking, and automated WhatsApp/CRM workflows.',
-    artifactDelivered: 'Staging Platform + Live Webhook CRM',
-    accentColor: 'cyan',
-    iconType: 'code',
+      'Rebuilt their mobile storefront for sub-second speed, integrated 1-tap UPI checkout, and scaled Meta + Google Shopping ads with server-side CAPI tracking.',
+    impactMetric: '4.4x Blended ROAS',
+    secondaryMetric: '+68% Checkout Rate',
+    techStack: ['React Storefront', 'Meta CAPI', 'Google Shopping', '1-Tap UPI', 'WhatsApp Cart Recovery'],
+    livePreviewLabel: 'D2C Scaling Case Study',
+    imageUrl: '',
+    challenge:
+      'A 5.2-second mobile page load time and iOS ad-tracking signal loss caused high cart abandonment and unprofitable Meta ad campaigns.',
+    solution:
+      'Built a sub-second headless storefront with 1-tap UPI checkout, server-side Meta Conversions API attribution, and automated WhatsApp abandoned-cart recovery.',
+    results: [
+      'Scaled monthly ad spend 3x while maintaining a verified 4.4x blended ROAS',
+      'Lifted mobile checkout completion rate by +68%',
+      'Recovered 24% of abandoned carts automatically via WhatsApp nudges',
+    ],
   },
   {
-    id: 'phase-deployment',
-    phaseBadge: 'GROWTH LAUNCH',
-    phaseWindow: 'Weeks 2–3',
-    shortTitle: 'Campaign Deployment',
-    title: 'Campaign & Content Deployment',
+    id: 'proj-NexaProp',
+    title: 'NexaProp AI Voice & WhatsApp Lead Qualifier',
+    clientType: 'Commercial Real Estate Group',
+    categoryTag: 'AI & CRM',
+    category: 'AI & CRM',
+    metricsHeadline: '< 1.1s Lead Response',
+    tags: 'OpenAI RAG • WhatsApp Cloud API • Python FastAPI • HubSpot',
     summary:
-      'We launch technical SEO/AEO schemas, Google Map Pack optimization, and high-intent Meta & Google Ads wired to your funnel.',
-    artifactDelivered: 'Live Acquisition & Attribution Engine',
-    accentColor: 'amber',
-    iconType: 'send',
-  },
-  {
-    id: 'phase-verification',
-    phaseBadge: 'QUALITY GATE',
-    phaseWindow: 'Week 3',
-    shortTitle: 'Testing & QA Check',
-    title: 'Quality & Conversion Testing',
-    summary:
-      'Every viewport, Core Web Vitals budget, form validation state, and WhatsApp trigger is verified end-to-end.',
-    artifactDelivered: '99+ Speed Benchmark & QA Sign-Off',
-    accentColor: 'emerald',
-    iconType: 'check',
-  },
-  {
-    id: 'phase-scale',
-    phaseBadge: 'COMPOUNDING SCALE',
-    phaseWindow: 'Ongoing 24/7',
-    shortTitle: '24/7 Support & Scale',
-    title: '24/7 Monitoring & Compounding Scale',
-    summary:
-      'Continuous uptime telemetry, A/B funnel iteration, search authority expansion, and ad scaling tied strictly to revenue growth.',
-    artifactDelivered: 'Bi-Weekly Pipeline & ROI Growth Sprints',
-    accentColor: 'rose',
-    iconType: 'trending',
+      'Deployed an autonomous AI lead desk that responds to Meta/Google property inquiries in 1.1 seconds on WhatsApp, shares brochures, and books site visits.',
+    impactMetric: '< 1.1s Lead Response',
+    secondaryMetric: '+190% Site Visits',
+    techStack: ['OpenAI RAG', 'WhatsApp Cloud API', 'Python FastAPI', 'HubSpot CRM Sync'],
+    livePreviewLabel: 'AI Automation Case Study',
+    imageUrl: '',
+    challenge:
+      'Sales reps took an average of 4 hours to call back Meta & Google property leads, resulting in cold prospects and wasted ad budgets.',
+    solution:
+      'Connected Meta Lead Ads and Google Search forms directly to a multilingual RAG AI WhatsApp agent that qualifies budget, sends floor plans, and books site visits.',
+    results: [
+      'Cut lead response time from 4 hours to 1.1 seconds (24/7)',
+      'Increased qualified weekend property site visits by +190%',
+      'Saved 65+ hours per week of manual tele-calling for the sales team',
+    ],
   },
 ];
 
-export interface ClientReview {
-  id: string;
-  initials: string;
-  quote: string;
-  author: string;
-  role: string;
-  engagementScope: string;
-  verifiedOutcome: string;
-  relatedProjectId: string;
-}
-
-export const VERIFIED_REVIEWS: ClientReview[] = [
+export const EXECUTION_ROADMAP: RoadmapPhase[] = [
   {
-    id: 'aarav-mehta',
-    initials: 'AM',
-    quote:
-      'SkyLine engineered our web platform and aligned our entire acquisition funnel. Their strategy-first execution gave our brand a clean, high-converting digital identity.',
-    author: 'Aarav Mehta',
-    role: 'Business Owner',
-    engagementScope: 'WEB PLATFORM & ACQUISITION FUNNEL',
-    verifiedOutcome: '2.4x Conversion Lift',
-    relatedProjectId: 'project-360-estate',
+    step: '01',
+    phase: 'AUDIT & ARCHITECTURE BLUEPRINT',
+    duration: 'Days 1 – 3',
+    title: 'Discovery, Funnel Audit & Technical Specification',
+    description:
+      'We audit your current website, local search visibility, ad leaks, and manual bottlenecks—delivering a clear, fixed-scope execution blueprint before writing a single line of code.',
+    deliverables: [
+      'Competitor, SEO & Conversion Leak Audit',
+      'System Architecture & UI/UX Wireframe Blueprint',
+      'Fixed-Milestone Timeline & ROI Forecast',
+    ],
+    verificationGate: 'GATE: Signed Architecture Blueprint & Clear KPI Targets',
   },
   {
-    id: 'riya-sharma',
-    initials: 'RS',
-    quote:
-      'Instead of generic marketing promises, the team delivered a fast, practical system from architecture to automated WhatsApp lead generation.',
-    author: 'Riya Sharma',
-    role: 'Startup Founder',
-    engagementScope: 'FULL-STACK SYSTEM & LEAD AUTOMATION',
-    verifiedOutcome: '< 6s WhatsApp CRM',
-    relatedProjectId: 'project-aurascale-d2c',
+    step: '02',
+    phase: 'RAPID SPRINT & INTEGRATION',
+    duration: 'Weeks 1 – 3',
+    title: 'Full-Stack Build, AI/WhatsApp Setup & Tracking',
+    description:
+      'Our engineers build your high-speed website/SaaS, configure your WhatsApp & CRM automation, optimize your Google Business Profile, and wire up server-side analytics.',
+    deliverables: [
+      'Staging Deployment with Live Interactive Previews',
+      'WhatsApp Bot, Payment Gateway & CRM Integration',
+      '99/100 Speed, Mobile UX & Security Verification',
+    ],
+    verificationGate: 'GATE: Sub-Second Load Test & End-to-End Automation QA',
   },
   {
-    id: 'rahul-verma',
-    initials: 'RV',
-    quote:
-      'Our local Google Map ranking, website, and WhatsApp booking flow now run seamlessly. Walk-in inquiries grew within the first month.',
-    author: 'Rahul Verma',
-    role: 'Clinic & Showroom Director',
-    engagementScope: 'LOCAL BUSINESS GROWTH ENGINE',
-    verifiedOutcome: '#1 Map Pack · +185% Bookings',
-    relatedProjectId: 'project-apex-local',
-  },
-  {
-    id: 'neha-kapoor',
-    initials: 'NK',
-    quote:
-      'What I liked most was that they focused on strategy and measurable systems instead of simply selling disconnected services.',
-    author: 'Neha Kapoor',
-    role: 'Entrepreneur',
-    engagementScope: 'GROWTH STRATEGY & SEO',
-    verifiedOutcome: '+175% Organic Inquiries',
-    relatedProjectId: 'project-carve-portal',
+    step: '03',
+    phase: 'LAUNCH, SCALE & COMPOUND',
+    duration: 'Ongoing Growth',
+    title: 'Go-Live Launch, Performance Ads & Continuous Scaling',
+    description:
+      'We launch with zero downtime, activate your Meta/Google ad funnels and local SEO engine, and provide live ROI dashboards plus full team handover.',
+    deliverables: [
+      'Production Launch & Live ROAS / Lead Dashboard',
+      'Ongoing Ad Creative Testing & Map Pack SEO',
+      'Full Source-Code Ownership & Priority Support SLA',
+    ],
+    verificationGate: 'GATE: Live Revenue Attribution & Verified Lead Flow',
   },
 ];
 
-export interface FaqItem {
-  id: string;
-  question: string;
-  answer: string;
-  category: string;
-  accentColor: SemanticAccentColor;
-}
+export const CLIENT_PROOF_CASES: ClientProofCase[] = [
+  {
+    id: 'case-1',
+    clientSector: 'B2B SaaS & Cloud Billing Platform',
+    challenge:
+      'Slow legacy website and manual demo booking caused high ad CPL and 40% lead drop-off.',
+    solution:
+      'Re-engineered the platform on Next.js with an instant WhatsApp + calendar qualification flow.',
+    primaryMetric: '+215%',
+    primaryMetricLabel: 'Qualified Demo Pipeline',
+    secondaryMetric: '0.5s Page Load Speed',
+    timeframe: 'Delivered in 4 Weeks',
+    tags: ['NEXT.JS', 'WHATSAPP CRM', 'TECHNICAL SEO'],
+  },
+  {
+    id: 'case-2',
+    clientSector: 'Multi-Branch Dental & Skin Clinic',
+    challenge:
+      'Invisible on Google Maps for "near me" searches and missing 35%+ of patient phone inquiries.',
+    solution:
+      'Executed Google Map Pack SEO, QR review standees, and a 24/7 WhatsApp appointment bot.',
+    primaryMetric: '3.4x',
+    primaryMetricLabel: 'Monthly Patient Walk-Ins',
+    secondaryMetric: '#1 Google Map Pack Rank',
+    timeframe: 'Results in 45 Days',
+    tags: ['LOCAL SEO', 'WHATSAPP BOT', 'GOOGLE ADS'],
+  },
+];
+
+export const VERIFIED_REVIEWS: VerifiedReview[] = [
+  {
+    id: 'rev-1',
+    quote:
+      'SkyLine completely transformed our digital presence. Our new web platform loads instantly, and their WhatsApp AI bot qualifies and books client calls automatically even while our team is asleep.',
+    author: 'Vikramaditya Rao',
+    role: 'Founder & CEO, FinVantage Systems',
+    serviceTag: 'WEB & AI AUTOMATION',
+    impactHighlight: '3.1x Qualified Demos in 45 Days',
+    rating: 5,
+    verifiedOutcome: '3.1x Qualified Demos in 45 Days',
+    engagementScope: 'WEB & AI AUTOMATION',
+  },
+  {
+    id: 'rev-2',
+    quote:
+      'Within 6 weeks of SkyLine optimizing our Google Business Profile and launching our WhatsApp booking system, our clinic jumped to #1 on Google Maps and daily patient walk-ins tripled.',
+    author: 'Dr. Ananya Sharma',
+    role: 'Clinical Director, AuraCare Aesthetics',
+    serviceTag: 'LOCAL BUSINESS GROWTH',
+    impactHighlight: '#1 Map Pack Rank & 3.4x Bookings',
+    rating: 5,
+    verifiedOutcome: '#1 Map Pack Rank & 3.4x Bookings',
+    engagementScope: 'LOCAL BUSINESS GROWTH',
+  },
+  {
+    id: 'rev-3',
+    quote:
+      'Most agencies just burn ad budget and send PDF reports. SkyLine rebuilt our D2C checkout flow, fixed our Meta CAPI tracking, and scaled our ROAS to 4.4x with complete transparency.',
+    author: 'Rohan Mehta',
+    role: 'Co-Founder, Velora Lifestyle',
+    serviceTag: 'E-COMMERCE & META ADS',
+    impactHighlight: '4.4x Blended ROAS Achieved',
+    rating: 5,
+    verifiedOutcome: '4.4x Blended ROAS Achieved',
+    engagementScope: 'E-COMMERCE & META ADS',
+  },
+];
 
 export const FAQ_ITEMS: FaqItem[] = [
   {
-    id: 'faq-capabilities',
-    category: 'Architecture',
-    accentColor: 'indigo',
-    question: 'What core engineering and growth services do you provide?',
+    id: 'faq-1',
+    category: 'LOCAL & GLOBAL CLIENTS',
+    question: 'Do you work with local businesses (clinics, salons, retail) as well as startups?',
     answer:
-      'We engineer custom web applications (React, Next.js), AI & WhatsApp CRM automation workflows, Local Business digitization (Google Map Pack #1, QR reviews, WhatsApp booking), high-ROAS Meta and Google Ads funnels, and Technical SEO/AEO under one roof.',
+      'Yes! We have two specialized tracks: (1) High-ROI Local Business Growth packages covering Google Maps #1 ranking, fast mobile websites, automated 5-star Google review systems, and WhatsApp booking bots; and (2) Full-stack SaaS, custom web apps, AI agents, and performance marketing for scaling startups and enterprises.',
   },
   {
-    id: 'faq-local-businesses',
-    category: 'Local Growth',
-    accentColor: 'amber',
-    question: 'How does your Local Business Growth Engine help clinics, showrooms, and retail?',
+    id: 'faq-2',
+    category: 'TIMELINE & DELIVERY',
+    question: 'How fast can you launch our website, WhatsApp automation, or ad campaign?',
     answer:
-      'We optimize your Google Business Profile for #1 Map Pack visibility, deploy Smart QR Review systems to boost 5-star ratings, run geo-fenced Instagram/Meta Reels ads, and automate appointment or catalog bookings directly on WhatsApp.',
+      'Conversion websites, local business systems, and WhatsApp CRM automations typically go live in 10 to 14 days. Custom SaaS platforms, e-commerce storefronts, and multi-agent AI systems are delivered in 3 to 5 weeks with weekly live staging previews.',
   },
   {
-    id: 'faq-timelines',
-    category: 'Delivery',
-    accentColor: 'emerald',
-    question: 'How long does a typical web & acquisition system take?',
+    id: 'faq-3',
+    category: 'PRICING & TRANSPARENCY',
+    question: 'How does your pricing work? Are there any hidden retainers?',
     answer:
-      'Local business growth systems and campaign landers ship in 7–14 days. Complete full-stack web platforms, custom e-commerce storefronts, and multi-layer acquisition funnels take 2 to 4 weeks with live weekly sprint demos.',
+      'Zero hidden fees. Every engagement starts with a transparent, fixed-scope architecture blueprint and milestone schedule. Whether you need a one-time website + WhatsApp bot build or an ongoing monthly SEO & Ads growth engine, you see exact deliverables and pricing upfront.',
   },
   {
-    id: 'faq-pricing',
-    category: 'Commercials',
-    accentColor: 'violet',
-    question: 'What is your pricing and milestone payment structure?',
+    id: 'faq-4',
+    category: 'OWNERSHIP & CODE',
+    question: 'Do we own 100% of our website source code, ad accounts, and customer data?',
     answer:
-      'We operate on transparent fixed-price milestone contracts for engineering builds (Discovery & Architecture, Staging Demo, Production Launch) and clear monthly sprint retainers for ongoing Ads, Local Growth, SEO/AEO, and Social.',
+      '100% yes. Unlike lock-in agencies, you retain full administrative ownership of your GitHub repository, domain, cloud hosting, Google Business Profile, Meta/Google Ad accounts, and WhatsApp CRM database from day one.',
   },
   {
-    id: 'faq-locations',
-    category: 'Operations',
-    accentColor: 'cyan',
-    question: 'Where are you based and how do we collaborate?',
+    id: 'faq-5',
+    category: 'REFERRAL PARTNER PROGRAM',
+    question: 'How does the 15% Referral Partner Commission work?',
     answer:
-      'We are based in Madhya Pradesh, India, serving startups, local enterprises, and ambitious brands globally via live staging links, dedicated WhatsApp channels, and strategy calls Monday – Saturday (10:00 AM – 9:00 PM IST).',
-  },
-  {
-    id: 'faq-audit',
-    category: 'Proof Before Payment',
-    accentColor: 'rose',
-    question: 'How does the Free 60-Second System Audit work?',
-    answer:
-      'Select your industry and primary bottleneck in our interactive System Architect on this page. Our lead engineers review your speed, Google Map presence, ad funnel, and CRM flow and send a custom teardown on WhatsApp before you pay anything.',
+      'If you introduce a founder, clinic owner, retail brand, or business that signs a project with SkyLine Digital, we pay you a direct 15% commission on the project value via UPI or bank transfer as soon as their onboarding invoice clears.',
   },
 ];

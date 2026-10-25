@@ -1,330 +1,475 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
-  ArrowRight,
-  ArrowUpRight,
-  Briefcase,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  DollarSign,
+  TrendingUp,
+  Award,
+  Sparkles,
+  CheckCircle2,
   Star,
-  UserPlus,
+  Gift,
+  Send,
+  Share2,
+  Handshake,
+  Wallet,
 } from 'lucide-react';
 import {
-  SHOWCASE_PROJECTS,
-  ShowcaseProject,
+  CLIENT_PROOF_CASES,
   VERIFIED_REVIEWS,
+  VerifiedReview,
 } from '../data/agencyData';
 import { buildReferralWhatsAppUrl } from '../utils/architectEngine';
-import { WhatsAppLogoIcon } from './BrandIcons';
+import { WhatsAppBrandBadge } from './BrandIcons';
 
-interface ClientProofAndReferralProps {
-  onOpenProjectModal?: (project: ShowcaseProject) => void;
+export interface PublicReferralSubmissionPayload {
+  referrerName: string;
+  referrerContact?: string;
+  referredBusiness: string;
+  estimatedDealValue: number;
 }
 
+interface ClientProofAndReferralProps {
+  reviews?: VerifiedReview[];
+  onSubmitReferral?: (payload: PublicReferralSubmissionPayload) => Promise<void>;
+}
+
+const DEAL_TIERS = [
+  {
+    id: 'local',
+    label: 'Local Business Growth Package',
+    dealValue: '₹50,000',
+    dealNumeric: 50000,
+    commission: '₹7,500',
+    desc: 'Website + Google Maps SEO + WhatsApp Bot',
+  },
+  {
+    id: 'growth',
+    label: 'Startup Web / AI / Ads Bundle',
+    dealValue: '₹1,20,000',
+    dealNumeric: 120000,
+    commission: '₹18,000',
+    desc: 'Custom Next.js Platform + CRM + Paid Ads',
+  },
+  {
+    id: 'enterprise',
+    label: 'Custom SaaS & Full-Scale Engine',
+    dealValue: '₹3,00,000',
+    dealNumeric: 300000,
+    commission: '₹45,000',
+    desc: 'Multi-Tenant SaaS + AI Agents + Growth Retainer',
+  },
+];
+
 export const ClientProofAndReferral: React.FC<ClientProofAndReferralProps> = ({
-  onOpenProjectModal,
+  reviews = VERIFIED_REVIEWS,
+  onSubmitReferral,
 }) => {
-  const [startIndex, setStartIndex] = useState<number>(0);
-  const [referrerName, setReferrerName] = useState<string>('');
-  const [referredBusiness, setReferredBusiness] = useState<string>('');
-  const [estimatedDealValue, setEstimatedDealValue] = useState<number>(120000);
+  const [selectedTier, setSelectedTier] = useState(DEAL_TIERS[1]);
+  const [referrerName, setReferrerName] = useState('');
+  const [referrerContact, setReferrerContact] = useState('');
+  const [referredBusiness, setReferredBusiness] = useState('');
+  const [submittingReferral, setSubmittingReferral] = useState(false);
+  const [referralLogged, setReferralLogged] = useState(false);
+  const [referralError, setReferralError] = useState<string | null>(null);
 
-  const commissionPayout = Math.round(estimatedDealValue * 0.15);
-  const referralWhatsAppUrl = buildReferralWhatsAppUrl(referrerName, referredBusiness);
-
-  const handlePrev = () => {
-    setStartIndex((prev) => (prev === 0 ? VERIFIED_REVIEWS.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setStartIndex((prev) => (prev + 1) % VERIFIED_REVIEWS.length);
-  };
-
-  const visibleReviews = [0, 1, 2].map(
-    (offset) => VERIFIED_REVIEWS[(startIndex + offset) % VERIFIED_REVIEWS.length]
+  const referralWhatsAppUrl = useMemo(
+    () =>
+      buildReferralWhatsAppUrl(
+        referrerName,
+        `${referredBusiness || 'a business'} — ${selectedTier.label} (${selectedTier.dealValue}, Expected 15% Commission: ${selectedTier.commission})`
+      ),
+    [referrerName, referredBusiness, selectedTier]
   );
 
-  const handleOpenCaseInfo = (relatedProjectId: string) => {
-    const matchingProject =
-      SHOWCASE_PROJECTS.find((p) => p.id === relatedProjectId) || SHOWCASE_PROJECTS[0];
-    if (onOpenProjectModal) {
-      onOpenProjectModal(matchingProject);
-    } else {
-      const el = document.getElementById('projects');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+  const handleLogReferral = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setReferralError(null);
+    if (!referrerName.trim() || !referredBusiness.trim()) {
+      setReferralError('Please enter both your name and the business you are referring.');
+      return;
+    }
+
+    if (onSubmitReferral) {
+      setSubmittingReferral(true);
+      try {
+        await onSubmitReferral({
+          referrerName: referrerName.trim(),
+          referrerContact: referrerContact.trim() || 'Via WhatsApp Partner Desk',
+          referredBusiness: referredBusiness.trim(),
+          estimatedDealValue: selectedTier.dealNumeric,
+        });
+        setReferralLogged(true);
+      } catch (err) {
+        setReferralError(
+          err instanceof Error ? err.message : 'Unable to register referral right now.'
+        );
+      } finally {
+        setSubmittingReferral(false);
+      }
     }
   };
 
   return (
-    <>
-      {/* SECTION 5: CLIENT REVIEWS — Client Success Stories with Warm Amber Gold Stars & Emerald Verified Badges */}
-      <section
-        id="proof"
-        className="py-16 sm:py-20 px-4 sm:px-6 lg:px-10 platinum-canvas border-t border-[var(--border-metallic)]"
-      >
-        <div className="max-w-[1320px] mx-auto space-y-10">
-          {/* Centered Header */}
-          <div className="text-center max-w-2xl mx-auto space-y-2.5">
-            <div className="font-mono text-xs tracking-widest uppercase text-[var(--text-muted)]">
-              CLIENT REVIEWS
+    <section
+      id="proof"
+      className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 border-b border-[var(--border-hairline)] bg-[var(--bg-secondary)]"
+    >
+      <div className="max-w-7xl mx-auto space-y-24">
+        {/* =================================================================
+            PART 1: VERIFIED OUTCOMES & CLIENT TESTIMONIALS
+           ================================================================= */}
+        <div>
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-14">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-platinum mb-4">
+                <TrendingUp className="w-3.5 h-3.5 text-[#10B981]" />
+                <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
+                  PROVEN CLIENT IMPACT
+                </span>
+              </div>
+              <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-[var(--text-primary)]">
+                Real Results.{' '}
+                <span className="font-serif-editorial italic font-semibold">
+                  Verified Growth.
+                </span>
+              </h2>
             </div>
-            <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-[var(--text-primary)] tracking-tight">
-              Client Success Stories
-            </h2>
-            <p className="text-sm text-[var(--text-secondary)]">
-              Verified feedback from founders and local business owners we scaled across India &amp;
-              beyond.
+            <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-md leading-relaxed">
+              Every project is measured against concrete business metrics: faster load speeds, #1 Google Maps rankings, lower ad costs, and automated WhatsApp sales.
             </p>
           </div>
 
-          {/* 3-Column Rounded Testimonial Cards + Carousel Controls */}
-          <div className="relative">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {visibleReviews.map((review) => (
-                <article
-                  key={review.id}
-                  className="rounded-3xl platinum-card p-6 sm:p-7 flex flex-col justify-between transition-transform hover:-translate-y-0.5"
-                >
-                  <div className="space-y-5">
-                    {/* Top Row: 5 Warm Amber Gold Stars (#F59E0B) + Emerald Verified Project Pill (#10B981) */}
-                    <div className="flex items-center justify-between gap-2">
-                      <div
-                        className="flex items-center gap-1 text-[#F59E0B]"
-                        aria-label="5 out of 5 stars"
-                      >
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" aria-hidden="true" />
-                        ))}
-                      </div>
-
-                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full accent-pill-emerald font-mono text-[10px] font-bold">
-                        <Check className="w-3 h-3" aria-hidden="true" />
-                        <span>{review.verifiedOutcome}</span>
-                      </span>
-                    </div>
-
-                    {/* Concise Italic Quote */}
-                    <blockquote className="text-sm italic text-[var(--text-primary)] leading-relaxed">
-                      &ldquo;{review.quote}&rdquo;
-                    </blockquote>
+          {/* 2 Proof Case Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {CLIENT_PROOF_CASES.map((item) => (
+              <div
+                key={item.id}
+                className="surface-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden"
+              >
+                <div>
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
+                    <span className="font-mono-tech text-xs font-semibold text-[var(--text-primary)]">
+                      {item.clientSector}
+                    </span>
+                    <span className="px-3 py-1 rounded-full badge-platinum font-mono-tech text-[11px] font-semibold">
+                      {item.timeframe}
+                    </span>
                   </div>
 
-                  {/* Bottom Divider + Author Row */}
-                  <footer className="mt-6 pt-4 border-t border-[var(--border-metallic)] flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-full btn-platinum-primary font-display font-bold text-xs flex items-center justify-center shrink-0">
-                        {review.initials}
+                  {/* Highlight Metric Box */}
+                  <div className="p-5 rounded-2xl surface-elevated mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <div className="font-display text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)]">
+                        {item.primaryMetric}
                       </div>
-                      <div className="min-w-0">
-                        <div className="font-display font-bold text-sm text-[var(--text-primary)] truncate">
-                          {review.author}
-                        </div>
-                        <div className="text-xs text-[var(--text-secondary)] truncate">
-                          {review.role}
-                        </div>
-                        <div className="font-mono text-[10px] font-bold text-[var(--text-muted)] truncate mt-0.5">
-                          {review.engagementScope}
-                        </div>
+                      <div className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">
+                        {item.primaryMetricLabel}
                       </div>
                     </div>
+                    <div className="sm:text-right">
+                      <span className="inline-block px-3 py-1 rounded-full badge-platinum font-mono-tech text-xs font-semibold">
+                        {item.secondaryMetric}
+                      </span>
+                    </div>
+                  </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleOpenCaseInfo(review.relatedProjectId)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full platinum-subdued text-[11px] font-semibold text-[var(--text-primary)] shrink-0 cursor-pointer hover:opacity-85"
+                  <div className="space-y-3 text-xs sm:text-sm">
+                    <div>
+                      <span className="font-mono-tech text-[10px] uppercase tracking-wider text-[var(--text-muted)] block mb-1">
+                        THE BOTTLENECK
+                      </span>
+                      <p className="text-[var(--text-secondary)] leading-relaxed">
+                        {item.challenge}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="font-mono-tech text-[10px] uppercase tracking-wider text-[var(--text-primary)] font-semibold block mb-1">
+                        OUR SOLUTION
+                      </span>
+                      <p className="text-[var(--text-primary)] leading-relaxed font-medium">
+                        {item.solution}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-[var(--border-hairline)] flex flex-wrap gap-1.5">
+                  {item.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2.5 py-1 rounded-md surface-elevated font-mono-tech text-[10px] text-[var(--text-secondary)]"
                     >
-                      <span>Case Info</span>
-                      <ArrowUpRight className="w-3 h-3" aria-hidden="true" />
-                    </button>
-                  </footer>
-                </article>
-              ))}
-            </div>
-
-            {/* Carousel Controls */}
-            <div className="mt-6 flex items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={handlePrev}
-                aria-label="Previous Testimonial"
-                className="w-10 h-10 rounded-full platinum-card text-[var(--text-primary)] flex items-center justify-center cursor-pointer"
-              >
-                <ChevronLeft className="w-4 h-4" aria-hidden="true" />
-              </button>
-              <span className="font-mono text-xs text-[var(--text-muted)]">
-                Verified Client Deployments
-              </span>
-              <button
-                type="button"
-                onClick={handleNext}
-                aria-label="Next Testimonial"
-                className="w-10 h-10 rounded-full platinum-card text-[var(--text-primary)] flex items-center justify-center cursor-pointer"
-              >
-                <ChevronRight className="w-4 h-4" aria-hidden="true" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 6: REFERRAL PROGRAM — Zero Cheap Numbering + Warm Amber Gold 15% Commission + Official Green WhatsApp CTA */}
-      <section
-        id="referral"
-        className="py-16 sm:py-20 px-4 sm:px-6 lg:px-10 platinum-canvas border-t border-[var(--border-metallic)]"
-      >
-        <div className="max-w-[1180px] mx-auto space-y-10">
-          {/* Centered Header */}
-          <div className="text-center max-w-2xl mx-auto space-y-2.5">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full accent-pill-amber font-mono text-xs font-bold tracking-widest uppercase">
-              <span>PARTNER REFERRAL PROGRAM · 15% DIRECT COMMISSION</span>
-            </div>
-            <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-[var(--text-primary)] tracking-tight leading-[1.1]">
-              Know Someone Who Needs
-              <br />a Digital Upgrade?
-            </h2>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
 
-          {/* 3-Column Rounded Partner Cards (Unnumbered — Uses Semantic Category Pills & Vector Icons) */}
+          {/* 3 Verified Client Reviews */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-3xl platinum-card p-6 space-y-4">
-              <div className="flex items-center justify-between gap-2">
-                <span className="px-3 py-1 rounded-full accent-pill-indigo font-mono text-[10px] font-bold tracking-wider uppercase">
-                  INTRODUCTION
-                </span>
-                <div className="w-10 h-10 rounded-xl btn-platinum-primary flex items-center justify-center">
-                  <UserPlus className="w-4 h-4" aria-hidden="true" />
-                </div>
-              </div>
-              <div>
-                <h3 className="font-display font-bold text-lg text-[var(--text-primary)]">
-                  Introduce a Client
-                </h3>
-                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mt-1.5">
-                  Connect us with a founder, clinic, showroom, or enterprise needing web systems or
-                  growth funnels.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded-3xl platinum-card p-6 space-y-4">
-              <div className="flex items-center justify-between gap-2">
-                <span className="px-3 py-1 rounded-full accent-pill-violet font-mono text-[10px] font-bold tracking-wider uppercase">
-                  ARCHITECTURE &amp; CLOSE
-                </span>
-                <div className="w-10 h-10 rounded-xl btn-platinum-primary flex items-center justify-center">
-                  <Briefcase className="w-4 h-4" aria-hidden="true" />
-                </div>
-              </div>
-              <div>
-                <h3 className="font-display font-bold text-lg text-[var(--text-primary)]">
-                  We Architect &amp; Close
-                </h3>
-                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mt-1.5">
-                  Our engineering team handles the 60s teardown, discovery call, technical scoping,
-                  and contract.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded-3xl platinum-card p-6 space-y-4">
-              <div className="flex items-center justify-between gap-2">
-                <span className="px-3 py-1 rounded-full accent-pill-amber font-mono text-[10px] font-bold tracking-wider uppercase">
-                  15% DIRECT COMMISSION
-                </span>
-                <div className="w-10 h-10 rounded-xl btn-platinum-primary flex items-center justify-center">
-                  <DollarSign className="w-4 h-4" aria-hidden="true" />
-                </div>
-              </div>
-              <div>
-                <h3 className="font-display font-bold text-lg text-[var(--text-primary)]">
-                  Earn 15% Payout
-                </h3>
-                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mt-1.5">
-                  Receive a 15% direct commission payout transferred immediately via UPI / NEFT
-                  upon project signing.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Quick Inputs + Commission Calculator + Official Green WhatsApp CTA */}
-          <div className="rounded-3xl platinum-card p-6 sm:p-8 space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-end">
-              <div>
-                <label
-                  htmlFor="referrer-name-input"
-                  className="block font-mono text-[11px] font-semibold text-[var(--text-muted)] mb-1.5"
-                >
-                  YOUR NAME (OPTIONAL)
-                </label>
-                <input
-                  id="referrer-name-input"
-                  type="text"
-                  value={referrerName}
-                  onChange={(e) => setReferrerName(e.target.value)}
-                  placeholder="e.g. Rohan Kulkarni"
-                  className="w-full px-4 py-2.5 min-h-[44px] rounded-xl platinum-subdued text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/60 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="referred-biz-input"
-                  className="block font-mono text-[11px] font-semibold text-[var(--text-muted)] mb-1.5"
-                >
-                  REFERRED BUSINESS (OPTIONAL)
-                </label>
-                <input
-                  id="referred-biz-input"
-                  type="text"
-                  value={referredBusiness}
-                  onChange={(e) => setReferredBusiness(e.target.value)}
-                  placeholder="e.g. Apex Clinic & Showroom"
-                  className="w-full px-4 py-2.5 min-h-[44px] rounded-xl platinum-subdued text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/60 focus:outline-none"
-                />
-              </div>
-
-              <div className="p-3 rounded-xl platinum-subdued">
-                <div className="flex items-center justify-between text-xs font-mono">
-                  <label htmlFor="referral-value-slider" className="text-[var(--text-muted)]">
-                    15% Payout Est:
-                  </label>
-                  <span className="px-2 py-0.5 rounded-md accent-pill-amber font-bold tabular-nums">
-                    ₹{commissionPayout.toLocaleString('en-IN')}
-                  </span>
-                </div>
-                <input
-                  id="referral-value-slider"
-                  type="range"
-                  min={40000}
-                  max={800000}
-                  step={20000}
-                  value={estimatedDealValue}
-                  onChange={(e) => setEstimatedDealValue(Number(e.target.value))}
-                  className="w-full accent-[var(--text-primary)] mt-1.5 cursor-pointer"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-              <a
-                href={referralWhatsAppUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-4 min-h-[50px] rounded-2xl bg-[#25D366] text-white font-display font-bold text-sm hover:opacity-95 transition-opacity whitespace-nowrap shadow-md"
+            {reviews.map((rev) => (
+              <div
+                key={rev.id}
+                className="surface-card rounded-3xl p-6 sm:p-7 flex flex-col justify-between"
               >
-                <WhatsAppLogoIcon className="w-5 h-5" />
-                <span>Refer a Client on WhatsApp</span>
-                <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
-              </a>
-              <span className="text-xs font-mono text-[var(--text-muted)]">
-                Direct UPI / NEFT transfer • Uncapped 15% payout
-              </span>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <div
+                      className="flex items-center gap-0.5 text-[var(--text-primary)]"
+                      aria-label={`${rev.rating || 5} out of 5 stars`}
+                    >
+                      {Array.from({ length: rev.rating || 5 }).map((_, idx) => (
+                        <Star
+                          key={idx}
+                          className="w-3.5 h-3.5 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full font-mono-tech text-[10px] font-semibold badge-platinum">
+                      {rev.serviceTag || rev.engagementScope || 'VERIFIED CLIENT'}
+                    </span>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-[var(--text-primary)] leading-relaxed">
+                    "{rev.quote}"
+                  </p>
+                </div>
+
+                <div className="pt-5 mt-5 border-t border-[var(--border-hairline)] space-y-2">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md surface-elevated font-mono-tech text-[10px] text-[var(--text-primary)] font-semibold">
+                    <Award className="w-3 h-3 text-[#10B981]" />
+                    <span>{rev.impactHighlight || rev.verifiedOutcome || 'Verified ROI'}</span>
+                  </div>
+                  <div>
+                    <div className="font-display font-bold text-sm text-[var(--text-primary)]">
+                      {rev.author}
+                    </div>
+                    <div className="font-mono-tech text-[11px] text-[var(--text-muted)]">
+                      {rev.role}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* =================================================================
+            PART 2: REFER & EARN 15% PARTNER PROGRAM (ZERO NUMBERING)
+           ================================================================= */}
+        <div
+          id="referral"
+          className="surface-card rounded-3xl p-6 sm:p-10 lg:p-12 relative overflow-hidden"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            {/* Left Explanation (6 Cols) */}
+            <div className="lg:col-span-6 space-y-5">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full badge-sage-status">
+                <Gift className="w-3.5 h-3.5 text-[#10B981]" />
+                <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
+                  SKYLINE PARTNER PROGRAM • 15% DIRECT PAYOUT
+                </span>
+              </div>
+
+              <h3 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--text-primary)] leading-tight">
+                Know a Business That Needs a Website, AI Bot, or Ads?{' '}
+                <span className="font-serif-editorial italic font-semibold underline decoration-[var(--border-strong)] underline-offset-4">
+                  Earn 15% Commission.
+                </span>
+              </h3>
+
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                Introduce a founder, clinic, salon, retail store, or company to SkyLine Digital. When they sign up for any project, we send you a direct <strong>15% cash payout</strong> via UPI or bank transfer as soon as their onboarding invoice clears.
+              </p>
+
+              {/* Clean Unnumbered Icon Badges (Zero "STEP 1/2/3" Numbering) */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                {[
+                  {
+                    icon: <Share2 className="w-4 h-4 text-[#10B981]" />,
+                    tag: 'INTRODUCE',
+                    title: 'Share Intro',
+                    sub: 'Connect us on WhatsApp',
+                  },
+                  {
+                    icon: <Handshake className="w-4 h-4 text-[#10B981]" />,
+                    tag: 'BLUEPRINT',
+                    title: 'We Pitch & Close',
+                    sub: 'Free audit & proposal',
+                  },
+                  {
+                    icon: <Wallet className="w-4 h-4 text-[#10B981]" />,
+                    tag: 'REWARD',
+                    title: 'Get 15% Payout',
+                    sub: 'Instant UPI / Bank transfer',
+                  },
+                ].map((s) => (
+                  <div key={s.title} className="p-3.5 rounded-2xl surface-elevated space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono-tech text-[9px] uppercase tracking-widest text-[var(--text-muted)] font-semibold">
+                        {s.tag}
+                      </span>
+                      {s.icon}
+                    </div>
+                    <div className="font-display font-bold text-sm text-[var(--text-primary)]">
+                      {s.title}
+                    </div>
+                    <div className="text-[11px] text-[var(--text-secondary)]">
+                      {s.sub}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Interactive Commission Calculator & Instant WhatsApp Referral (6 Cols) */}
+            <div className="lg:col-span-6 surface-elevated rounded-3xl p-6 sm:p-7 space-y-5">
+              <div className="flex items-center justify-between border-b border-[var(--border-hairline)] pb-4">
+                <div>
+                  <div className="font-mono-tech text-[10px] uppercase tracking-widest text-[var(--text-muted)]">
+                    COMMISSION ESTIMATOR
+                  </div>
+                  <div className="font-display text-lg font-bold text-[var(--text-primary)]">
+                    Select Estimated Project Size
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-mono-tech text-[10px] uppercase text-[var(--text-muted)]">
+                    YOUR 15% REWARD
+                  </div>
+                  <div className="font-display text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)]">
+                    {selectedTier.commission}
+                  </div>
+                </div>
+              </div>
+
+              {/* Tier Buttons */}
+              <div className="grid grid-cols-1 gap-2.5">
+                {DEAL_TIERS.map((tier) => {
+                  const isSelected = selectedTier.id === tier.id;
+                  return (
+                    <button
+                      key={tier.id}
+                      type="button"
+                      onClick={() => setSelectedTier(tier)}
+                      className={`p-3.5 rounded-2xl text-left transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                        isSelected
+                          ? 'btn-platinum-primary shadow-md'
+                          : 'surface-card hover:border-[var(--border-strong)]'
+                      }`}
+                    >
+                      <div>
+                        <div className="font-display font-bold text-xs sm:text-sm">
+                          {tier.label}{' '}
+                          <span className="font-mono-tech opacity-75">
+                            ({tier.dealValue})
+                          </span>
+                        </div>
+                        <div
+                          className={`text-[11px] ${
+                            isSelected
+                              ? 'opacity-80'
+                              : 'text-[var(--text-secondary)]'
+                          }`}
+                        >
+                          {tier.desc}
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className="font-mono-tech text-xs font-bold">
+                          Earn {tier.commission}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Optional Name & Referred Business Inputs */}
+              <form onSubmit={handleLogReferral} className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <input
+                    type="text"
+                    value={referrerName}
+                    onChange={(e) => {
+                      setReferrerName(e.target.value);
+                      setReferralLogged(false);
+                    }}
+                    placeholder="Your Name"
+                    className="w-full px-3.5 py-2.5 rounded-xl surface-card text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--platinum-primary)]"
+                  />
+                  <input
+                    type="text"
+                    value={referrerContact}
+                    onChange={(e) => {
+                      setReferrerContact(e.target.value);
+                      setReferralLogged(false);
+                    }}
+                    placeholder="Your Phone / UPI No."
+                    className="w-full px-3.5 py-2.5 rounded-xl surface-card text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--platinum-primary)]"
+                  />
+                  <input
+                    type="text"
+                    value={referredBusiness}
+                    onChange={(e) => {
+                      setReferredBusiness(e.target.value);
+                      setReferralLogged(false);
+                    }}
+                    placeholder="Friend's Business Name"
+                    className="w-full px-3.5 py-2.5 rounded-xl surface-card text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--platinum-primary)]"
+                  />
+                </div>
+
+                {referralError && (
+                  <p className="text-xs text-rose-500 font-medium">{referralError}</p>
+                )}
+
+                {referralLogged && (
+                  <div className="p-3 rounded-xl badge-platinum text-xs flex items-center justify-between">
+                    <span className="font-medium">
+                      ✓ Referral registered in SkyLine Partner CRM! You can also message us on WhatsApp below.
+                    </span>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <button
+                    type="submit"
+                    disabled={submittingReferral}
+                    className="w-full py-3.5 px-5 rounded-full btn-platinum-primary font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>
+                      {submittingReferral ? 'Registering...' : 'Register Referral in Portal'}
+                    </span>
+                  </button>
+
+                  <a
+                    href={referralWhatsAppUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3.5 px-5 rounded-full btn-whatsapp-official font-bold text-xs sm:text-sm flex items-center justify-center gap-2"
+                  >
+                    <WhatsAppBrandBadge size="sm" className="border border-white/30" />
+                    <span>Send Referral on WhatsApp</span>
+                  </a>
+                </div>
+              </form>
+
+              <div className="flex items-center justify-between text-[11px] text-[var(--text-muted)] font-mono-tech">
+                <span className="inline-flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" />
+                  <span>No limit on referrals</span>
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
+                  <span>Direct UPI / Bank Payout</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };

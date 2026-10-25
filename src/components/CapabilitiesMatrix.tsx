@@ -1,391 +1,523 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  CheckCircle2,
-  ChevronRight,
+  ArrowUpRight,
   Cpu,
-  Globe,
   Layers,
-  MapPin,
-  Share2,
-  Smartphone,
-  Sparkles,
-  Star,
+  Terminal,
+  TrendingUp,
+  CheckCircle2,
+  Store,
+  Rotate3d,
 } from 'lucide-react';
-import {
-  CAPABILITY_PILLARS,
-  CapabilityPillar,
-  SemanticAccentColor,
-} from '../data/agencyData';
+import { CAPABILITY_PILLARS, CapabilityPillar } from '../data/agencyData';
 
 interface CapabilitiesMatrixProps {
-  selectedCapabilityId?: string | null;
-  onSelectForProposal?: (pillarTitle: string) => void;
+  onSelectCapability: (pillarTitle: string) => void;
+  pillars?: CapabilityPillar[];
 }
 
-const getAccentPillClass = (accent: SemanticAccentColor): string => {
-  switch (accent) {
-    case 'emerald':
-      return 'accent-pill-emerald';
-    case 'indigo':
-      return 'accent-pill-indigo';
-    case 'violet':
-      return 'accent-pill-violet';
-    case 'amber':
-      return 'accent-pill-amber';
-    case 'cyan':
-      return 'accent-pill-cyan';
-    case 'rose':
-      return 'accent-pill-rose';
+interface Vec3 {
+  x: number;
+  y: number;
+  z: number;
+}
+
+const normalizeVec = (v: Vec3): Vec3 => {
+  const len = Math.hypot(v.x, v.y, v.z) || 1;
+  return { x: v.x / len, y: v.y / len, z: v.z / len };
+};
+
+// Build a true subdivided 3D Geodesic Sphere (42 vertices, 120 geodesic edges)
+const PHI = (1 + Math.sqrt(5)) / 2;
+const BASE_ICO_VERTS: Vec3[] = [
+  { x: -1, y: PHI, z: 0 },
+  { x: 1, y: PHI, z: 0 },
+  { x: -1, y: -PHI, z: 0 },
+  { x: 1, y: -PHI, z: 0 },
+  { x: 0, y: -1, z: PHI },
+  { x: 0, y: 1, z: PHI },
+  { x: 0, y: -1, z: -PHI },
+  { x: 0, y: 1, z: -PHI },
+  { x: PHI, y: 0, z: -1 },
+  { x: PHI, y: 0, z: 1 },
+  { x: -PHI, y: 0, z: -1 },
+  { x: -PHI, y: 0, z: 1 },
+].map(normalizeVec);
+
+const BASE_ICO_FACES: [number, number, number][] = [
+  [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
+  [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
+  [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
+  [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1],
+];
+
+const GEODESIC_VERTICES: Vec3[] = [...BASE_ICO_VERTS];
+const MID_CACHE = new Map<string, number>();
+
+const getMidVert = (i1: number, i2: number): number => {
+  const key = i1 < i2 ? `${i1}_${i2}` : `${i2}_${i1}`;
+  const found = MID_CACHE.get(key);
+  if (found !== undefined) return found;
+  const v1 = GEODESIC_VERTICES[i1];
+  const v2 = GEODESIC_VERTICES[i2];
+  const mid = normalizeVec({
+    x: (v1.x + v2.x) * 0.5,
+    y: (v1.y + v2.y) * 0.5,
+    z: (v1.z + v2.z) * 0.5,
+  });
+  const idx = GEODESIC_VERTICES.length;
+  GEODESIC_VERTICES.push(mid);
+  MID_CACHE.set(key, idx);
+  return idx;
+};
+
+const GEODESIC_EDGES: [number, number][] = [];
+const EDGE_SET = new Set<string>();
+const pushEdge = (a: number, b: number) => {
+  const key = a < b ? `${a}_${b}` : `${b}_${a}`;
+  if (!EDGE_SET.has(key)) {
+    EDGE_SET.add(key);
+    GEODESIC_EDGES.push([a, b]);
   }
 };
 
+for (const [a, b, c] of BASE_ICO_FACES) {
+  const ab = getMidVert(a, b);
+  const bc = getMidVert(b, c);
+  const ca = getMidVert(c, a);
+  for (const [v0, v1, v2] of [
+    [a, ab, ca],
+    [b, bc, ab],
+    [c, ca, bc],
+    [ab, bc, ca],
+  ]) {
+    pushEdge(v0, v1);
+    pushEdge(v1, v2);
+    pushEdge(v2, v0);
+  }
+}
+
 export const CapabilitiesMatrix: React.FC<CapabilitiesMatrixProps> = ({
-  selectedCapabilityId,
-  onSelectForProposal,
+  onSelectCapability,
+  pillars = CAPABILITY_PILLARS,
 }) => {
-  const [activeId, setActiveId] = useState<string>(CAPABILITY_PILLARS[0].id);
-  const [rotation, setRotation] = useState<{ x: number; y: number }>({ x: 20, y: 0 });
-  const targetTiltRef = useRef<{ x: number; yBoost: number }>({ x: 20, yBoost: 0 });
+  const [activeId, setActiveId] = useState<string>(
+    pillars[0]?.id || CAPABILITY_PILLARS[0].id
+  );
+  const activePillar =
+    pillars.find((p) => p.id === activeId) || pillars[0] || CAPABILITY_PILLARS[0];
 
-  useEffect(() => {
-    if (selectedCapabilityId && CAPABILITY_PILLARS.some((p) => p.id === selectedCapabilityId)) {
-      setActiveId(selectedCapabilityId);
-    }
-  }, [selectedCapabilityId]);
+  // Continuous 360-degree 3D Geodesic Sphere rotation state
+  const [angles, setAngles] = useState({ x: 0.35, y: 0.6, z: 0.12 });
+  const dragRef = useRef<{ isDragging: boolean; lastX: number; lastY: number }>({
+    isDragging: false,
+    lastX: 0,
+    lastY: 0,
+  });
 
-  // Continuous 360° Auto-Rotating 3D Architecture Mesh Loop
   useEffect(() => {
     let rafId: number;
-    let angleY = 0;
-
     const animate = () => {
-      angleY = (angleY + 0.65 + targetTiltRef.current.yBoost) % 360;
-      setRotation((prev) => ({
-        x: prev.x + (targetTiltRef.current.x - prev.x) * 0.08,
-        y: angleY,
-      }));
-      rafId = window.requestAnimationFrame(animate);
+      if (!dragRef.current.isDragging) {
+        setAngles((prev) => ({
+          x: prev.x + 0.006,
+          y: prev.y + 0.011,
+          z: prev.z + 0.003,
+        }));
+      }
+      rafId = requestAnimationFrame(animate);
     };
-
-    rafId = window.requestAnimationFrame(animate);
-    return () => window.cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
-  const activePillar: CapabilityPillar =
-    CAPABILITY_PILLARS.find((p) => p.id === activeId) || CAPABILITY_PILLARS[0];
-
-  const handleMouseMoveSphere = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const normX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-    const normY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-    targetTiltRef.current = {
-      x: Math.round(normY * 42),
-      yBoost: normX * 1.4,
+  const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    dragRef.current = {
+      isDragging: true,
+      lastX: e.clientX,
+      lastY: e.clientY,
     };
   };
 
-  const handleMouseLeaveSphere = () => {
-    targetTiltRef.current = { x: 20, yBoost: 0 };
+  const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (!dragRef.current.isDragging) return;
+    const dx = e.clientX - dragRef.current.lastX;
+    const dy = e.clientY - dragRef.current.lastY;
+    dragRef.current.lastX = e.clientX;
+    dragRef.current.lastY = e.clientY;
+    setAngles((prev) => ({
+      ...prev,
+      y: prev.y + dx * 0.012,
+      x: prev.x + dy * 0.012,
+    }));
   };
 
-  const handleRequestProposal = (pillarTitle: string) => {
-    onSelectForProposal?.(pillarTitle);
-    const contactEl = document.getElementById('contact');
-    if (contactEl) {
-      contactEl.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handlePointerUp = () => {
+    dragRef.current.isDragging = false;
   };
 
-  const scrollToSimulator = () => {
-    const simEl = document.getElementById('system-simulator');
-    if (simEl) {
-      simEl.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const renderPillarIcon = (id: string) => {
+  const getPillarIcon = (id: string) => {
     switch (id) {
+      case 'software-engineering':
+        return <Terminal className="w-5 h-5" />;
+      case 'ai-automation':
+        return <Cpu className="w-5 h-5" />;
+      case 'growth-systems':
+        return <TrendingUp className="w-5 h-5" />;
       case 'local-business':
-        return <MapPin className="w-5 h-5" aria-hidden="true" />;
-      case 'web-engineering':
-        return <Globe className="w-5 h-5" aria-hidden="true" />;
-      case 'ai-crm':
-        return <Cpu className="w-5 h-5" aria-hidden="true" />;
-      case 'performance-ads':
-        return <Sparkles className="w-5 h-5" aria-hidden="true" />;
-      case 'seo-aeo':
-        return <Layers className="w-5 h-5" aria-hidden="true" />;
-      case 'organic-social':
-        return <Share2 className="w-5 h-5" aria-hidden="true" />;
+        return <Store className="w-5 h-5" />;
       default:
-        return <Smartphone className="w-5 h-5" aria-hidden="true" />;
+        return <Layers className="w-5 h-5" />;
     }
   };
 
-  // Compute dynamic 360° orbital points with semantic micro-accent colors
-  const radX = (rotation.x * Math.PI) / 180;
-  const radY = (rotation.y * Math.PI) / 180;
-  const orbitDots = [
-    { lat: 0.3, lon: 0.4, stroke: '#6366F1' },
-    { lat: -0.4, lon: 1.2, stroke: '#8B5CF6' },
-    { lat: 0.6, lon: -0.8, stroke: '#06B6D4' },
-    { lat: -0.2, lon: -1.5, stroke: '#10B981' },
-    { lat: 0.1, lon: 2.3, stroke: '#F59E0B' },
-    { lat: 0.75, lon: 0.9, stroke: '#F43F5E' },
-  ].map((pt) => {
-    const cx = 140 + Math.sin(pt.lon + radY) * Math.cos(pt.lat) * 78;
-    const cy = 140 + Math.sin(pt.lat + radX * 0.5) * 78;
-    return { cx: Math.round(cx * 10) / 10, cy: Math.round(cy * 10) / 10, stroke: pt.stroke };
+  // Project subdivided 3D geodesic sphere vertices to 2D SVG coordinates
+  const projectedVertices = GEODESIC_VERTICES.map((v) => {
+    const cosX = Math.cos(angles.x);
+    const sinX = Math.sin(angles.x);
+    const y1 = v.y * cosX - v.z * sinX;
+    const z1 = v.y * sinX + v.z * cosX;
+
+    const cosY = Math.cos(angles.y);
+    const sinY = Math.sin(angles.y);
+    const x2 = v.x * cosY + z1 * sinY;
+    const z2 = -v.x * sinY + z1 * cosY;
+
+    const cosZ = Math.cos(angles.z);
+    const sinZ = Math.sin(angles.z);
+    const x3 = x2 * cosZ - y1 * sinZ;
+    const y3 = x2 * sinZ + y1 * cosZ;
+
+    const scale = 250 / (3.4 - z2 * 0.78);
+    return {
+      cx: 160 + x3 * scale,
+      cy: 115 + y3 * scale,
+      depth: z2,
+    };
   });
 
   return (
     <section
-      id="capabilities"
-      className="py-16 sm:py-20 px-4 sm:px-6 lg:px-10 platinum-canvas border-t border-[var(--border-metallic)]"
+      id="expertise"
+      className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 border-b border-[var(--border-hairline)] relative bg-[var(--bg-secondary)]"
     >
-      <div className="max-w-[1320px] mx-auto space-y-9">
-        {/* Centered Header */}
-        <div className="text-center space-y-2.5">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full accent-pill-indigo font-mono text-[11px] font-bold tracking-widest">
-            <Star className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
-            <span>OUR CORE EXPERTISE</span>
-          </div>
-          <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-[var(--text-primary)] tracking-tight">
-            Services We Provide
-          </h2>
-        </div>
-
-        {/* Full-Width Rounded Pill Tab Switcher (Includes Dedicated "Local Businesses" Tab) */}
-        <div
-          role="tablist"
-          aria-label="SkyLine Digital Core Capabilities"
-          className="rounded-2xl platinum-card p-2 flex flex-wrap items-center justify-center gap-2"
-        >
-          {CAPABILITY_PILLARS.map((pillar) => {
-            const selected = pillar.id === activePillar.id;
-            return (
-              <button
-                key={pillar.id}
-                role="tab"
-                id={`tab-${pillar.id}`}
-                aria-selected={selected}
-                aria-controls={`panel-${pillar.id}`}
-                type="button"
-                onClick={() => setActiveId(pillar.id)}
-                className={`px-4 py-2.5 min-h-[42px] rounded-xl text-xs font-display font-bold transition-all duration-150 inline-flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0 ${
-                  selected
-                    ? 'btn-platinum-primary shadow-sm'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                <span>{pillar.shortTab}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* 2-Column Split: Left Continuous 360° Auto-Rotating 3D Model | Right Capability Specifications */}
-        <div
-          role="tabpanel"
-          id={`panel-${activePillar.id}`}
-          aria-labelledby={`tab-${activePillar.id}`}
-          className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch"
-        >
-          {/* Left Card (5 Cols): Continuous 360° Auto-Rotating 3D Geodesic Wireframe Mesh */}
-          <div
-            onMouseMove={handleMouseMoveSphere}
-            onMouseLeave={handleMouseLeaveSphere}
-            className="lg:col-span-5 rounded-3xl platinum-card p-7 flex flex-col items-center justify-between min-h-[370px] select-none"
-          >
-            <div className="w-full flex items-center justify-between text-xs font-mono">
-              <span
-                className={`px-3 py-1 rounded-full text-[10px] font-bold ${getAccentPillClass(
-                  activePillar.accentColor
-                )}`}
-              >
-                {activePillar.categoryLabel}
-              </span>
-              <span className="text-[var(--text-primary)] font-semibold">
-                {activePillar.timeline}
+      <div className="max-w-7xl mx-auto">
+        {/* Section Header */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-14">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-platinum mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
+              <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
+                OUR CORE EXPERTISE
               </span>
             </div>
+            <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-[var(--text-primary)]">
+              Built for Startups, Enterprises &{' '}
+              <span className="font-serif-editorial italic font-semibold">
+                Local Businesses.
+              </span>
+            </h2>
+          </div>
+          <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-md leading-relaxed">
+            Select a track below to inspect how we architect websites, AI automation, ad funnels, and local Google Maps dominance.
+          </p>
+        </div>
 
-            {/* Continuous 360° Auto-Rotating 3D Geodesic Wireframe SVG */}
-            <div className="relative my-3 flex items-center justify-center">
-              <svg
-                width="260"
-                height="260"
-                viewBox="0 0 280 280"
-                className="overflow-visible"
-                aria-label="Continuous 360-degree rotating 3D architecture mesh"
-              >
-                <defs>
-                  <radialGradient id="platinumSphereCore" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#6366F1" stopOpacity="0.22" />
-                    <stop offset="65%" stopColor="#8B5CF6" stopOpacity="0.08" />
-                    <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
-                  </radialGradient>
-                </defs>
-
-                {/* Inner Neural Violet / Indigo Core Glow */}
-                <circle cx="140" cy="140" r="88" fill="url(#platinumSphereCore)" />
-                <circle
-                  cx="140"
-                  cy="140"
-                  r="66"
-                  fill="currentColor"
-                  fillOpacity="0.06"
-                  stroke="#8B5CF6"
-                  strokeWidth="1.2"
-                  strokeOpacity="0.45"
-                  className="text-[var(--text-primary)]"
-                />
-
-                {/* Outer 360° Rotating Geodesic Wireframe Rings */}
-                <g
-                  transform={`rotate(${(rotation.y * 0.35) % 360} 140 140)`}
-                  stroke="currentColor"
-                  strokeOpacity="0.55"
-                  fill="none"
-                  className="text-[var(--text-primary)]"
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Pillar Selector Tabs */}
+          <div className="lg:col-span-5 space-y-3">
+            {pillars.map((pillar) => {
+              const isActive = pillar.id === activeId;
+              return (
+                <button
+                  key={pillar.id}
+                  onClick={() => setActiveId(pillar.id)}
+                  className={`w-full text-left p-5 sm:p-6 rounded-2xl transition-all duration-300 cursor-pointer relative overflow-hidden ${
+                    isActive
+                      ? 'btn-platinum-primary shadow-xl'
+                      : 'surface-card hover:border-[var(--border-strong)]'
+                  }`}
                 >
-                  <circle cx="140" cy="140" r="106" strokeWidth="1.1" />
-                  <ellipse
-                    cx="140"
-                    cy="140"
-                    rx={Math.max(16, Math.abs(Math.cos(radY) * 106))}
-                    ry="106"
-                    strokeWidth="1.1"
-                  />
-                  <ellipse
-                    cx="140"
-                    cy="140"
-                    rx="106"
-                    ry={Math.max(16, Math.abs(Math.sin(radX + radY * 0.5) * 106))}
-                    strokeWidth="1.1"
-                  />
-                  <ellipse
-                    cx="140"
-                    cy="140"
-                    rx="106"
-                    ry="46"
-                    transform={`rotate(${(45 + rotation.y * 0.6) % 360} 140 140)`}
-                    stroke="#6366F1"
-                    strokeOpacity="0.5"
-                    strokeWidth="1"
-                  />
-                  <ellipse
-                    cx="140"
-                    cy="140"
-                    rx="106"
-                    ry="46"
-                    transform={`rotate(${(-45 - rotation.y * 0.5) % 360} 140 140)`}
-                    stroke="#06B6D4"
-                    strokeOpacity="0.5"
-                    strokeWidth="1"
-                  />
-                  <polygon
-                    points="140,34 232,87 232,193 140,246 48,193 48,87"
-                    transform={`rotate(${rotation.y % 360} 140 140)`}
-                    stroke="#8B5CF6"
-                    strokeOpacity="0.4"
-                    strokeWidth="1"
-                  />
-                </g>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className={`font-mono-tech text-[10px] uppercase tracking-widest font-semibold ${
+                            isActive
+                              ? 'opacity-80'
+                              : 'text-[var(--text-muted)]'
+                          }`}
+                        >
+                          {pillar.subtitle}
+                        </span>
+                      </div>
+                      <h3 className="font-display text-lg sm:text-xl font-bold tracking-tight">
+                        {pillar.title}
+                      </h3>
+                    </div>
 
-                {/* Orbiting Semantic Nodes */}
-                {orbitDots.map((dot, idx) => (
-                  <circle
-                    key={idx}
-                    cx={dot.cx}
-                    cy={dot.cy}
-                    r="4.5"
-                    fill="var(--bg-surface)"
-                    stroke={dot.stroke}
-                    strokeWidth="2.4"
-                  />
-                ))}
-              </svg>
-            </div>
+                    <div
+                      className={`p-2.5 rounded-xl border shrink-0 transition-transform duration-300 ${
+                        isActive
+                          ? 'border-current/20 bg-white/10 scale-105'
+                          : 'border-[var(--border-hairline)] text-[var(--text-secondary)]'
+                      }`}
+                    >
+                      {getPillarIcon(pillar.id)}
+                    </div>
+                  </div>
 
-            <div className="font-mono text-[10px] tracking-widest uppercase text-[var(--text-muted)] text-center">
-              LIVE 360° ARCHITECTURE MESH • DRAG OR HOVER TO INSPECT
-            </div>
+                  {/* Quick metric preview */}
+                  <div
+                    className={`mt-4 pt-3 border-t flex items-center justify-between text-xs font-mono-tech ${
+                      isActive
+                        ? 'border-current/15 opacity-90'
+                        : 'border-[var(--border-hairline)] text-[var(--text-secondary)]'
+                    }`}
+                  >
+                    <span>
+                      {pillar.metrics && pillar.metrics[0] ? (
+                        <>
+                          {pillar.metrics[0].label}:{' '}
+                          <strong>{pillar.metrics[0].value}</strong>
+                        </>
+                      ) : (
+                        <strong>{pillar.outcomeMetric || '99.98% SLA'}</strong>
+                      )}
+                    </span>
+                    <span className="inline-flex items-center gap-1 font-semibold">
+                      <span>Inspect Track</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Right Card (7 Cols): Capability Specifications & Deliverables */}
-          <div className="lg:col-span-7 rounded-3xl platinum-card p-6 sm:p-9 flex flex-col justify-between space-y-5">
-            <div className="space-y-3.5">
-              {/* Top Icon + Category & Semantic Tag Pill */}
-              <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-2xl btn-platinum-primary flex items-center justify-center shrink-0">
-                  {renderPillarIcon(activePillar.id)}
-                </div>
-                <div>
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
-                    {activePillar.shortTab}
-                  </div>
-                  <span
-                    className={`inline-block mt-0.5 px-3 py-0.5 rounded-full text-xs font-semibold ${getAccentPillClass(
-                      activePillar.accentColor
-                    )}`}
-                  >
-                    {activePillar.badgeTag}
+          {/* Right Column: Active Pillar Deep-Dive + Continuous 360° 3D Geodesic Sphere */}
+          <div className="lg:col-span-7 surface-card rounded-3xl p-6 sm:p-9 relative overflow-hidden">
+            {/* Top Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[var(--border-hairline)]">
+              <div className="flex items-center gap-3">
+                <span className="px-3 py-1 rounded-full font-mono-tech text-xs font-semibold badge-platinum">
+                  {activePillar.subtitle}
+                </span>
+              </div>
+
+              <span className="font-mono-tech text-[11px] px-3 py-1 rounded-full surface-elevated text-[var(--text-primary)]">
+                {activePillar.architectureNote || 'Next.js 15 Edge + Cloud API'}
+              </span>
+            </div>
+
+            {/* Interactive 360° 3D Rotating Geodesic Sphere + Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-5 my-6 items-center">
+              <div className="md:col-span-6 surface-elevated rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden select-none">
+                <div className="w-full flex items-center justify-between text-[10px] font-mono-tech text-[var(--text-muted)] mb-1">
+                  <span className="inline-flex items-center gap-1 text-[var(--text-primary)] font-semibold">
+                    <Rotate3d className="w-3.5 h-3.5 text-[#10B981]" />
+                    <span>360° 3D GEODESIC SPHERE</span>
                   </span>
+                  <span>DRAG TO ROTATE</span>
+                </div>
+
+                <svg
+                  viewBox="0 0 320 230"
+                  className="w-full h-48 cursor-grab active:cursor-grabbing touch-none"
+                  onPointerDown={handlePointerDown}
+                  onPointerMove={handlePointerMove}
+                  onPointerUp={handlePointerUp}
+                  onPointerLeave={handlePointerUp}
+                  aria-label="Interactive 360 degree 3D geodesic sphere"
+                >
+                  {/* Outer spherical boundary halo */}
+                  <circle
+                    cx="160"
+                    cy="115"
+                    r="82"
+                    fill="none"
+                    stroke="var(--border-strong)"
+                    strokeWidth="0.9"
+                    opacity="0.35"
+                  />
+
+                  {/* Equatorial orbital ring */}
+                  <ellipse
+                    cx="160"
+                    cy="115"
+                    rx="108"
+                    ry="34"
+                    fill="none"
+                    stroke="var(--border-strong)"
+                    strokeWidth="1"
+                    strokeDasharray="4 4"
+                    opacity="0.5"
+                    transform={`rotate(${(angles.z * 70) % 360} 160 115)`}
+                  />
+
+                  {/* Subdivided Geodesic Sphere Wireframe Edges */}
+                  {GEODESIC_EDGES.map(([i, j], idx) => {
+                    const v1 = projectedVertices[i];
+                    const v2 = projectedVertices[j];
+                    const avgDepth = (v1.depth + v2.depth) / 2;
+                    const opacity = Math.max(0.12, Math.min(0.85, (avgDepth + 1.2) / 2.2));
+                    return (
+                      <line
+                        key={idx}
+                        x1={v1.cx}
+                        y1={v1.cy}
+                        x2={v2.cx}
+                        y2={v2.cy}
+                        stroke={idx % 11 === 0 && avgDepth > 0.2 ? '#10B981' : 'var(--text-primary)'}
+                        strokeWidth={avgDepth > 0 ? '1.2' : '0.75'}
+                        strokeOpacity={opacity}
+                      />
+                    );
+                  })}
+
+                  {/* Geodesic Sphere Nodes */}
+                  {projectedVertices.map((v, idx) => {
+                    const r = Math.max(1.4, (v.depth + 1.5) * 1.15);
+                    const opacity = Math.max(0.22, Math.min(0.95, (v.depth + 1.2) / 2.1));
+                    const isAccent = idx % 7 === 0 && v.depth > 0.15;
+                    return (
+                      <circle
+                        key={idx}
+                        cx={v.cx}
+                        cy={v.cy}
+                        r={isAccent ? r + 0.8 : r}
+                        fill={isAccent ? '#10B981' : 'var(--text-primary)'}
+                        fillOpacity={opacity}
+                      />
+                    );
+                  })}
+                </svg>
+              </div>
+
+              <div className="md:col-span-6 space-y-3">
+                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                  {activePillar.description || activePillar.subtitle}
+                </p>
+
+                <div className="grid grid-cols-2 gap-3 pt-1">
+                  {(
+                    activePillar.metrics || [
+                      {
+                        label: 'Outcome',
+                        value: activePillar.outcomeMetric || '+150%',
+                        delta: activePillar.timeline || '2–3 Weeks',
+                      },
+                    ]
+                  ).map((metric) => (
+                    <div
+                      key={metric.label}
+                      className="p-3.5 rounded-2xl surface-elevated flex flex-col justify-between"
+                    >
+                      <span className="font-mono-tech text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
+                        {metric.label}
+                      </span>
+                      <span className="font-display text-2xl font-extrabold tracking-tight text-[var(--text-primary)] my-1">
+                        {metric.value}
+                      </span>
+                      <span className="font-mono-tech text-[10px] font-semibold text-[var(--text-secondary)]">
+                        {metric.delta}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
-
-              <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] tracking-tight">
-                {activePillar.title}
-              </h3>
-
-              <p className="font-display font-bold text-sm sm:text-base text-[var(--text-primary)]">
-                {activePillar.leadSentence}
-              </p>
-
-              <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
-                {activePillar.subtitle}
-              </p>
             </div>
 
-            {/* Key Deliverables & Specifications Checklist */}
-            <div className="pt-4 border-t border-[var(--border-metallic)] space-y-3">
-              <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
-                KEY DELIVERABLES &amp; SPECIFICATIONS
+            {/* Deliverables Breakdown */}
+            <div className="space-y-3">
+              <div className="font-mono-tech text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-2">
+                INCLUDED DELIVERABLES & OUTCOMES
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {activePillar.deliverables.map((item) => (
+              {activePillar.deliverables.map((rawItem, idx) => {
+                const item =
+                  typeof rawItem === 'string'
+                    ? {
+                        name: rawItem,
+                        spec: 'Production-grade engineering and automated integration.',
+                        impact: activePillar.outcomeMetric || 'Verified SLA',
+                      }
+                    : rawItem;
+                return (
                   <div
-                    key={item}
-                    className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[var(--text-primary)]"
+                    key={`${item.name}-${idx}`}
+                    className="p-4 sm:p-5 rounded-2xl surface-elevated transition-colors"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0" aria-hidden="true" />
-                    <span>{item}</span>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1.5">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0" />
+                        <h4 className="font-display font-bold text-sm sm:text-base text-[var(--text-primary)]">
+                          {item.name}
+                        </h4>
+                      </div>
+                      <span className="font-mono-tech text-[11px] px-2.5 py-0.5 rounded-full badge-platinum w-fit font-semibold">
+                        {item.impact}
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-[var(--text-secondary)] pl-6">
+                      {item.spec}
+                    </p>
                   </div>
-                ))}
+                );
+              })}
+            </div>
+
+            {/* Bottom CTA */}
+            <div className="mt-7 pt-5 border-t border-[var(--border-hairline)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="text-xs text-[var(--text-secondary)]">
+                Need a custom package for{' '}
+                <strong className="text-[var(--text-primary)]">
+                  {activePillar.title}
+                </strong>
+                ?
               </div>
-            </div>
-
-            {/* Bottom Action Buttons */}
-            <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <button
-                type="button"
-                onClick={scrollToSimulator}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 min-h-[46px] rounded-2xl platinum-subdued text-[var(--text-primary)] font-display font-bold text-xs sm:text-sm cursor-pointer"
+                onClick={() => onSelectCapability(activePillar.title)}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full btn-platinum-primary text-xs font-bold tracking-wide cursor-pointer"
               >
-                <span>Simulate {activePillar.shortTab}</span>
-                <ChevronRight className="w-4 h-4" aria-hidden="true" />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleRequestProposal(activePillar.title)}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 min-h-[46px] rounded-2xl btn-platinum-primary font-display font-bold text-xs sm:text-sm cursor-pointer"
-              >
-                <span>Get Customized Proposal</span>
+                <span>Request Custom Quote</span>
+                <ArrowUpRight className="w-4 h-4" />
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Dedicated Local Business Spotlight Banner */}
+        <div
+          id="local-business"
+          className="mt-10 surface-card rounded-3xl p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6"
+        >
+          <div className="space-y-2 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-sage-status">
+              <Store className="w-3.5 h-3.5 text-[#10B981]" />
+              <span className="font-mono-tech text-[10px] uppercase tracking-widest font-semibold">
+                SPECIALIZED LOCAL BUSINESS PACKAGES
+              </span>
+            </div>
+            <h3 className="font-display text-xl sm:text-2xl font-extrabold text-[var(--text-primary)]">
+              Running a Clinic, Salon, Restaurant, Gym, or Retail Store?
+            </h3>
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+              Get our complete Local Growth System: #1 Google Map Pack SEO, automated 5-star Google review QR standees, a mobile-first digital catalog, and a 24/7 WhatsApp booking bot.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <button
+              onClick={() => {
+                setActiveId('local-business');
+                onSelectCapability('Local Business Growth, Map Pack SEO & Digital Catalogs');
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full btn-platinum-primary text-xs sm:text-sm font-bold cursor-pointer"
+            >
+              <span>Claim Local Business Package</span>
+              <ArrowUpRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </div>

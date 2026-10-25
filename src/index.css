@@ -1,284 +1,311 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "Inter", ui-sans-serif, system-ui, monospace;
-
-  --color-obsidian: #09090B;
-  --color-gunmetal: #141417;
-  --color-hairline: #27272A;
-  --color-platinum-silver: #E4E4E7;
-  --color-brushed-silver: #D4D4D8;
-  --color-alabaster: #F4F4F6;
-  --color-whatsapp: #25D366;
-}
-
-/* Light Mode Palette ("Liquid Silver & Dark Platinum" — Default) */
 :root,
-html[data-theme="light"] {
-  --bg-canvas: #F4F4F6;
+[data-theme='light'] {
+  /* Typography System */
+  --font-display: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* 5-Color Direction 3 System — Light Mode (Safe Milky White / Velvet Alabaster) */
+  --bg-canvas: #FAF9F6;
+  --bg-secondary: #F4F4F5;
   --bg-surface: #FFFFFF;
-  --bg-subdued: #E4E4E7;
-  --bg-elevated: #FAFAFA;
-  --border-metallic: #D4D4D8;
-  --text-primary: #18181B;
-  --text-secondary: #3F3F46;
-  --text-muted: #52525B;
-  --btn-primary-bg: #18181B;
-  --btn-primary-text: #FAFAFA;
-  --badge-bg: #E4E4E7;
-  --badge-text: #18181B;
-  --card-shadow: 0 10px 30px -10px rgba(24, 24, 27, 0.07), 0 1px 3px rgba(24, 24, 27, 0.05);
-  color-scheme: light;
+  --bg-elevated: #F4F4F5;
+  --bg-glass: rgba(250, 249, 246, 0.88);
+
+  /* Typography & Hairlines (Brushed Silver & Titanium Grey) */
+  --text-primary: #141518;
+  --text-secondary: #52525B;
+  --text-muted: #71717A;
+
+  /* Direction 3 Signature Accent (Muted Sage Slate & Brushed Platinum) */
+  --sage-accent: #10B981;
+  --sage-soft: rgba(16, 185, 129, 0.12);
+  --platinum-primary: #141518;
+  --platinum-primary-text: #FAF9F6;
+  --platinum-secondary: #3F3F46;
+  --platinum-badge-bg: #F4F4F5;
+  --platinum-badge-text: #141518;
+  --platinum-sheen: linear-gradient(135deg, #141518 0%, #52525B 52%, #18181B 100%);
+  --silver-surface-gradient: linear-gradient(180deg, #FFFFFF 0%, #FCFCFA 100%);
+
+  /* Official Brand Colors */
+  --whatsapp-green: #25D366;
+  --whatsapp-green-hover: #20BD5A;
+
+  /* Borders & Soft Ambient Elevation (Zero Grid Lines) */
+  --border-hairline: #E4E4E7;
+  --border-metallic: #E4E4E7;
+  --border-strong: #CBD5E1;
+  --card-shadow: 0 14px 34px -10px rgba(20, 21, 24, 0.05), 0 2px 6px -1px rgba(20, 21, 24, 0.03);
+  --hero-glow: radial-gradient(circle at 74% 34%, rgba(16, 185, 129, 0.045) 0%, rgba(203, 213, 225, 0.12) 42%, transparent 72%);
 }
 
-/* Dark Mode Palette ("Matte Obsidian & Brushed Chrome") */
-html[data-theme="dark"] {
-  --bg-canvas: #09090B;
-  --bg-surface: #141417;
-  --bg-subdued: #18181B;
-  --bg-elevated: #1F1F23;
-  --border-metallic: #27272A;
-  --text-primary: #FAFAFA;
-  --text-secondary: #A1A1AA;
-  --text-muted: #71717A;
-  --btn-primary-bg: #E4E4E7;
-  --btn-primary-text: #09090B;
-  --badge-bg: #27272A;
-  --badge-text: #E4E4E7;
-  --card-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.65);
-  color-scheme: dark;
+html.dark,
+[data-theme='dark'] {
+  /* 5-Color Direction 3 System — Dark Mode (Light Obsidian / Deep Gunmetal) */
+  --bg-canvas: #0D0E12;
+  --bg-secondary: #13151B;
+  --bg-surface: #171920;
+  --bg-elevated: #13151B;
+  --bg-glass: rgba(19, 21, 27, 0.88);
+
+  /* Typography & Hairlines */
+  --text-primary: #F4F4F6;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+
+  /* Direction 3 Signature Accent & Polished Platinum */
+  --sage-accent: #10B981;
+  --sage-soft: rgba(16, 185, 129, 0.14);
+  --platinum-primary: #FAF9F6;
+  --platinum-primary-text: #0D0E12;
+  --platinum-secondary: #CBD5E1;
+  --platinum-badge-bg: #1E212B;
+  --platinum-badge-text: #F4F4F6;
+  --platinum-sheen: linear-gradient(135deg, #FFFFFF 0%, #CBD5E1 50%, #94A3B8 100%);
+  --silver-surface-gradient: linear-gradient(180deg, #191C24 0%, #15171E 100%);
+
+  /* Borders & Elevation (Zero Grid Lines) */
+  --border-hairline: #262934;
+  --border-metallic: #262934;
+  --border-strong: #383D4E;
+  --card-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.65), 0 1px 0 0 rgba(255, 255, 255, 0.04) inset;
+  --hero-glow: radial-gradient(circle at 74% 34%, rgba(16, 185, 129, 0.06) 0%, rgba(148, 163, 184, 0.05) 45%, transparent 72%);
 }
 
 @layer base {
   html {
-    scroll-behavior: smooth;
     background-color: var(--bg-canvas);
     color: var(--text-primary);
     font-family: var(--font-sans);
-    transition: background-color 150ms ease, color 150ms ease;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
-  h1, h2, h3, h4, .font-display {
-    font-family: var(--font-display);
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
-  :focus-visible {
-    outline: 2px solid #6366F1;
-    outline-offset: 2px;
+  ::selection {
+    background-color: var(--platinum-primary);
+    color: var(--platinum-primary-text);
   }
 }
 
-/* Semantic Platinum & Obsidian Surface Helpers */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.font-serif-editorial {
+  font-family: var(--font-serif);
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+
+.font-sans-body {
+  font-family: var(--font-sans);
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
+}
+
+/* Smooth Eye-Safe Canvas Utilities — ZERO GRID LINES */
+.bg-architectural-grid,
 .platinum-canvas {
   background-color: var(--bg-canvas);
-  color: var(--text-primary);
+  background-image: none;
 }
 
+.bg-secondary-canvas {
+  background-color: var(--bg-secondary);
+  background-image: none;
+}
+
+/* Hero Architectural Background — Smooth Velvet Alabaster / Light Obsidian without Grid Lines */
+.hero-architectural-bg {
+  background-color: var(--bg-canvas);
+  background-image: var(--hero-glow);
+}
+
+/* Surface & Card Utilities */
+.surface-card,
 .platinum-card {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-metallic);
+  background: var(--silver-surface-gradient);
+  border: 1px solid var(--border-hairline);
   box-shadow: var(--card-shadow);
+  transition: border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
 }
 
+.surface-card:hover,
+.platinum-card:hover {
+  border-color: var(--border-strong);
+}
+
+.surface-elevated,
 .platinum-subdued {
-  background-color: var(--bg-subdued);
-  border: 1px solid var(--border-metallic);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-hairline);
 }
 
+.surface-glass {
+  background-color: var(--bg-glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border-hairline);
+}
+
+/* Primary High-Contrast Obsidian / Platinum Button */
 .btn-platinum-primary {
-  background-color: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
-  transition: transform 150ms ease, opacity 150ms ease;
+  background-color: var(--platinum-primary);
+  color: var(--platinum-primary-text);
+  border: 1px solid var(--platinum-primary);
+  font-family: var(--font-display);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-platinum-primary:hover {
-  opacity: 0.92;
+  transform: translateY(-1px);
+  opacity: 0.94;
+  box-shadow: 0 10px 24px -6px rgba(20, 21, 24, 0.22);
 }
 
-.badge-platinum {
-  background-color: var(--badge-bg);
-  color: var(--badge-text);
-  border: 1px solid var(--border-metallic);
+/* Secondary Brushed Silver Button */
+.btn-platinum-secondary {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-hairline);
+  font-family: var(--font-display);
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
-/* FR-COLOR-003: 6 Semantic Micro-Accent Badges (High Contrast in Both Light & Dark Mode) */
-.accent-pill-emerald {
-  background-color: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #059669;
-}
-html[data-theme="dark"] .accent-pill-emerald {
-  color: #34D399;
+.btn-platinum-secondary:hover {
+  border-color: var(--border-strong);
+  background-color: var(--bg-elevated);
+  transform: translateY(-1px);
 }
 
-.accent-pill-indigo {
-  background-color: rgba(99, 102, 241, 0.12);
-  border: 1px solid rgba(99, 102, 241, 0.35);
-  color: #4F46E5;
-}
-html[data-theme="dark"] .accent-pill-indigo {
-  color: #818CF8;
-}
-
-.accent-pill-violet {
-  background-color: rgba(139, 92, 246, 0.12);
-  border: 1px solid rgba(139, 92, 246, 0.35);
-  color: #7C3AED;
-}
-html[data-theme="dark"] .accent-pill-violet {
-  color: #A78BFA;
-}
-
-.accent-pill-amber {
-  background-color: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  color: #D97706;
-}
-html[data-theme="dark"] .accent-pill-amber {
-  color: #FBBF24;
-}
-
-.accent-pill-cyan {
-  background-color: rgba(6, 182, 212, 0.12);
-  border: 1px solid rgba(6, 182, 212, 0.35);
-  color: #0891B2;
-}
-html[data-theme="dark"] .accent-pill-cyan {
-  color: #22D3EE;
-}
-
+/* Direction 3 Sage-Platinum Badge Pill */
+.badge-platinum,
+.accent-pill-emerald,
+.accent-pill-indigo,
+.accent-pill-violet,
+.accent-pill-amber,
+.accent-pill-cyan,
 .accent-pill-rose {
-  background-color: rgba(244, 63, 94, 0.12);
-  border: 1px solid rgba(244, 63, 94, 0.35);
-  color: #E11D48;
-}
-html[data-theme="dark"] .accent-pill-rose {
-  color: #FB7185;
+  background-color: var(--platinum-badge-bg);
+  color: var(--platinum-badge-text);
+  border: 1px solid var(--border-hairline);
 }
 
-/* Instagram Official Subtle Gradient Hover Glow */
-.instagram-icon-btn {
-  transition: all 180ms ease;
-}
-.instagram-icon-btn:hover {
-  background: linear-gradient(135deg, #F58529 0%, #DD2A7B 50%, #8134AF 100%);
-  color: #FFFFFF !important;
-  border-color: transparent !important;
+.badge-sage-status {
+  background-color: var(--sage-soft);
+  color: var(--text-primary);
+  border: 1px solid rgba(16, 185, 129, 0.28);
 }
 
-/* Hero Architectural Micro-Grid & Metallic Sheen */
-.hero-architectural-bg {
-  background-color: var(--bg-canvas);
-  background-image:
-    radial-gradient(circle at 76% 24%, rgba(99, 102, 241, 0.06) 0%, transparent 48%),
-    radial-gradient(circle at 20% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 45%),
-    linear-gradient(to right, rgba(24, 24, 27, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(24, 24, 27, 0.04) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+/* Official WhatsApp CTA Button */
+.btn-whatsapp-official {
+  background-color: var(--whatsapp-green);
+  color: #FFFFFF;
+  border: 1px solid #1DA851;
+  font-family: var(--font-display);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-html[data-theme="dark"] .hero-architectural-bg {
-  background-color: #09090B;
-  background-image:
-    radial-gradient(circle at 76% 24%, rgba(99, 102, 241, 0.11) 0%, transparent 48%),
-    radial-gradient(circle at 18% 82%, rgba(6, 182, 212, 0.08) 0%, transparent 45%),
-    linear-gradient(to right, rgba(39, 39, 42, 0.45) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(39, 39, 42, 0.45) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+.btn-whatsapp-official:hover {
+  background-color: var(--whatsapp-green-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -6px rgba(37, 211, 102, 0.45);
 }
 
-/* Service Orbs (AI, ADS, SAAS, WEB, SEO, CRM, LOCAL) Gentle Floating Animation */
-@keyframes skyline-orb-float {
-  0%, 100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -5px, 0);
-  }
-}
-
-.animate-orb-float {
-  animation: skyline-orb-float 3.4s ease-in-out infinite;
-}
-
-/* Infinite Dual-Row Stack Marquee */
-@keyframes skyline-marquee-left {
+/* Infinite Marquee Keyframes */
+@keyframes marquee-left {
   0% {
-    transform: translate3d(0, 0, 0);
+    transform: translateX(0%);
   }
   100% {
-    transform: translate3d(-50%, 0, 0);
+    transform: translateX(-50%);
   }
 }
 
-@keyframes skyline-marquee-right {
+@keyframes marquee-right {
   0% {
-    transform: translate3d(-50%, 0, 0);
+    transform: translateX(-50%);
   }
   100% {
-    transform: translate3d(0, 0, 0);
+    transform: translateX(0%);
   }
 }
 
 .animate-marquee-left {
   display: flex;
   width: max-content;
-  animation: skyline-marquee-left 36s linear infinite;
+  animation: marquee-left 34s linear infinite;
 }
 
 .animate-marquee-right {
   display: flex;
   width: max-content;
-  animation: skyline-marquee-right 40s linear infinite;
+  animation: marquee-right 38s linear infinite;
 }
 
-.ticker-group:hover .animate-marquee-left,
-.ticker-group:hover .animate-marquee-right,
+.animate-marquee-left:hover,
+.animate-marquee-right:hover,
 .ticker-paused .animate-marquee-left,
 .ticker-paused .animate-marquee-right {
   animation-play-state: paused;
 }
 
-/* FR-ANIM-005: Infinity Loop (Lemniscate) Glowing Dotted Trail Chase Animation */
-@keyframes skyline-infinity-trail {
-  0% {
-    stroke-dashoffset: 2400;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
+/* Floating physics for psychological hero orbs */
+@keyframes float-orb-a {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
 }
 
-.animate-infinity-trail {
-  stroke-dasharray: 10 14;
-  animation: skyline-infinity-trail 9s linear infinite;
+@keyframes float-orb-b {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(6px); }
 }
 
-@keyframes skyline-infinity-wake {
-  0% {
-    stroke-dashoffset: 1000;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
+.orb-float-even {
+  animation: float-orb-a 3.8s ease-in-out infinite;
 }
 
-.animate-infinity-wake {
-  stroke-dasharray: 280 720;
-  animation: skyline-infinity-wake 9s linear infinite;
+.orb-float-odd {
+  animation: float-orb-b 4.4s ease-in-out infinite;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  .animate-marquee-left,
-  .animate-marquee-right,
-  .animate-orb-float,
-  .animate-infinity-trail,
-  .animate-infinity-wake {
-    animation: none;
-  }
+/* Subtle metallic text sheen */
+.text-platinum-gradient {
+  background: var(--platinum-sheen);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-canvas);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--platinum-primary);
 }
